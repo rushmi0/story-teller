@@ -28,24 +28,28 @@ pub const STYLE: &str = r#"
 .filter-sidebar li {
     margin-bottom: 10px;
     display: flex;
-    align-items: center; /* Aligns checkbox and label vertically */
+    align-items: center;
 }
 
 .filter-checkbox {
-    width: 20px; /* Width of the checkbox */
-    height: 20px; /* Height of the checkbox */
-    cursor: pointer; /* Changes cursor on hover */
-    -webkit-appearance: none; /* Remove default checkbox appearance */
-    appearance: none; /* Remove default checkbox appearance */
-    background-color: #151a27; /* Set background color for unchecked checkbox */
-    border: 2px solid #1DB954; /* Set border color */
-    border-radius: 4px; /* Optional: makes checkbox rounded */
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #151a27;
+    border: 2px solid #1DB954;
+    border-radius: 4px;
     position: relative;
 }
 
+.filter-checkbox:hover {
+    box-shadow: 0 0 10px 2px rgba(29, 185, 84, 0.7);
+}
+
 .filter-checkbox:checked {
-    background-color: #1DB954; /* Change background color when checked */
-    border: 2px solid #1DB954; /* Set border color when checked */
+    background-color: #1DB954;
+    border: 2px solid #1DB954;
 }
 
 .filter-checkbox:checked::after {
@@ -64,6 +68,20 @@ pub const STYLE: &str = r#"
     margin-left: 8px;
     cursor: pointer; /* Makes the label clickable */
 }
+
+
+.custom-font-h1 {
+    font-size: 16px;
+    color: #A7AAB5;
+    font-weight: normal;
+}
+
+.custom-font-h2 {
+    font-size: 16px;
+    color: #DBDEE8;
+    font-weight: 250;
+}
+
 
 .search-bar {
     flex-grow: 1;
@@ -85,4 +103,3 @@ pub const STYLE: &str = r#"
     color: #8A8F98;
 }
 "#;
-

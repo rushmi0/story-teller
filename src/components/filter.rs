@@ -3,8 +3,7 @@
 use dioxus::prelude::*;
 use crate::styles::filter_style::STYLE;
 
-const _ICON_CHECKBOX_ON: &str = manganis::mg!(file("src/assets/checkbox_on.svg"));
-const _ICON_CHECKBOX_OFF: &str = manganis::mg!(file("src/assets/checkbox_on.svg"));
+const _ICON_FILTER: &str = manganis::mg!(file("src/assets/filter-icon.svg"));
 
 #[component]
 pub fn Filter() -> Element {
@@ -12,8 +11,15 @@ pub fn Filter() -> Element {
         style { {STYLE} }
         div { class: "filter-container col-xs-12 col-sm-12 col-lg-10", id: "filterAndSearch",
             div { class: "filter-sidebar",
-                h3 { "General" }
-                ul {
+
+                div {
+                    img {
+                        src: "{_ICON_FILTER}"
+                    }
+                }
+
+                h3 { class: "custom-font-h1", "General" }
+                ul { class: "custom-font-h2",
                     li {
                         input { class: "filter-checkbox", r#type: "checkbox", id: "chill" }
                         label { class: "filter-label", "Chill" }
