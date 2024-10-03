@@ -16,6 +16,7 @@ pub const STYLE: &str = r#"
         padding: 0.5rem 1rem;
         border-radius: 8px;
         border: none;
+        border-width: 4px;
         background-color: #252d42;
         color: white;
         padding-right: 30px; /* เพิ่มพื้นที่ด้านขวาให้กับ input */
@@ -42,6 +43,7 @@ pub const STYLE: &str = r#"
         padding: 0.5rem 1rem;
         border-radius: 8px;
         border: none;
+        border-width: 8px;
         background-color: #252d42;
         color: white;
         padding-right: 30px; /* เพิ่มพื้นที่ด้านขวาให้กับ input */
