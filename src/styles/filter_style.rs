@@ -2,7 +2,6 @@ pub const STYLE: &str = r#"
 .filter-container {
     display: flex;
     flex-direction: row;
-    background-color: #10152A;
     color: white;
     padding: 1rem;
 }
@@ -70,36 +69,16 @@ pub const STYLE: &str = r#"
 }
 
 
-.custom-font-h1 {
+.header {
     font-size: 16px;
     color: #A7AAB5;
     font-weight: normal;
 }
 
-.custom-font-h2 {
+.detail {
     font-size: 16px;
     color: #DBDEE8;
     font-weight: 250;
 }
 
-
-.search-bar {
-    flex-grow: 1;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.search-bar input {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: none;
-    background-color: #252d42;
-    color: white;
-}
-
-.search-bar input::placeholder {
-    color: #8A8F98;
-}
 "#;

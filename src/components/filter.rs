@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
+use crate::components::search_bar::SearchBar;
 use crate::styles::filter_style::STYLE;
 
 const _ICON_FILTER: &str = manganis::mg!(file("src/assets/filter-icon.svg"));
@@ -9,17 +10,17 @@ const _ICON_FILTER: &str = manganis::mg!(file("src/assets/filter-icon.svg"));
 pub fn Filter() -> Element {
     rsx! {
         style { {STYLE} }
+        SearchBar {}
         div { class: "filter-container col-xs-12 col-sm-12 col-lg-10", id: "filterAndSearch",
             div { class: "filter-sidebar",
-
                 div {
                     img {
                         src: "{_ICON_FILTER}"
                     }
                 }
 
-                h3 { class: "custom-font-h1", "General" }
-                ul { class: "custom-font-h2",
+                h3 { class: "header", "General" }
+                ul { class: "detail",
                     li {
                         input { class: "filter-checkbox", r#type: "checkbox", id: "chill" }
                         label { class: "filter-label", "Chill" }
@@ -54,9 +55,7 @@ pub fn Filter() -> Element {
                     }
                 }
             }
-            div { class: "search-bar",
-                input { r#type: "text", placeholder: "Search Music or Backsound" }
-            }
+
         }
     }
 }
