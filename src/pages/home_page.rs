@@ -2,12 +2,12 @@
 
 use dioxus::prelude::*;
 
-use crate::components::{Banner, Filter};
+use crate::components::{Banner, CheckBox};
 
 #[component]
 pub fn HomePage() -> Element {
     rsx! {
         Banner {}
-        Filter {}
+        CheckBox {}
     }
 }

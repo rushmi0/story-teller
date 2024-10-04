@@ -9,7 +9,7 @@ use crate::styles::checkbox_list_style::STYLE;
 const _ICON_FILTER: &str = manganis::mg!(file("src/assets/filter-icon.svg"));
 
 #[component]
-pub fn Filter() -> Element {
+pub fn CheckBox() -> Element {
     rsx! {
         style { {STYLE} }
         SearchBar {}

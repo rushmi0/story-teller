@@ -30,7 +30,6 @@ pub const STYLE: &str = r#"
 }
 
 .checkbox-pt img {
-    padding-bottom: 7px;
     animation: slideIn 0.4s ease-in-out forwards; /* เพิ่ม animation ที่นี่ */
 }
 
@@ -147,8 +146,9 @@ pub const STYLE: &str = r#"
         padding: 1rem;
     }
 
-    .checkbox-pt {
-        padding-left: 1rem;
+    .checkbox-pt img {
+        padding-bottom: 4px;
+        width: 80px;
     }
 
     .checkbox-sidebar {
@@ -175,6 +175,11 @@ pub const STYLE: &str = r#"
 @media only screen and (min-width: 600px) {
     .checkbox-sidebar ul {
         flex-direction: column;
+    }
+
+    .checkbox-pt img {
+        padding-bottom: 7px;
+        width: 75px;
     }
 
     .checkbox-sidebar li {
