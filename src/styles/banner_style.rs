@@ -1,4 +1,5 @@
 pub const STYLE: &str = r#"
+
 .item-center {
   display: flex;
   justify-content: center;
@@ -10,14 +11,28 @@ pub const STYLE: &str = r#"
   padding: 1rem;
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Default for mobile */
+  justify-content: flex-start;
 }
 
-/* For desktop: */
+/* ปรับแต่งพิเศษสำหรับขนาดหน้าจอ */
+
+/* สำหรับมือถือ: */
+@media only screen and (max-width: 599px) {
+    img {
+        max-width: auto;
+        height: auto; /* ให้ภาพปรับขนาดตามสัดส่วน */
+    }
+}
+
+/* สำหรับแท็บเล็ตและเดสก์ท็อป: */
 @media only screen and (min-width: 768px) {
-  #nav {
-    justify-content: center;
-  }
+    #nav {
+        justify-content: center;
+    }
+    img {
+        max-width: 200px; /* กำหนดขนาดรูปสำหรับแท็บเล็ตและเดสก์ท็อป */
+        height: auto;
+    }
 }
 
 "#;

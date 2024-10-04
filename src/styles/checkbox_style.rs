@@ -20,9 +20,17 @@ pub const STYLE: &str = r#"
 
 .checkbox-sidebar {
     padding: 1rem;
-    background-color: rgba(21, 26, 39, 0.5);
     border-radius: 8px;
     margin-left: 2rem;
+}
+
+.icon-container {
+    display: flex; /* ใช้ flex เพื่อจัดเรียงไอคอนในแนวนอน */
+    justify-content: space-between; /* จัดตำแหน่งให้มีพื้นที่ระหว่างไอคอน */
+    align-items: center; /* จัดแนวกลางในแนวตั้ง */
+    width: 100%; /* ให้ icon-container กว้างเต็มที่ */
+    padding-bottom: 1rem; /* เว้นระยะใต้ icon */
+    padding-left: 2.3rem;
 }
 
 .checkbox-pt {
@@ -30,13 +38,13 @@ pub const STYLE: &str = r#"
 }
 
 .checkbox-pt img {
-    animation: slideIn 0.4s ease-in-out forwards; /* เพิ่ม animation ที่นี่ */
+    animation: slideIn 0.4s ease-in-out forwards;
 }
 
 .checkbox-sidebar h3 {
     font-size: 18px;
     margin-bottom: 20px;
-    animation: slideIn 0.5s ease-in-out forwards; /* เพิ่ม animation ที่นี่ */
+    animation: slideIn 0.5s ease-in-out forwards;
 }
 
 .checkbox-sidebar ul {
@@ -146,14 +154,13 @@ pub const STYLE: &str = r#"
         padding: 1rem;
     }
 
-    .checkbox-pt img {
+    .icon-container img {
+        animation: slideIn 0.4s ease-in-out forwards;
         padding-bottom: 4px;
-        width: 80px;
     }
 
     .checkbox-sidebar {
         padding: 1rem;
-        background-color: #151a27;
         border-radius: 8px;
         margin-left: 0.6rem;
     }
@@ -177,9 +184,9 @@ pub const STYLE: &str = r#"
         flex-direction: column;
     }
 
-    .checkbox-pt img {
+    .icon-container img {
         padding-bottom: 7px;
-        width: 75px;
+        width: 75px; /* ปรับขนาดสำหรับแท็บเล็ตและเดสก์ท็อป */
     }
 
     .checkbox-sidebar li {
