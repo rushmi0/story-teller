@@ -6,18 +6,25 @@ use dioxus_logger::tracing::info;
 use crate::components::search_bar::SearchBar;
 use crate::styles::checkbox_style::STYLE;
 
+// กำหนดค่า constant สำหรับไอคอน
 const _ICON_FILTER: &str = manganis::mg!(file("src/assets/filter-icon.svg"));
 const _ICON_ARROW: &str = manganis::mg!(file("src/assets/chevron-down.svg"));
 
 #[component]
 pub fn CheckBox() -> Element {
-    // ใช้ use_signal เพื่อเก็บรายการของ key words
+
+    // ใช้ use_signal เพื่อเก็บรายการของ key words ที่ผู้ใช้เลือก
+    // โดยเก็บในรูปแบบ Vector ของ String
     let mut key_word_list = use_signal(Vec::<String>::new);
 
+    // Debug แสดงข้อมูลของ key_word_list ปัจจุบันในตอนที่ component ถูก render
     info!("Current key word list: {:?}", key_word_list.read());
 
     rsx! {
+        // ใส่ style สำหรับ component
         style { {STYLE} }
+
+        // เรียกใช้ SearchBar component
         SearchBar {}
         div { class: "checkbox-container col-xs-12 col-sm-3 col-lg-1",
             div { class: "checkbox-sidebar col-xs-11",
@@ -30,24 +37,32 @@ pub fn CheckBox() -> Element {
                 div { class: "checkbox-pt col-xs-hidden",
                     h3 { class: "header", "General" }
                     ul { class: "detail ",
+                        // Checkbox สำหรับตัวเลือก "Chill"
                         li {
                             input {
                                 class: "filter-checkbox",
                                 r#type: "checkbox",
                                 id: "chill",
-                                // สร้าง closure ใหม่ทุกครั้งที่ checkbox ถูกคลิก
+                                // เมื่อคลิกที่ checkbox จะเรียก closure นี้
                                 onclick: move |_| {
+                                    // เขียน (write) ค่าลงใน key_word_list
                                     let mut list = key_word_list.write();
+                                    // ถ้าคำว่า "Chill" มีอยู่ใน list ให้ลบออก
                                     if list.contains(&"Chill".to_string()) {
                                         list.retain(|x| x != "Chill");
                                     } else {
+                                        // ถ้ายังไม่มีให้เพิ่มเข้าไปใน list
                                         list.push("Chill".to_string());
                                     }
+                                    // Debug การคลิก checkbox ของ "Chill"
                                     info!("Chill checkbox clicked");
                                 }
                             }
                             label { class: "filter-label", "Chill" }
                         }
+
+
+                        // Checkbox สำหรับตัวเลือก "Dramatic"
                         li {
                             input {
                                 class: "filter-checkbox",
@@ -65,6 +80,9 @@ pub fn CheckBox() -> Element {
                             }
                             label { class: "filter-label", "Dramatic" }
                         }
+
+
+                        // Checkbox สำหรับตัวเลือก "Happy"
                         li {
                             input {
                                 class: "filter-checkbox",
@@ -82,6 +100,9 @@ pub fn CheckBox() -> Element {
                             }
                             label { class: "filter-label", "Happy" }
                         }
+
+
+                        // Checkbox สำหรับตัวเลือก "Sad"
                         li {
                             input {
                                 class: "filter-checkbox",
@@ -99,6 +120,9 @@ pub fn CheckBox() -> Element {
                             }
                             label { class: "filter-label", "Sad" }
                         }
+
+
+                        // Checkbox สำหรับตัวเลือก "Hopeful"
                         li {
                             input {
                                 class: "filter-checkbox",
@@ -116,6 +140,9 @@ pub fn CheckBox() -> Element {
                             }
                             label { class: "filter-label", "Hopeful" }
                         }
+
+
+                        // Checkbox สำหรับตัวเลือก "Fantasy"
                         li {
                             input {
                                 class: "filter-checkbox",
@@ -133,6 +160,9 @@ pub fn CheckBox() -> Element {
                             }
                             label { class: "filter-label", "Fantasy" }
                         }
+
+
+                        // Checkbox สำหรับตัวเลือก "Romantic"
                         li {
                             input {
                                 class: "filter-checkbox",
@@ -150,6 +180,9 @@ pub fn CheckBox() -> Element {
                             }
                             label { class: "filter-label", "Romantic" }
                         }
+
+
+                        // Checkbox สำหรับตัวเลือก "Relaxing"
                         li {
                             input {
                                 class: "filter-checkbox",
@@ -167,6 +200,8 @@ pub fn CheckBox() -> Element {
                             }
                             label { class: "filter-label", "Relaxing" }
                         }
+
+
                     }
                 }
             }
