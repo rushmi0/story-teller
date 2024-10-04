@@ -176,6 +176,10 @@ pub const STYLE: &str = r#"
         width: 48%;
         margin-bottom: 10px;
     }
+
+    /*************************************/
+
+
 }
 
 /* สำหรับแท็บเล็ตและเดสก์ท็อป: */
@@ -185,6 +189,7 @@ pub const STYLE: &str = r#"
     }
 
     .icon-container img {
+        animation: slideIn 0.4s ease-in-out forwards;
         padding-bottom: 7px;
         width: 75px; /* ปรับขนาดสำหรับแท็บเล็ตและเดสก์ท็อป */
     }
