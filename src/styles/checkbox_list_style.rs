@@ -1,33 +1,91 @@
 pub const STYLE: &str = r#"
-.filter-container {
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+        filter: blur(10px);
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+        filter: blur(0px);
+    }
+}
+
+.checkbox-container {
     display: flex;
-    flex-direction: row;
-    color: white;
-    padding: 1rem;
+    flex-direction: column;
 }
 
-.filter-sidebar {
-    width: 200px;
+.checkbox-sidebar {
     padding: 1rem;
-    background-color: #151a27;
+    background-color: rgba(21, 26, 39, 0.5);
     border-radius: 8px;
-    margin-right: 1.5rem;
+    margin-left: 2rem;
 }
 
-.filter-sidebar h3 {
+.checkbox-pt {
+    padding-left: 2.3rem;
+}
+
+.checkbox-pt img {
+    padding-bottom: 7px;
+    animation: slideIn 0.4s ease-in-out forwards; /* เพิ่ม animation ที่นี่ */
+}
+
+.checkbox-sidebar h3 {
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    animation: slideIn 0.5s ease-in-out forwards; /* เพิ่ม animation ที่นี่ */
 }
 
-.filter-sidebar ul {
+.checkbox-sidebar ul {
     list-style-type: none;
-    padding-left: 0;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.filter-sidebar li {
+.checkbox-sidebar li {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
+    width: 48%;
+    margin-right: 2%;
+    opacity: 0; /* เริ่มต้นจากไม่แสดง */
+    animation: slideIn 0.5s ease-in-out forwards;
+}
+
+.checkbox-sidebar li:nth-child(1) {
+    animation-delay: 0.3s;
+}
+
+.checkbox-sidebar li:nth-child(2) {
+    animation-delay: 0.6s;
+}
+
+.checkbox-sidebar li:nth-child(3) {
+    animation-delay: 0.9s;
+}
+
+.checkbox-sidebar li:nth-child(4) {
+    animation-delay: 1.2s;
+}
+
+.checkbox-sidebar li:nth-child(5) {
+    animation-delay: 1.5s;
+}
+
+.checkbox-sidebar li:nth-child(6) {
+    animation-delay: 1.8s;
+}
+
+.checkbox-sidebar li:nth-child(7) {
+    animation-delay: 2.1s;
+}
+
+.checkbox-sidebar li:nth-child(8) {
+    animation-delay: 2.4s;
 }
 
 .filter-checkbox {
@@ -49,6 +107,7 @@ pub const STYLE: &str = r#"
 .filter-checkbox:checked {
     background-color: #1DB954;
     border: 2px solid #1DB954;
+    box-shadow: 0 0 10px 2px rgba(29, 185, 84, 0.7);
 }
 
 .filter-checkbox:checked::after {
@@ -65,9 +124,8 @@ pub const STYLE: &str = r#"
 
 .filter-label {
     margin-left: 8px;
-    cursor: pointer; /* Makes the label clickable */
+    cursor: pointer;
 }
-
 
 .header {
     font-size: 16px;
@@ -81,4 +139,46 @@ pub const STYLE: &str = r#"
     font-weight: 250;
 }
 
+/* ปรับแต่งพิเศษสำหรับขนาดหน้าจอ */
+
+/* สำหรับมือถือ: */
+@media only screen and (max-width: 599px) {
+    .checkbox-container {
+        padding: 1rem;
+    }
+
+    .checkbox-pt {
+        padding-left: 1rem;
+    }
+
+    .checkbox-sidebar {
+        padding: 1rem;
+        background-color: #151a27;
+        border-radius: 8px;
+        margin-left: 0.6rem;
+    }
+
+    .checkbox-sidebar ul {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 auto;
+    }
+
+    .checkbox-sidebar li {
+        width: 48%;
+        margin-bottom: 10px;
+    }
+}
+
+/* สำหรับแท็บเล็ตและเดสก์ท็อป: */
+@media only screen and (min-width: 600px) {
+    .checkbox-sidebar ul {
+        flex-direction: column;
+    }
+
+    .checkbox-sidebar li {
+        width: 100%;
+    }
+}
 "#;
