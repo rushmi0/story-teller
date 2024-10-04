@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::{info};
 
 use crate::components::search_bar::SearchBar;
-use crate::styles::checkbox_list_style::STYLE;
+use crate::styles::checkbox_style::STYLE;
 
 const _ICON_FILTER: &str = manganis::mg!(file("src/assets/filter-icon.svg"));
 
