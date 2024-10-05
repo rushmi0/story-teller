@@ -2,7 +2,7 @@
 
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
-
+use web_sys::window;
 use crate::components::search_bar::SearchBar;
 use crate::styles::checkbox_style::STYLE;
 
@@ -15,13 +15,21 @@ const _ICON_ARROW: &str = manganis::mg!(file("src/assets/chevron-down.svg"));
 pub fn CheckBox() -> Element {
 
     // ใช้ use_signal เพื่อเก็บรายการของ key words ที่ผู้ใช้เลือก
-    // โดยเก็บในรูปแบบ Vector ของ String
     let mut key_word_list = use_signal(Vec::<String>::new);
 
     let mut is_dropdown = use_signal(|| false);
 
+    //let mut window_size = use_signal(|| (0, 0));
+
+    // สร้าง state เพื่อเก็บขนาดหน้าจอ
+    let window = window().unwrap();
+    let width = window.inner_width().unwrap().as_f64().unwrap() as u32;
+    let height = window.inner_height().unwrap().as_f64().unwrap() as u32;
+
+
     // Debug แสดงข้อมูลของ key_word_list ปัจจุบันในตอนที่ component ถูก render
     info!("Current key word list: {:?}", key_word_list.read());
+    info!("Screen size: {width} x {height}");
 
     rsx! {
         // ใส่ style สำหรับ component
@@ -33,6 +41,7 @@ pub fn CheckBox() -> Element {
             div { class: "checkbox-sidebar col-xs-11",
 
                 // ปุ่มกดเพื่อเปิด/ปิด dropdown
+                h3 { style: "color: white", "Current Screen Size: Width:{width} x Height{height}" }
                 div {
                     button {
                         class: "icon-container",
@@ -47,7 +56,7 @@ pub fn CheckBox() -> Element {
 
                 // เนื้อหาที่จะถูกซ่อนสำหรับจอมือถือ
                 if *is_dropdown.read() {
-                    div { class: "checkbox-pt ",
+                    div { class: "checkbox-pt",
                         h3 { class: "header", "General" }
                         ul { class: "detail ",
                             // Checkbox สำหรับตัวเลือก "Chill"

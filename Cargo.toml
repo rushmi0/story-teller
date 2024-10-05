@@ -14,3 +14,5 @@ dioxus = { version = "0.5.6", features = ["web"] }
 # Debug
 dioxus-logger = "0.5.1"
 manganis = "0.2.2"
+web-sys = "0.3.70"
+
