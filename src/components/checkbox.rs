@@ -17,6 +17,8 @@ pub fn CheckBox() -> Element {
     // โดยเก็บในรูปแบบ Vector ของ String
     let mut key_word_list = use_signal(Vec::<String>::new);
 
+    let mut is_dropdown = use_signal(|| false);
+
     // Debug แสดงข้อมูลของ key_word_list ปัจจุบันในตอนที่ component ถูก render
     info!("Current key word list: {:?}", key_word_list.read());
 
@@ -30,182 +32,195 @@ pub fn CheckBox() -> Element {
             div { class: "checkbox-sidebar col-xs-11",
 
                 // ปุ่มกดเพื่อเปิด/ปิด dropdown
-                div { class: "icon-container",
-                    img { src: "{_ICON_FILTER}" }
-                    img { class: "col-lg-hidden col-ms-hidden", src: "{_ICON_ARROW}" }
-                }
-
-                // เนื้อหาที่จะถูกซ่อนสำหรับจอมือถือ
-                div { class: "checkbox-pt col-xs-hidden",
-                    h3 { class: "header", "General" }
-                    ul { class: "detail ",
-                        // Checkbox สำหรับตัวเลือก "Chill"
-                        li {
-                            input {
-                                class: "filter-checkbox",
-                                r#type: "checkbox",
-                                id: "chill",
-                                // เมื่อคลิกที่ checkbox จะเรียก closure นี้
-                                onclick: move |_| {
-                                    // เขียน (write) ค่าลงใน key_word_list
-                                    let mut list = key_word_list.write();
-                                    // ถ้าคำว่า "Chill" มีอยู่ใน list ให้ลบออก
-                                    if list.contains(&"Chill".to_string()) {
-                                        list.retain(|x| x != "Chill");
-                                    } else {
-                                        // ถ้ายังไม่มีให้เพิ่มเข้าไปใน list
-                                        list.push("Chill".to_string());
-                                    }
-                                    // Debug การคลิก checkbox ของ "Chill"
-                                    info!("Chill checkbox clicked");
-                                }
-                            }
-                            label { class: "filter-label", "Chill" }
-                        }
-
-
-                        // Checkbox สำหรับตัวเลือก "Dramatic"
-                        li {
-                            input {
-                                class: "filter-checkbox",
-                                r#type: "checkbox",
-                                id: "dramatic",
-                                onclick: move |_| {
-                                    let mut list = key_word_list.write();
-                                    if list.contains(&"Dramatic".to_string()) {
-                                        list.retain(|x| x != "Dramatic");
-                                    } else {
-                                        list.push("Dramatic".to_string());
-                                    }
-                                    info!("Dramatic checkbox clicked");
-                                }
-                            }
-                            label { class: "filter-label", "Dramatic" }
-                        }
-
-
-                        // Checkbox สำหรับตัวเลือก "Happy"
-                        li {
-                            input {
-                                class: "filter-checkbox",
-                                r#type: "checkbox",
-                                id: "happy",
-                                onclick: move |_| {
-                                    let mut list = key_word_list.write();
-                                    if list.contains(&"Happy".to_string()) {
-                                        list.retain(|x| x != "Happy");
-                                    } else {
-                                        list.push("Happy".to_string());
-                                    }
-                                    info!("Happy checkbox clicked");
-                                }
-                            }
-                            label { class: "filter-label", "Happy" }
-                        }
-
-
-                        // Checkbox สำหรับตัวเลือก "Sad"
-                        li {
-                            input {
-                                class: "filter-checkbox",
-                                r#type: "checkbox",
-                                id: "sad",
-                                onclick: move |_| {
-                                    let mut list = key_word_list.write();
-                                    if list.contains(&"Sad".to_string()) {
-                                        list.retain(|x| x != "Sad");
-                                    } else {
-                                        list.push("Sad".to_string());
-                                    }
-                                    info!("Sad checkbox clicked");
-                                }
-                            }
-                            label { class: "filter-label", "Sad" }
-                        }
-
-
-                        // Checkbox สำหรับตัวเลือก "Hopeful"
-                        li {
-                            input {
-                                class: "filter-checkbox",
-                                r#type: "checkbox",
-                                id: "hopeful",
-                                onclick: move |_| {
-                                    let mut list = key_word_list.write();
-                                    if list.contains(&"Hopeful".to_string()) {
-                                        list.retain(|x| x != "Hopeful");
-                                    } else {
-                                        list.push("Hopeful".to_string());
-                                    }
-                                    info!("Hopeful checkbox clicked");
-                                }
-                            }
-                            label { class: "filter-label", "Hopeful" }
-                        }
-
-
-                        // Checkbox สำหรับตัวเลือก "Fantasy"
-                        li {
-                            input {
-                                class: "filter-checkbox",
-                                r#type: "checkbox",
-                                id: "fantasy",
-                                onclick: move |_| {
-                                    let mut list = key_word_list.write();
-                                    if list.contains(&"Fantasy".to_string()) {
-                                        list.retain(|x| x != "Fantasy");
-                                    } else {
-                                        list.push("Fantasy".to_string());
-                                    }
-                                    info!("Fantasy checkbox clicked");
-                                }
-                            }
-                            label { class: "filter-label", "Fantasy" }
-                        }
-
-
-                        // Checkbox สำหรับตัวเลือก "Romantic"
-                        li {
-                            input {
-                                class: "filter-checkbox",
-                                r#type: "checkbox",
-                                id: "romantic",
-                                onclick: move |_| {
-                                    let mut list = key_word_list.write();
-                                    if list.contains(&"Romantic".to_string()) {
-                                        list.retain(|x| x != "Romantic");
-                                    } else {
-                                        list.push("Romantic".to_string());
-                                    }
-                                    info!("Romantic checkbox clicked");
-                                }
-                            }
-                            label { class: "filter-label", "Romantic" }
-                        }
-
-
-                        // Checkbox สำหรับตัวเลือก "Relaxing"
-                        li {
-                            input {
-                                class: "filter-checkbox",
-                                r#type: "checkbox",
-                                id: "relaxing",
-                                onclick: move |_| {
-                                    let mut list = key_word_list.write();
-                                    if list.contains(&"Relaxing".to_string()) {
-                                        list.retain(|x| x != "Relaxing");
-                                    } else {
-                                        list.push("Relaxing".to_string());
-                                    }
-                                    info!("Relaxing checkbox clicked");
-                                }
-                            }
-                            label { class: "filter-label", "Relaxing" }
-                        }
-
-
+                div {
+                    // ปุ่มกดเพื่อเปิด/ปิด dropdown
+                    button {
+                        class: "icon-container",
+                        onclick: move |_| {
+                            let mut dropdown = is_dropdown.write();
+                            *dropdown = !*dropdown; // สลับสถานะ dropdown
+                        },
+                        img { src: "{_ICON_FILTER}" }
+                        img { class: "col-lg-hidden col-ms-hidden", src: "{_ICON_ARROW}" }
                     }
                 }
+
+
+                // เนื้อหาที่จะถูกซ่อนสำหรับจอมือถือ
+                if *is_dropdown.read() {
+                    div { class: "checkbox-pt",
+                        h3 { class: "header", "General" }
+                        ul { class: "detail ",
+                            // Checkbox สำหรับตัวเลือก "Chill"
+                            li {
+                                input {
+                                    class: "filter-checkbox",
+                                    r#type: "checkbox",
+                                    id: "chill",
+                                    // เมื่อคลิกที่ checkbox จะเรียก closure นี้
+                                    onclick: move |_| {
+                                        // เขียน (write) ค่าลงใน key_word_list
+                                        let mut list = key_word_list.write();
+                                        // ถ้าคำว่า "Chill" มีอยู่ใน list ให้ลบออก
+                                        if list.contains(&"Chill".to_string()) {
+                                            list.retain(|x| x != "Chill");
+                                        } else {
+                                            // ถ้ายังไม่มีให้เพิ่มเข้าไปใน list
+                                            list.push("Chill".to_string());
+                                        }
+                                        // Debug การคลิก checkbox ของ "Chill"
+                                        info!("Chill checkbox clicked");
+                                    }
+                                }
+                                label { class: "filter-label", "Chill" }
+                            }
+
+
+                            // Checkbox สำหรับตัวเลือก "Dramatic"
+                            li {
+                                input {
+                                    class: "filter-checkbox",
+                                    r#type: "checkbox",
+                                    id: "dramatic",
+                                    onclick: move |_| {
+                                        let mut list = key_word_list.write();
+                                        if list.contains(&"Dramatic".to_string()) {
+                                            list.retain(|x| x != "Dramatic");
+                                        } else {
+                                            list.push("Dramatic".to_string());
+                                        }
+                                        info!("Dramatic checkbox clicked");
+                                    }
+                                }
+                                label { class: "filter-label", "Dramatic" }
+                            }
+
+
+                            // Checkbox สำหรับตัวเลือก "Happy"
+                            li {
+                                input {
+                                    class: "filter-checkbox",
+                                    r#type: "checkbox",
+                                    id: "happy",
+                                    onclick: move |_| {
+                                        let mut list = key_word_list.write();
+                                        if list.contains(&"Happy".to_string()) {
+                                            list.retain(|x| x != "Happy");
+                                        } else {
+                                            list.push("Happy".to_string());
+                                        }
+                                        info!("Happy checkbox clicked");
+                                    }
+                                }
+                                label { class: "filter-label", "Happy" }
+                            }
+
+
+                            // Checkbox สำหรับตัวเลือก "Sad"
+                            li {
+                                input {
+                                    class: "filter-checkbox",
+                                    r#type: "checkbox",
+                                    id: "sad",
+                                    onclick: move |_| {
+                                        let mut list = key_word_list.write();
+                                        if list.contains(&"Sad".to_string()) {
+                                            list.retain(|x| x != "Sad");
+                                        } else {
+                                            list.push("Sad".to_string());
+                                        }
+                                        info!("Sad checkbox clicked");
+                                    }
+                                }
+                                label { class: "filter-label", "Sad" }
+                            }
+
+
+                            // Checkbox สำหรับตัวเลือก "Hopeful"
+                            li {
+                                input {
+                                    class: "filter-checkbox",
+                                    r#type: "checkbox",
+                                    id: "hopeful",
+                                    onclick: move |_| {
+                                        let mut list = key_word_list.write();
+                                        if list.contains(&"Hopeful".to_string()) {
+                                            list.retain(|x| x != "Hopeful");
+                                        } else {
+                                            list.push("Hopeful".to_string());
+                                        }
+                                        info!("Hopeful checkbox clicked");
+                                    }
+                                }
+                                label { class: "filter-label", "Hopeful" }
+                            }
+
+
+                            // Checkbox สำหรับตัวเลือก "Fantasy"
+                            li {
+                                input {
+                                    class: "filter-checkbox",
+                                    r#type: "checkbox",
+                                    id: "fantasy",
+                                    onclick: move |_| {
+                                        let mut list = key_word_list.write();
+                                        if list.contains(&"Fantasy".to_string()) {
+                                            list.retain(|x| x != "Fantasy");
+                                        } else {
+                                            list.push("Fantasy".to_string());
+                                        }
+                                        info!("Fantasy checkbox clicked");
+                                    }
+                                }
+                                label { class: "filter-label", "Fantasy" }
+                            }
+
+
+                            // Checkbox สำหรับตัวเลือก "Romantic"
+                            li {
+                                input {
+                                    class: "filter-checkbox",
+                                    r#type: "checkbox",
+                                    id: "romantic",
+                                    onclick: move |_| {
+                                        let mut list = key_word_list.write();
+                                        if list.contains(&"Romantic".to_string()) {
+                                            list.retain(|x| x != "Romantic");
+                                        } else {
+                                            list.push("Romantic".to_string());
+                                        }
+                                        info!("Romantic checkbox clicked");
+                                    }
+                                }
+                                label { class: "filter-label", "Romantic" }
+                            }
+
+
+                            // Checkbox สำหรับตัวเลือก "Relaxing"
+                            li {
+                                input {
+                                    class: "filter-checkbox",
+                                    r#type: "checkbox",
+                                    id: "relaxing",
+                                    onclick: move |_| {
+                                        let mut list = key_word_list.write();
+                                        if list.contains(&"Relaxing".to_string()) {
+                                            list.retain(|x| x != "Relaxing");
+                                        } else {
+                                            list.push("Relaxing".to_string());
+                                        }
+                                        info!("Relaxing checkbox clicked");
+                                    }
+                                }
+                                label { class: "filter-label", "Relaxing" }
+                            }
+
+
+                        }
+                    }
+                }
+
+
             }
         }
     }
