@@ -10,6 +10,7 @@ use crate::styles::checkbox_style::STYLE;
 const _ICON_FILTER: &str = manganis::mg!(file("src/assets/filter-icon.svg"));
 const _ICON_ARROW: &str = manganis::mg!(file("src/assets/chevron-down.svg"));
 
+
 #[component]
 pub fn CheckBox() -> Element {
 
@@ -33,7 +34,6 @@ pub fn CheckBox() -> Element {
 
                 // ปุ่มกดเพื่อเปิด/ปิด dropdown
                 div {
-                    // ปุ่มกดเพื่อเปิด/ปิด dropdown
                     button {
                         class: "icon-container",
                         onclick: move |_| {
@@ -45,10 +45,9 @@ pub fn CheckBox() -> Element {
                     }
                 }
 
-
                 // เนื้อหาที่จะถูกซ่อนสำหรับจอมือถือ
                 if *is_dropdown.read() {
-                    div { class: "checkbox-pt",
+                    div { class: "checkbox-pt ",
                         h3 { class: "header", "General" }
                         ul { class: "detail ",
                             // Checkbox สำหรับตัวเลือก "Chill"

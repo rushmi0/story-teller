@@ -11,6 +11,7 @@ pub const STYLE: &str = r#"
 
 /* For mobile phones: */
 @media only screen and (max-width: 599px) {
+
     .col-xs-hidden {
         display: none;
     }
