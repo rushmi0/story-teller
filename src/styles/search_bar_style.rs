@@ -40,7 +40,7 @@ pub const STYLE: &str = r#"
     }
 
     .search-bar {
-        margin-left: 7%;
+        margin-left: 10%;
     }
 
     .search-bar input {
@@ -59,8 +59,38 @@ pub const STYLE: &str = r#"
     }
 }
 
-/* สำหรับแท็บเล็ตและเดสก์ท็อป: */
+/* สำหรับแท็บเล็ต */
 @media only screen and (min-width: 600px) {
+    #search-pt {
+        margin-left: 50px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    .search-bar {
+        margin-left: 20%;
+        margin-right: 20%;
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: none;
+        border-width: 8px;
+        background-color: #252d42;
+        color: white;
+        padding-right: 30px; /* เพิ่มพื้นที่ด้านขวาให้กับ input */
+    }
+
+    .search-bar input::placeholder {
+        color: #8A8F98;
+    }
+}
+
+
+/* สำหรับเดสก์ท็อป: */
+@media only screen and (min-width: 768px) {
     #search-pt {
         margin-left: 50px;
         margin-top: 40px;
@@ -86,6 +116,5 @@ pub const STYLE: &str = r#"
         color: #8A8F98;
     }
 }
-
 
 "#;

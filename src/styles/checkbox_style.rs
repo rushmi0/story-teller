@@ -24,14 +24,6 @@ pub const STYLE: &str = r#"
     margin-left: 2rem;
 }
 
-.icon-container {
-    display: flex; /* ใช้ flex เพื่อจัดเรียงไอคอนในแนวนอน */
-    justify-content: space-between; /* จัดตำแหน่งให้มีพื้นที่ระหว่างไอคอน */
-    align-items: center; /* จัดแนวกลางในแนวตั้ง */
-    width: 100%; /* ให้ icon-container กว้างเต็มที่ */
-    padding-bottom: 1rem; /* เว้นระยะใต้ icon */
-    padding-left: 2.3rem;
-}
 
 .checkbox-pt {
     padding-left: 2.3rem;
@@ -154,6 +146,15 @@ pub const STYLE: &str = r#"
         padding: 1rem;
     }
 
+    .icon-container {
+        display: flex; /* ใช้ flex เพื่อจัดเรียงไอคอนในแนวนอน */
+        justify-content: space-between; /* จัดตำแหน่งให้มีพื้นที่ระหว่างไอคอน */
+        align-items: center; /* จัดแนวกลางในแนวตั้ง */
+        width: 100%; /* ให้ icon-container กว้างเต็มที่ */
+        padding-bottom: 1rem; /* เว้นระยะใต้ icon */
+        padding-left: 2.3rem;
+    }
+
     .icon-container img {
         animation: slideIn 0.4s ease-in-out forwards;
         padding-bottom: 4px;
@@ -180,6 +181,7 @@ pub const STYLE: &str = r#"
     /*************************************/
 
 
+
 }
 
 /* สำหรับแท็บเล็ตและเดสก์ท็อป: */
@@ -198,4 +200,4 @@ pub const STYLE: &str = r#"
         width: 100%;
     }
 }
-"#;
+"#; // ปุ่มกดเพื่อเปิด/ปิด dropdown

@@ -26,14 +26,16 @@ pub fn CheckBox() -> Element {
 
         // เรียกใช้ SearchBar component
         SearchBar {}
-        div { class: "checkbox-container col-xs-12 col-sm-3 col-lg-1",
+        div { class: "checkbox-container col-xs-12 col-sm-4 col-lg-1",
             div { class: "checkbox-sidebar col-xs-11",
 
+                // ปุ่มกดเพื่อเปิด/ปิด dropdown
                 div { class: "icon-container",
                     img { src: "{_ICON_FILTER}" }
-                    img { class: "col-lg-hidden", src: "{_ICON_ARROW}" }
+                    img { class: "col-lg-hidden col-ms-hidden", src: "{_ICON_ARROW}" }
                 }
 
+                // เนื้อหาที่จะถูกซ่อนสำหรับจอมือถือ
                 div { class: "checkbox-pt col-xs-hidden",
                     h3 { class: "header", "General" }
                     ul { class: "detail ",

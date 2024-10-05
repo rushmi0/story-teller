@@ -25,7 +25,7 @@ pub const STYLE: &str = r#"
 }
 
 /* สำหรับแท็บเล็ตและเดสก์ท็อป: */
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 600px) {
     #nav {
         justify-content: center;
     }

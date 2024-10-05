@@ -98,14 +98,13 @@ pub const STYLE: &str = r#"
     }
 }
 
-.container {
-    margin-left: auto;
-    margin-right: auto;
-}
-
 
 /* For tablets: */
 @media only screen and (min-width: 600px) {
+    .col-ms-hidden {
+        display: none;
+    }
+
     .col-sm-1 {
         width: 8.33%;
     }
@@ -144,4 +143,11 @@ pub const STYLE: &str = r#"
     }
 
 }
+
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 "#;
