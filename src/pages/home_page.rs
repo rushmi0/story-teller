@@ -14,7 +14,9 @@ pub fn HomePage() -> Element {
     rsx! {
         Banner {}
         SearchBar {}
-        CheckBox {}
-        Story {}
+        div {
+            CheckBox {}
+            Story {}
+        }
     }
 }

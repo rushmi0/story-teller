@@ -27,6 +27,8 @@ pub fn CheckBox() -> Element {
         }
     });
 
+    info!("Current dropdown status: {is_dropdown}");
+
     // ตรวจสอบขนาดหน้าจอและตั้งค่า dropdown
     use_effect({
         let mut is_dropdown = is_dropdown.clone();
@@ -34,10 +36,10 @@ pub fn CheckBox() -> Element {
         move || {
             let (width, _) = *screen_size.read();
             info!("Current Width size: {width}");
-            if width <= 410 {
-                is_dropdown.set(false);
-            } else {
+            if width > 430 {
                 is_dropdown.set(true);
+            } else {
+                is_dropdown.set(false);
             }
             ()
         }
@@ -65,6 +67,7 @@ pub fn CheckBox() -> Element {
 
         div { class: "checkbox-container col-xs-12 col-sm-4 col-lg-1",
             div { class: "checkbox-sidebar col-xs-11",
+                //h3 { style: "color: white; text-align: center", "Current dropdown status: {is_dropdown}" }
                 //h3 { style: "color: white", "Current Screen Size: Width:{width} x Height:{height}" }
                 div {
                     button {
