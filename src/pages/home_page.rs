@@ -4,6 +4,7 @@ use dioxus::prelude::*;
 
 use crate::components::{
     Banner,
+    SearchBar,
     CheckBox,
     Story
 };
@@ -12,6 +13,7 @@ use crate::components::{
 pub fn HomePage() -> Element {
     rsx! {
         Banner {}
+        SearchBar {}
         CheckBox {}
         Story {}
     }
