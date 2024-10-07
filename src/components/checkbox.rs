@@ -10,6 +10,7 @@ const _ICON_ARROW: &str = manganis::mg!(file("src/assets/chevron-down.svg"));
 
 #[component]
 pub fn CheckBox() -> Element {
+
     let mut key_word_list = use_signal(Vec::<String>::new);
     let mut is_dropdown = use_signal(|| false);
     let screen_size = use_signal(|| (0u32, 0u32));
@@ -27,8 +28,6 @@ pub fn CheckBox() -> Element {
         }
     });
 
-    info!("Current dropdown status: {is_dropdown}");
-
     // ตรวจสอบขนาดหน้าจอและตั้งค่า dropdown
     use_effect({
         let mut is_dropdown = is_dropdown.clone();
@@ -45,17 +44,17 @@ pub fn CheckBox() -> Element {
         }
     });
 
-    info!("Current dropdown state: {is_dropdown}");
 
     let (width, height) = screen_size();
     info!("Current key word list: {:?}", key_word_list.read());
     info!("Current Screen size: {width} x {height}");
+    info!("Current dropdown state: {is_dropdown}");
 
     // ฟังก์ชันสำหรับจัดการการคลิก checkbox
     let mut handle_checkbox_click = move |label: &str| {
         let mut list = key_word_list.write();
         if list.contains(&label.to_string()) {
-            list.retain(|x| x != label);
+            list.retain(| x: &String | x != label);
         } else {
             list.push(label.to_string());
         }
@@ -65,10 +64,12 @@ pub fn CheckBox() -> Element {
     rsx! {
         style { {STYLE} }
 
-        div { class: "checkbox-container col-xs-12 col-sm-4 col-lg-1",
+        div { class: "checkbox-container",
             div { class: "checkbox-sidebar col-xs-11",
+
                 //h3 { style: "color: white; text-align: center", "Current dropdown status: {is_dropdown}" }
                 //h3 { style: "color: white", "Current Screen Size: Width:{width} x Height:{height}" }
+
                 div {
                     button {
                         class: "icon-container",
@@ -160,7 +161,10 @@ pub fn CheckBox() -> Element {
                             }
                         }
                     }
-                }
+
+                } // * จบเงื่อนไข
+
+
             }
         }
     }
