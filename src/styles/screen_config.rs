@@ -4,14 +4,67 @@ pub const STYLE: &str = r#"
     box-sizing: border-box;
 }
 
-
 .overflow-x-hidden {
     overflow-x: hidden;
 }
 
-/* For mobile phones: */
-@media only screen and (max-width: 599px) {
+/* ขนาดจอต่างๆ */
 
+/*
+ * `xxs` สำหรับจอขนาดเล็กมาก (max-width: 450px)
+ * `xs` สำหรับจอขนาดเล็ก (max-width: 770px)
+ * `sm` สำหรับจอขนาดกลาง (max-width: 1080px)
+ * `md` สำหรับจอขนาดใหญ่ (max-width: 1440px)
+ * `lg` สำหรับจอขนาดใหญ่มาก (min-width: 1441px)
+*/
+
+
+/* สำหรับจอที่มีความกว้างไม่เกิน 450px (xxs) */
+@media screen and (max-width: 450px) {
+    .col-xxs-hidden {
+        display: none;
+    }
+
+    .col-xxs-1 {
+        width: 8.33%;
+    }
+    .col-xxs-2 {
+        width: 16.66%;
+    }
+    .col-xxs-3 {
+        width: 25%;
+    }
+    .col-xxs-4 {
+        width: 33.33%;
+    }
+    .col-xxs-5 {
+        width: 41.66%;
+    }
+    .col-xxs-6 {
+        width: 50%;
+    }
+    .col-xxs-7 {
+        width: 58.33%;
+    }
+    .col-xxs-8 {
+        width: 66.66%;
+    }
+    .col-xxs-9 {
+        width: 75%;
+    }
+    .col-xxs-10 {
+        width: 83.33%;
+    }
+    .col-xxs-11 {
+        width: 91.66%;
+    }
+    .col-xxs-12 {
+        width: 100%;
+    }
+}
+
+/* สำหรับจอที่มีความกว้างไม่เกิน 770px (xs) */
+@media only screen and (max-width: 770px) {
     .col-xs-hidden {
         display: none;
     }
@@ -52,57 +105,11 @@ pub const STYLE: &str = r#"
     .col-xs-12 {
         width: 100%;
     }
-
 }
 
-/* For desktop: */
-@media only screen and (min-width: 768px) {
-
-    .col-lg-1 {
-        width: 8.33%;
-    }
-    .col-lg-2 {
-        width: 16.66%;
-    }
-    .col-lg-3 {
-        width: 25%;
-    }
-    .col-lg-4 {
-        width: 33.33%;
-    }
-    .col-lg-5 {
-        width: 41.66%;
-    }
-    .col-lg-6 {
-        width: 50%;
-    }
-    .col-lg-7 {
-        width: 58.33%;
-    }
-    .col-lg-8 {
-        width: 66.66%;
-    }
-    .col-lg-9 {
-        width: 75%;
-    }
-    .col-lg-10 {
-        width: 83.33%;
-    }
-    .col-lg-11 {
-        width: 91.66%;
-    }
-    .col-lg-12 {
-        width: 100%;
-    }
-    .col-lg-hidden {
-        display: none;
-    }
-}
-
-
-/* For tablets: */
-@media only screen and (min-width: 600px) {
-    .col-ms-hidden {
+/* สำหรับจอที่มีความกว้างไม่เกิน 1080px (sm) */
+@media screen and (max-width: 1080px) {
+    .col-sm-hidden {
         display: none;
     }
 
@@ -142,10 +149,97 @@ pub const STYLE: &str = r#"
     .col-sm-12 {
         width: 100%;
     }
-
 }
 
+/* สำหรับจอที่มีความกว้างไม่เกิน 1440px (md) */
+@media only screen and (max-width: 1440px) {
+    .col-md-hidden {
+        display: none;
+    }
 
+    .col-md-1 {
+        width: 8.33%;
+    }
+    .col-md-2 {
+        width: 16.66%;
+    }
+    .col-md-3 {
+        width: 25%;
+    }
+    .col-md-4 {
+        width: 33.33%;
+    }
+    .col-md-5 {
+        width: 41.66%;
+    }
+    .col-md-6 {
+        width: 50%;
+    }
+    .col-md-7 {
+        width: 58.33%;
+    }
+    .col-md-8 {
+        width: 66.66%;
+    }
+    .col-md-9 {
+        width: 75%;
+    }
+    .col-md-10 {
+        width: 83.33%;
+    }
+    .col-md-11 {
+        width: 91.66%;
+    }
+    .col-md-12 {
+        width: 100%;
+    }
+}
+
+/* สำหรับจอที่มีความกว้างมากกว่า 1441px (lg) */
+@media only screen and (min-width: 1441px) {
+    .col-lg-hidden {
+        display: none;
+    }
+
+    .col-lg-1 {
+        width: 8.33%;
+    }
+    .col-lg-2 {
+        width: 16.66%;
+    }
+    .col-lg-3 {
+        width: 25%;
+    }
+    .col-lg-4 {
+        width: 33.33%;
+    }
+    .col-lg-5 {
+        width: 41.66%;
+    }
+    .col-lg-6 {
+        width: 50%;
+    }
+    .col-lg-7 {
+        width: 58.33%;
+    }
+    .col-lg-8 {
+        width: 66.66%;
+    }
+    .col-lg-9 {
+        width: 75%;
+    }
+    .col-lg-10 {
+        width: 83.33%;
+    }
+    .col-lg-11 {
+        width: 91.66%;
+    }
+    .col-lg-12 {
+        width: 100%;
+    }
+}
+
+/* Container settings */
 .container {
     margin-left: auto;
     margin-right: auto;
