@@ -1,8 +1,8 @@
 pub const STYLE: &str = r#"
 
 .card-container {
-    display: flex;
     flex-wrap: wrap;
+    display: flex;
     justify-content: center;
 }
 
