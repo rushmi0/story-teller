@@ -35,7 +35,7 @@ pub fn CheckBox() -> Element {
         move || {
             let (width, _) = *screen_size.read();
             info!("Current Width size: {width}");
-            if width > 430 {
+            if width >= 400 {
                 is_dropdown.set(true);
             } else {
                 is_dropdown.set(false);
@@ -65,7 +65,7 @@ pub fn CheckBox() -> Element {
         style { {STYLE} }
 
         div { class: "checkbox-container",
-            div { class: "checkbox-sidebar col-xs-11",
+            div { class: "checkbox-sidebar",
 
                 //h3 { style: "color: white; text-align: center", "Current dropdown status: {is_dropdown}" }
                 //h3 { style: "color: white", "Current Screen Size: Width:{width} x Height:{height}" }

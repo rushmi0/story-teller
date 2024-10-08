@@ -19,7 +19,7 @@ pub const STYLE: &str = r#"
 }
 
 .checkbox-sidebar {
-    padding: 1rem;
+    /*padding: 1rem;*/
     border-radius: 8px;
     margin-left: 2rem;
 }
@@ -141,7 +141,11 @@ pub const STYLE: &str = r#"
 /* ปรับแต่งพิเศษสำหรับขนาดหน้าจอ */
 
 /* สำหรับมือถือ: */
-@media only screen and (max-width: 599px) {
+@media only screen and (max-width: 450px) {
+    .filter-box {
+        width: 100%;
+    }
+
     .checkbox-container {
         padding: 1rem;
     }
@@ -180,9 +184,22 @@ pub const STYLE: &str = r#"
 
 }
 
-/* สำหรับแท็บเล็ตและเดสก์ท็อป: */
-@media only screen and (min-width: 600px) {
+@media only screen and (max-width: 450px) {
+    .filter-box {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+
+
+/*
+@media only screen and (min-width: 770px) {
+
+
     .checkbox-sidebar ul {
+        /*justify-content: center;*/
         flex-direction: column;
     }
 
@@ -196,5 +213,8 @@ pub const STYLE: &str = r#"
         width: 100%;
     }
 }
+    */
+
+
 "#;
 

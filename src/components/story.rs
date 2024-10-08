@@ -8,7 +8,7 @@ use crate::styles::story_style::STYLE;
 pub fn Story() -> Element {
     rsx! {
         style { {STYLE} }
-        div { class: "card-container",
+        div { class: "note-container",
             StoryCard {}
             StoryCard {}
             StoryCard {}

@@ -4,76 +4,14 @@ pub const STYLE: &str = r#"
     box-sizing: border-box;
 }
 
+
 .overflow-x-hidden {
     overflow-x: hidden;
 }
 
-/************ ขนาดจอต่างๆ ************/
+/* For mobile phones: */
+@media only screen and (max-width: 450px) {
 
-/*
- * `xxs` สำหรับจอขนาดเล็กมาก (max-width: 450px)
- *    เหมาะสำหรับสมาร์ทโฟนขนาดเล็ก เช่น iPhone SE (375x667px), Google Pixel 4a (411x731px)
- *
- * `xs` สำหรับจอขนาดเล็ก (max-width: 770px)
- *    เหมาะสำหรับสมาร์ทโฟนขนาดใหญ่และแท็บเล็ตขนาดเล็ก เช่น iPhone 13 Pro Max (430x932px), iPad Mini (768x1024px)
- *
- * `sm` สำหรับจอขนาดกลาง (max-width: 1080px)
- *    เหมาะสำหรับแท็บเล็ตขนาดใหญ่และแล็ปท็อปขนาดเล็ก เช่น iPad Pro (1024x1366px), Surface Go (800x1280px), Chromebook (1366x768px)
- *
- * `md` สำหรับจอขนาดใหญ่ (max-width: 1440px)
- *    เหมาะสำหรับแล็ปท็อปขนาดใหญ่และจอมอนิเตอร์ทั่วไป เช่น MacBook Pro 16" (1440x900px), จอ Full HD 1080p (1920x1080px)
- *
- * `lg` สำหรับจอขนาดใหญ่มาก (min-width: 1441px)
- *    เหมาะสำหรับจอมอนิเตอร์ขนาดใหญ่และจอความละเอียดสูง เช่น iMac 27" (2560x1440px), จอ 4K (3840x2160px)
-*/
-
-
-/* สำหรับจอที่มีความกว้างไม่เกิน 450px (xxs) */
-@media screen and (max-width: 450px) {
-    .col-xxs-hidden {
-        display: none;
-    }
-
-    .col-xxs-1 {
-        width: 8.33%;
-    }
-    .col-xxs-2 {
-        width: 16.66%;
-    }
-    .col-xxs-3 {
-        width: 25%;
-    }
-    .col-xxs-4 {
-        width: 33.33%;
-    }
-    .col-xxs-5 {
-        width: 41.66%;
-    }
-    .col-xxs-6 {
-        width: 50%;
-    }
-    .col-xxs-7 {
-        width: 58.33%;
-    }
-    .col-xxs-8 {
-        width: 66.66%;
-    }
-    .col-xxs-9 {
-        width: 75%;
-    }
-    .col-xxs-10 {
-        width: 83.33%;
-    }
-    .col-xxs-11 {
-        width: 91.66%;
-    }
-    .col-xxs-12 {
-        width: 100%;
-    }
-}
-
-/* สำหรับจอที่มีความกว้างไม่เกิน 760px (xs) */
-@media only screen and (max-width: 760px) {
     .col-xs-hidden {
         display: none;
     }
@@ -114,11 +52,17 @@ pub const STYLE: &str = r#"
     .col-xs-12 {
         width: 100%;
     }
+
+    .col-xs-0 {
+        display: black;
+    }
+
 }
 
-/* สำหรับจอที่มีความกว้างไม่เกิน 1080px (sm) */
-@media screen and (max-width: 1080px) {
-    .col-sm-hidden {
+
+/* For tablets: */
+@media only screen and (min-width: 600px) {
+    .col-ms-hidden {
         display: none;
     }
 
@@ -158,57 +102,12 @@ pub const STYLE: &str = r#"
     .col-sm-12 {
         width: 100%;
     }
+
 }
 
-/* สำหรับจอที่มีความกว้างไม่เกิน 1440px (md) */
-@media only screen and (max-width: 1440px) {
-    .col-md-hidden {
-        display: none;
-    }
 
-    .col-md-1 {
-        width: 8.33%;
-    }
-    .col-md-2 {
-        width: 16.66%;
-    }
-    .col-md-3 {
-        width: 25%;
-    }
-    .col-md-4 {
-        width: 33.33%;
-    }
-    .col-md-5 {
-        width: 41.66%;
-    }
-    .col-md-6 {
-        width: 50%;
-    }
-    .col-md-7 {
-        width: 58.33%;
-    }
-    .col-md-8 {
-        width: 66.66%;
-    }
-    .col-md-9 {
-        width: 75%;
-    }
-    .col-md-10 {
-        width: 83.33%;
-    }
-    .col-md-11 {
-        width: 91.66%;
-    }
-    .col-md-12 {
-        width: 100%;
-    }
-}
-
-/* สำหรับจอที่มีความกว้างมากกว่า 1441px (lg) */
-@media only screen and (min-width: 1441px) {
-    .col-lg-hidden {
-        display: none;
-    }
+/* For desktop: */
+@media only screen and (min-width: 800px) {
 
     .col-lg-1 {
         width: 8.33%;
@@ -246,9 +145,12 @@ pub const STYLE: &str = r#"
     .col-lg-12 {
         width: 100%;
     }
+    .col-lg-hidden {
+        display: none;
+    }
 }
 
-/* Container settings */
+
 .container {
     margin-left: auto;
     margin-right: auto;

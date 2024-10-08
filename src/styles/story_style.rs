@@ -1,12 +1,12 @@
 pub const STYLE: &str = r#"
 
-.card-container {
+.note-container {
     flex-wrap: wrap;
     display: flex;
     justify-content: center;
 }
 
-.card {
+.note {
   background-color: #404657; /* กำหนดสีพื้นหลัง */
   background-image: radial-gradient(
       ellipse farthest-corner at 45px 45px,
@@ -22,13 +22,17 @@ pub const STYLE: &str = r#"
 }
 
 
+.note:hover {
+    border-color: #6c00f8;
+    box-shadow: 0 0 10px 2px rgba(30, 251, 94, 0.8);
+}
 
-.card-out:hover {
+.note-out:hover {
   transform: scale(1.05);
   border: 3px solid #f7f7f7;
 }
 
-.card-image {
+.note-image {
   width: 252px;
   height: 256px;
   overflow: hidden;
@@ -36,13 +40,13 @@ pub const STYLE: &str = r#"
   border-radius: 15px 15px 0px 0px;
 }
 
-.card-text {
+.note-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.card-desc {
+.note-desc {
   padding-top: 12px;
   padding-left: 10px;
   padding-right: 10px;
@@ -51,12 +55,12 @@ pub const STYLE: &str = r#"
   line-height: 16px;
 }
 
-.card-desc h2 {
+.note-desc h2 {
   color: #f7f7f7;
   font-size: 18px;
 }
 
-.card-icon {
+.note-icon {
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 10px;

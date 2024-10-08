@@ -13,7 +13,8 @@ pub fn SearchBar() -> Element {
     rsx! {
         style { {STYLE} }
         div { id: "search-pt",
-            div { class: "search-bar col-lg-7 col-xs-9",
+            div { class: "search-bar",
+
                 div { class: "input-container",
 
                     // ช่อง input สำหรับให้ผู้ใช้ป้อนคำค้นหา
@@ -43,5 +44,8 @@ pub fn SearchBar() -> Element {
                 }
             }
         }
+
+        //h3 { style: "color: white", "Current search value: {search_value}" }
+
     }
 }

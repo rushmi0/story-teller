@@ -13,21 +13,21 @@ const _FAV: &str = manganis::mg!(file("src/assets/fav.svg"));
 #[component]
 pub fn StoryCard() -> Element {
     rsx! {
-        div { class: "card",
+        div { class: "note",
             div {
                 img {
                     src: "{_IMG}",
                     alt: "Image",
                     max_width: "252px",
                     max_height: "256px",
-                    class: "card-image"
+                    class: "note-image"
                 }
             }
-            div { class: "card-desc",
-                h2 { "title card" }
-                p { class: "card-text", "Lorem Ipsum ay ginagamit na modelo" }
+            div { class: "note-desc",
+                h2 { "title note" }
+                p { class: "note-text", "Lorem Ipsum ay ginagamit na modelo" }
                 hr {}
-                div { class: "card-icon",
+                div { class: "note-icon",
                     img {
                         src: "{_PLAY}",
                         alt: "Play Icon"
