@@ -42,7 +42,7 @@ jobs:
         run: ls -l ./public/tailwind.css
 
       - name: Build Project
-        run: npm run build
+        run: npm run web
 
       - name: Clean Up
         run: npm run clean
