@@ -78,7 +78,7 @@ pub fn CheckBox() -> Element {
                             *dropdown = !*dropdown;
                         },
                         img { src: "{_ICON_FILTER}" }
-                        img { class: "col-lg-hidden col-ms-hidden", src: "{_ICON_ARROW}" }
+                        img { class: "col-lg-hidden col-sm-hidden", src: "{_ICON_ARROW}" }
                     }
                 }
 
