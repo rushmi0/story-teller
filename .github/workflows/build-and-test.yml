@@ -1,0 +1,48 @@
+name: Build and Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository content
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Install Dioxus CLI
+        run: cargo install dioxus-cli
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install daisyUI
+        run: npm install -D daisyui@latest
+
+      - name: Install TailwindCSS
+        run: npx tailwindcss -i ./input.css -o ./public/tailwind.css
+
+      - name: Verify TailwindCSS output
+        run: ls -l ./public/tailwind.css
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Clean Up
+        run: npm run clean
