@@ -22,7 +22,7 @@ pub const STYLE: &str = r#"
     width: 100%;
 }
 
-input.card {
+input.search-box {
     width: 100%; /* ใช้ความกว้างเต็ม */
     height: 48px; /* กำหนดความสูงตรง ๆ */
     padding: 0 16px; /* ปรับ padding ด้านข้าง */
@@ -34,12 +34,10 @@ input.card {
     box-sizing: border-box; /* ป้องกัน padding ทำให้ขนาดเกิน */
 }
 
-/*
-input.card:hover {
+input.search-box:hover {
     border-color: #6c00f8;
-    box-shadow: 0 0 10px 2px rgba(30, 251, 94, 0.8);
+    box-shadow: 0 0 12px 4px rgba(243, 236, 248, 0.8);
 }
-*/
 
 .searchIcon {
     position: absolute;
@@ -51,7 +49,7 @@ input.card:hover {
 
 /* ปรับแต่งให้เหมาะสมกับขนาดหน้าจอต่าง ๆ */
 @media only screen and (max-width: 600px) {
-    input.card {
+    input.search-box {
         padding: 8px 16px;
         border-width: 2px;
         padding-right: 35px; /* ลดขนาด padding ขวาสำหรับ icon */
@@ -66,7 +64,7 @@ input.card:hover {
 
 /* สำหรับแท็บเล็ตและเดสก์ท็อป */
 @media only screen and (min-width: 601px) {
-    input.card {
+    input.search-box {
         padding: 16px 24px;
         border-width: 3px;
         padding-right: 40px;

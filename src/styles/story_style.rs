@@ -6,7 +6,7 @@ pub const STYLE: &str = r#"
     justify-content: center;
 }
 
-.note {
+.note-box {
   background-color: #404657; /* กำหนดสีพื้นหลัง */
   background-image: radial-gradient(
       ellipse farthest-corner at 45px 45px,
@@ -18,18 +18,18 @@ pub const STYLE: &str = r#"
   box-sizing: border-box;
   overflow: hidden;
   width: 252px;
-  margin: 10px;
+  margin: 20px;
 }
 
 
-.note:hover {
+.note-box:hover {
     border-color: #6c00f8;
-    box-shadow: 0 0 10px 2px rgba(30, 251, 94, 0.8);
+    box-shadow: 0 0 12px 4px rgba(243, 236, 248, 0.8);
 }
 
 .note-out:hover {
   transform: scale(1.05);
-  border: 3px solid #f7f7f7;
+  border: 3px solid #6c00f8;
 }
 
 .note-image {

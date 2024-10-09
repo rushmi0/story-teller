@@ -19,7 +19,7 @@ pub fn SearchBar() -> Element {
 
                     // ช่อง input สำหรับให้ผู้ใช้ป้อนคำค้นหา
                     input {
-                        class: "card",
+                        class: "search-box",
                         r#type: "text",
                         placeholder: "Search",
                         // เมื่อมีการพิมพ์ (input) ให้เก็บค่าลงใน search_value

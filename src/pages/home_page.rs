@@ -12,17 +12,19 @@ use crate::components::{
 #[component]
 pub fn HomePage() -> Element {
     rsx! {
-
         Banner {}
         SearchBar {}
 
-        div { class: "col-xs-12 col-ms-6 col-lg-2",
-            //style: "background-color:red;", // สำหรับ Debug
-            CheckBox {}
-        }
-        div { class: "col-xs-12 col-ms-6 col-lg-8 ",
-            //style: "background-color:green; ", // สำหรับ Debug
-            Story {}
+        div { class: "col-xs-12 col-ms-12 col-lg-12",
+            //style: "background-color:yellow;",
+            div { class: "col-xs-12 col-ms-6 col-lg-2",
+                //style: "background-color:red;", // สำหรับ Debug
+                CheckBox {}
+            }
+            div { class: "col-xs-12 col-ms-6 col-lg-8 ",
+                //style: "background-color:green;", // สำหรับ Debug
+                Story {}
+            }
         }
 
     }
