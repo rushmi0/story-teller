@@ -4,12 +4,17 @@ pub const STYLE: &str = r#"
     box-sizing: border-box;
 }
 
+.container {
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .overflow-x-hidden {
     overflow-x: hidden;
 }
 
-/* For mobile phones: */
+
+
 @media only screen and (max-width: 450px) {
 
     .col-xs-hidden {
@@ -53,16 +58,12 @@ pub const STYLE: &str = r#"
         width: 100%;
     }
 
-    .col-xs-0 {
-        display: black;
-    }
-
 }
 
 
-/* For tablets: */
-@media only screen and (min-width: 600px) {
-    .col-ms-hidden {
+@media only screen and (min-width: 640px) {
+
+    .col-sm-hidden {
         display: none;
     }
 
@@ -106,8 +107,56 @@ pub const STYLE: &str = r#"
 }
 
 
-/* For desktop: */
-@media only screen and (min-width: 800px) {
+@media only screen and (min-width: 768px) {
+
+    .col-md-hidden {
+        display: none;
+    }
+
+    .col-md-1 {
+        width: 8.33%;
+    }
+    .col-md-2 {
+        width: 16.66%;
+    }
+    .col-md-3 {
+        width: 25%;
+    }
+    .col-md-4 {
+        width: 33.33%;
+    }
+    .col-md-5 {
+        width: 41.66%;
+    }
+    .col-md-6 {
+        width: 50%;
+    }
+    .col-md-7 {
+        width: 58.33%;
+    }
+    .col-md-8 {
+        width: 66.66%;
+    }
+    .col-md-9 {
+        width: 75%;
+    }
+    .col-md-10 {
+        width: 83.33%;
+    }
+    .col-md-11 {
+        width: 91.66%;
+    }
+    .col-md-12 {
+        width: 100%;
+    }
+
+}
+
+@media only screen and (min-width: 1024px) {
+
+    .col-lg-hidden {
+        display: none;
+    }
 
     .col-lg-1 {
         width: 8.33%;
@@ -145,15 +194,54 @@ pub const STYLE: &str = r#"
     .col-lg-12 {
         width: 100%;
     }
-    .col-lg-hidden {
+
+}
+
+
+@media only screen and (min-width: 1280px) {
+
+    .col-xl-hidden {
         display: none;
     }
+
+    .col-xl-1 {
+        width: 8.33%;
+    }
+    .col-xl-2 {
+        width: 16.66%;
+    }
+    .col-xl-3 {
+        width: 25%;
+    }
+    .col-xl-4 {
+        width: 33.33%;
+    }
+    .col-xl-5 {
+        width: 41.66%;
+    }
+    .col-xl-6 {
+        width: 50%;
+    }
+    .col-xl-7 {
+        width: 58.33%;
+    }
+    .col-xl-8 {
+        width: 66.66%;
+    }
+    .col-xl-9 {
+        width: 75%;
+    }
+    .col-xl-10 {
+        width: 83.33%;
+    }
+    .col-xl-11 {
+        width: 91.66%;
+    }
+    .col-xl-12 {
+        width: 100%;
+    }
+
 }
 
-
-.container {
-    margin-left: auto;
-    margin-right: auto;
-}
 
 "#;
