@@ -141,10 +141,7 @@ pub const STYLE: &str = r#"
 /* ปรับแต่งพิเศษสำหรับขนาดหน้าจอ */
 
 /* สำหรับมือถือ: */
-@media only screen and (max-width: 450px) {
-    .filter-box {
-        width: 100%;
-    }
+@media only screen and (max-width: 640px) {
 
     .checkbox-container {
         padding: 1rem;
@@ -184,22 +181,10 @@ pub const STYLE: &str = r#"
 
 }
 
-@media only screen and (max-width: 450px) {
-    .filter-box {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-}
 
-
-
-/*
-@media only screen and (min-width: 770px) {
-
+@media only screen and (min-width: 640px) {
 
     .checkbox-sidebar ul {
-        /*justify-content: center;*/
         flex-direction: column;
     }
 
@@ -213,7 +198,6 @@ pub const STYLE: &str = r#"
         width: 100%;
     }
 }
-    */
 
 
 "#;

@@ -11,17 +11,17 @@ const _ICON_ARROW: &str = manganis::mg!(file("src/assets/chevron-down.svg"));
 #[component]
 pub fn CheckBox() -> Element {
 
-    let mut key_word_list = use_signal(Vec::<String>::new);
-    let mut is_dropdown = use_signal(|| false);
-    let screen_size = use_signal(|| (0u32, 0u32));
+    let mut key_word_list: Signal<Vec<String>> = use_signal(Vec::<String>::new);
+    let mut is_dropdown: Signal<bool> = use_signal(|| false);
+    let screen_size: Signal<(u32, u32)> = use_signal(|| (0u32, 0u32));
 
     // ดึงขนาดหน้าจอเมื่อ component mount
     use_effect({
         let mut screen_size = screen_size.clone();
         move || {
             let window = window().unwrap();
-            let width = window.inner_width().unwrap().as_f64().unwrap() as u32;
-            let height = window.inner_height().unwrap().as_f64().unwrap() as u32;
+            let width: u32 = window.inner_width().unwrap().as_f64().unwrap() as u32;
+            let height: u32 = window.inner_height().unwrap().as_f64().unwrap() as u32;
             screen_size.set((width, height));
             //info!("Screen size: {}x{}", width, height);
             ()
@@ -35,7 +35,7 @@ pub fn CheckBox() -> Element {
         move || {
             let (width, _) = *screen_size.read();
             info!("Current Width size: {width}");
-            if width >= 400 {
+            if width >= 640 {
                 is_dropdown.set(true);
             } else {
                 is_dropdown.set(false);
@@ -74,11 +74,11 @@ pub fn CheckBox() -> Element {
                     button {
                         class: "icon-container",
                         onclick: move |_| {
-                            let mut dropdown = is_dropdown.write();
+                            let mut dropdown: Write<bool> = is_dropdown.write();
                             *dropdown = !*dropdown;
                         },
                         img { src: "{_ICON_FILTER}" }
-                        img { class: "col-lg-hidden col-sm-hidden", src: "{_ICON_ARROW}" }
+                        img { class: " col-lg-hidden col-sm-hidden", src: "{_ICON_ARROW}" }
                     }
                 }
 

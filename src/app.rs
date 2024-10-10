@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-//use nostr_sdk::nips::
+// use nostr_sdk::nips::nip07;
 // use nostr_sdk::ToBech32;
 // use web_sys::console;
 
