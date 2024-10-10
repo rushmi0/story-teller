@@ -4,7 +4,6 @@ pub mod app;
 pub mod pages;
 pub mod components;
 pub mod styles;
-//pub mod nostr;
 
 use app::App;
 

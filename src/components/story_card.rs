@@ -1,7 +1,7 @@
-// story_card.rs
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
+use crate::pages::router::Route;
 
 const _PLAY: &str = manganis::mg!(file("src/assets/play.svg"));
 const _FAV: &str = manganis::mg!(file("src/assets/fav.svg"));
@@ -14,8 +14,15 @@ pub struct StoryCardProps {
 
 #[component]
 pub fn StoryCard(props: StoryCardProps) -> Element {
+    let navigator: Navigator = use_navigator();
+
     rsx! {
-        div { class: "note-box note-out",
+        div {
+            class: "note-box note-out",
+            // ใช้ onclick เพื่อให้คลิกการ์ดแล้วเปลี่ยนหน้า
+            onclick: move |_| {
+                navigator.push(Route::ErrorPage {});  // นำทางไปยัง ErrorPage
+            },
             div {
                 img {
                     src: "{props.image}",

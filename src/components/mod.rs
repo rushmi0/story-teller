@@ -3,6 +3,7 @@ pub mod search_bar;
 pub mod check_box;
 pub mod story;
 pub mod story_card;
+pub mod account;
 
 pub use banner::Banner;
 pub use search_bar::SearchBar;
