@@ -42,6 +42,7 @@ pub const STYLE: &str = r#"
 }
 
 .note-text {
+    padding-bottom: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -90,41 +91,16 @@ hr {
     .note-image {
         width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
         height: 189px;
-        object-fit: cover; /* ให้ภาพไม่บิดเบี้ยว */
-        border-radius: 15px 15px 0px 0px;
     }
 
     .note-desc {
         font-size: 14px;
-        padding-top: 12px;
-        padding-left: 10px;
-        padding-right: 10px;
-        color: #a7aab5;
-        line-height: 16px;
     }
 
     .note-desc h2 {
         font-size: 16px;
-        color: #f7f7f7;
-        font-size: 18px;
     }
 
-    .note-icon {
-        padding-left: 5px;
-        padding-right: 5px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    hr {
-        margin-top: 5px;
-        border-width: 0.01em;
-        border-color: #a7aab5;
-        font-size: 1px;
-    }
 
 }
 
@@ -140,41 +116,16 @@ hr {
     .note-image {
         width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
         height: 170px;
-        object-fit: cover; /* ให้ภาพไม่บิดเบี้ยว */
-        border-radius: 15px 15px 0px 0px;
     }
 
     .note-desc {
         font-size: 12px;
-        padding-top: 12px;
-        padding-left: 10px;
-        padding-right: 10px;
-        color: #a7aab5;
-        line-height: 16px;
     }
 
     .note-desc h2 {
         font-size: 14px; /* ปรับขนาดตัวอักษรหัวข้อ */
-        color: #f7f7f7;
-        font-size: 18px;
     }
 
-    .note-icon {
-        padding-left: 5px;
-        padding-right: 5px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    hr {
-        margin-top: 5px;
-        border-width: 0.01em;
-        border-color: #a7aab5;
-        font-size: 1px;
-    }
 
 }
 
@@ -191,40 +142,16 @@ hr {
     .note-image {
         width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
         height: 144px;
-        object-fit: cover; /* ให้ภาพไม่บิดเบี้ยว */
-        border-radius: 15px 15px 0px 0px;
     }
 
     .note-desc {
         font-size: 10px; /* ปรับขนาดตัวอักษรลง */
-        padding-top: 12px;
-        padding-left: 10px;
-        padding-right: 10px;
-        color: #a7aab5;
-        line-height: 16px;
     }
 
     .note-desc h2 {
         font-size: 12px; /* ปรับขนาดตัวอักษรหัวข้อ */
-        color: #f7f7f7;
     }
 
-    .note-icon {
-        padding-left: 5px;
-        padding-right: 5px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    hr {
-        margin-top: 5px;
-        border-width: 0.01em;
-        border-color: #a7aab5;
-        font-size: 1px;
-    }
 
 }
 

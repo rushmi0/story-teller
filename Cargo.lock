@@ -3028,7 +3028,6 @@ dependencies = [
  "manganis",
  "nostr-sdk",
  "serde",
- "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
 ]
