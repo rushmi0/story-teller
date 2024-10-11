@@ -2,7 +2,7 @@ pub const STYLE: &str = r#"
 
 .item-nav {
   display: flex;
-  justify-content: space-between; /* ให้มีระยะห่างระหว่างรูปโปรไฟล์และรูปแบรนด์ */
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -22,6 +22,9 @@ pub const STYLE: &str = r#"
 	object-fit: cover; /* ทำให้รูปภาพเติมเต็ม container โดยไม่บิดเบือน */
 }
 
+.login-position {
+    margin-right: 40px;
+}
 
 
 .nav-login {

@@ -123,7 +123,7 @@ hr {
 
     .note-image {
         width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
-        height: 130px;
+        height: 134px;
     }
 
     .note-desc {
@@ -153,7 +153,7 @@ hr {
 
     .note-image {
         width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
-        height: 144px;
+        height: 124px;
     }
 
     .note-desc {

@@ -8,13 +8,23 @@ use crate::components::{
     SearchBar,
     Story
 };
+use crate::components::account::state_show::StateShow;
 use crate::styles::grid_style::STYLE;
 
+
+/// คอมโพเนนต์ HomePage สร้าง instance ของ StateShow
+/// เพื่อใช้ร่วมกับ Banner และส่วนอื่นๆ
 #[component]
 pub fn HomePage() -> Element {
+    // สร้าง instance ของ StateShow เพื่อจัดการสถานะการแสดง AuthCard
+    let app_state = StateShow::new();
+
     rsx! {
         style { {STYLE} }
-        Banner {}
+
+        // ส่ง app_state ไปยัง Banner
+        Banner { app_state: app_state }
+
         SearchBar {}
         div { class: "control-box",
             //style: "background-color:yellow;",
