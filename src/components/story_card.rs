@@ -21,7 +21,7 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
             class: "note-box note-out",
             // ใช้ onclick เพื่อให้คลิกการ์ดแล้วเปลี่ยนหน้า
             onclick: move |_| {
-                navigator.push(Route::ErrorPage {});  // นำทางไปยัง ErrorPage
+                navigator.push(Route::ErrorPage {});
             },
             div {
                 img {
