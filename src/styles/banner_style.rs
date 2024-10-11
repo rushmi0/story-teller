@@ -1,8 +1,8 @@
 pub const STYLE: &str = r#"
 
-.item-center {
+.item-nav {
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* ให้มีระยะห่างระหว่างรูปโปรไฟล์และรูปแบรนด์ */
   align-items: center;
 }
 
@@ -11,28 +11,50 @@ pub const STYLE: &str = r#"
   padding: 1rem;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+}
+
+.round {
+    background-color: #F4F4F4;
+    border: 3px solid #3C3D37;
+	border-radius: 50%;
+	width: 40px; /* ขนาดที่เหมาะสม */
+	height: 40px; /* ขนาดที่เหมาะสม */
+	object-fit: cover; /* ทำให้รูปภาพเติมเต็ม container โดยไม่บิดเบือน */
+}
+
+
+
+.nav-login {
+    background-color: transparent;
+    border: 2px solid #37C25E;
+    color: #37C25E;
+    font-size: 17px;
+    padding: 0;
+    width: 100%;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-login:hover {
+    background-color: rgba(3, 191, 203, 0.1);
+    box-shadow: 0 0 10px #37C25E;
 }
 
 /* ปรับแต่งพิเศษสำหรับขนาดหน้าจอ */
-
-/* สำหรับมือถือ: */
 @media only screen and (max-width: 599px) {
-    img {
-        max-width: auto;
-        height: auto; /* ให้ภาพปรับขนาดตามสัดส่วน */
-    }
-}
 
-/* สำหรับแท็บเล็ตและเดสก์ท็อป: */
-@media only screen and (min-width: 600px) {
-    #nav {
-        justify-content: center;
-    }
     img {
-        max-width: 200px; /* กำหนดขนาดรูปสำหรับแท็บเล็ตและเดสก์ท็อป */
+        max-width: 200px;
         height: auto;
     }
+
 }
+
+
 
 "#;

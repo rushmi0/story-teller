@@ -5,7 +5,7 @@ use dioxus::prelude::*;
 use crate::components::StoryCard;
 use crate::styles::story_style::STYLE;
 
-const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_4.jpg"));
+const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_5.jpg"));
 
 #[component]
 pub fn Story() -> Element {

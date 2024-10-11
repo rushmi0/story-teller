@@ -41,6 +41,9 @@ jobs:
       - name: Verify TailwindCSS output
         run: ls -l ./public/tailwind.css
 
+      - name: Update the wasm-bindgen
+        run: cargo update -p wasm-bindgen --precise 0.2.95
+
       - name: Build Project
         run: npm run build
 

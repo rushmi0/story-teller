@@ -88,6 +88,10 @@ hr {
         margin: 20px;
     }
 
+    .note-icon {
+
+    }
+
     .note-image {
         width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
         height: 189px;
@@ -113,9 +117,13 @@ hr {
         margin: 20px;
     }
 
+    .note-icon img {
+        width: 16px; /* ขนาดไอคอนสำหรับหน้าจอที่เล็กลง */
+    }
+
     .note-image {
         width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
-        height: 170px;
+        height: 130px;
     }
 
     .note-desc {
@@ -137,6 +145,10 @@ hr {
         width: 100%; /* ปรับให้การ์ดใช้พื้นที่ให้เต็ม */
         max-width: 140px; /* กำหนดขนาดสูงสุด */
         margin: 10px;
+    }
+
+    .note-icon img {
+        width: 14px; /* ขนาดไอคอนสำหรับหน้าจอที่เล็กที่สุด */
     }
 
     .note-image {
