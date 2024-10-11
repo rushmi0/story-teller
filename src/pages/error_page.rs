@@ -4,13 +4,16 @@ use dioxus::prelude::*;
 use crate::pages::router::Route;
 use crate::styles::error_style::STYLE;
 
+// https://dribbble.com/shots/3965778-Cezan-404-Page-Not-Found
+// Cezan - 404 Page Not Found' by Masoud Ardestani
+
 #[component]
 pub fn ErrorPage() -> Element {
     let navigator: Navigator = use_navigator();
     rsx! {
         style { {STYLE} }
-        div {
-            class: "center",
+        div { class: "center",
+
             div {
                 class: "error",
                 div {
@@ -63,17 +66,9 @@ pub fn ErrorPage() -> Element {
                 },
                 "Back Home"
             }
-            div {
-                class: "by",
-                "Illustration 'Cezan - 404 Page Not Found' by ",
-                a {
-                    class: "byLink",
-                    href: "https://dribbble.com/shots/3965778-Cezan-404-Page-Not-Found",
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                    "Masoud Ardestani"
-                }
-            }
+
         }
+
+
     }
 }
