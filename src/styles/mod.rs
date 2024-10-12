@@ -8,7 +8,7 @@ pub mod checkbox_style;
 
 pub mod story_style;
 
-pub mod grid_style;
+pub mod layout_style;
 
 pub mod error_style;
 

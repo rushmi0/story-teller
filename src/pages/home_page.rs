@@ -9,7 +9,7 @@ use crate::components::{
     Story
 };
 use crate::components::account::state_show::StateShow;
-use crate::styles::grid_style::STYLE;
+use crate::styles::layout_style::STYLE;
 
 
 /// คอมโพเนนต์ HomePage สร้าง instance ของ StateShow

@@ -21,7 +21,7 @@ pub const STYLE: &str = r#"
  *    เหมาะสำหรับ: มือถือขนาดเล็ก เช่น iPhone SE
  *    ขนาดหน้าจอ: 375 x 667 px
  *
- * `sm` สำหรับจอขนาดเล็ก (min-width: 451px)
+ * `sm` สำหรับจอขนาดเล็ก (min-width: 641px)
  *    เหมาะสำหรับ: มือถือขนาดใหญ่ เช่น iPhone 12, Android ขนาดใหญ่
  *    ขนาดหน้าจอ: iPhone 12 (390 x 844 px), Samsung Galaxy S21 (412 x 915 px)
  *
@@ -97,7 +97,7 @@ pub const STYLE: &str = r#"
 }
 
 
-@media only screen and (min-width: 451px) {
+@media only screen and (min-width: 641px) {
 
     .col-sm-hidden {
         display: none;

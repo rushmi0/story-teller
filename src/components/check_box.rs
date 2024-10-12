@@ -6,13 +6,15 @@ use web_sys::window;
 use crate::styles::checkbox_style::STYLE;
 
 const _ICON_FILTER: &str = manganis::mg!(file("src/assets/filter-icon.svg"));
-const _ICON_ARROW: &str = manganis::mg!(file("src/assets/chevron-down.svg"));
+const _ICON_ARROW_DOWN: &str = manganis::mg!(file("src/assets/chevron-down.svg"));
+const _ICON_ARROW_UP: &str = manganis::mg!(file("src/assets/chevron-up.svg"));
 
 #[component]
 pub fn CheckBox() -> Element {
 
     let mut key_word_list: Signal<Vec<String>> = use_signal(Vec::<String>::new);
     let mut is_dropdown: Signal<bool> = use_signal(|| false);
+    let mut arrow_flipped: Signal<bool> = use_signal(|| false);
     let screen_size: Signal<(u32, u32)> = use_signal(|| (0u32, 0u32));
 
     // ดึงขนาดหน้าจอเมื่อ component mount
@@ -34,7 +36,7 @@ pub fn CheckBox() -> Element {
         let screen_size = screen_size.clone();
         move || {
             let (width, _) = *screen_size.read();
-            info!("Current Width size: {width}");
+            //info!("Current Width size: {width}");
             if width >= 640 {
                 is_dropdown.set(true);
             } else {
@@ -58,7 +60,17 @@ pub fn CheckBox() -> Element {
         } else {
             list.push(label.to_string());
         }
-        info!("{label} checkbox clicked");
+        //info!("{label} checkbox clicked");
+    };
+
+    // ฟังก์ชันสำหรับจัดการการคลิกปุ่ม dropdown
+    let handle_button_click = move |_| {
+        let mut dropdown = is_dropdown.write();
+        *dropdown = !*dropdown;
+
+        // สลับสถานะ arrow_flipped
+        let mut flipped = arrow_flipped.write();
+        *flipped = !*flipped;
     };
 
     rsx! {
@@ -73,12 +85,16 @@ pub fn CheckBox() -> Element {
                 div {
                     button {
                         class: "icon-container",
-                        onclick: move |_| {
-                            let mut dropdown: Write<bool> = is_dropdown.write();
-                            *dropdown = !*dropdown;
-                        },
+                        onclick: handle_button_click,
                         img { src: "{_ICON_FILTER}" }
-                        img { class: " col-lg-hidden", src: "{_ICON_ARROW}" }
+                        img {
+                            class: "col-lg-hidden col-sm-hidden",
+                            src: format!("{}", if *arrow_flipped.read() {
+                                _ICON_ARROW_UP
+                            } else {
+                                _ICON_ARROW_DOWN
+                            })
+                        }
                     }
                 }
 
