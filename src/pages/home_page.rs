@@ -14,7 +14,7 @@ use crate::styles::layout_style::STYLE;
 
 #[component]
 pub fn HomePage() -> Element {
-    /// สร้าง instance ของ `SharedAuthVisibility` เพื่อจัดการสถานะการแสดง AuthCard
+
     let state_channel = SharedAuthVisibility::new();
 
     rsx! {
