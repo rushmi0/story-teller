@@ -3,11 +3,11 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
 use web_sys::window;
+use crate::components::account::{AuthCard, AccountCard};
 use crate::styles::banner_style::STYLE;
-use crate::components::account::auth_card::AuthCard;
 
 use crate::components::shared::{
-    SharedAccountVisibility, 
+    SharedAccountVisibility,
     SharedAuthVisibility
 };
 
@@ -17,6 +17,7 @@ const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg")
 #[component]
 pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisibility) -> Element {
 
+    let mut show_account_card = use_signal(|| false);
 
     // ตรวจสอบ Local storage เมื่อ component ถูก mount
     use_effect({
@@ -31,12 +32,10 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
                         }
                     }
                 }
-
             }
-             ()
+            ()
         }
     });
-
 
     rsx! {
         style { {STYLE} }
@@ -49,35 +48,45 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
 
                 // แสดงรูป Profile หากมีข้อมูลใน Local storage
                 div { class: "nav-profile-round",
+                    button {
+                        onclick: move |_| {
+                            let mut is_show_account = show_account_card.write();
+                            *is_show_account = !*is_show_account;
+                            info!("Profile clicked");
+                        }
+                    }
                     img { src: "{_IMG}" }
                 }
-                
+
+                if *show_account_card.read() {
+                    AccountCard {}
+                }
+
             } else {
+
                 // แสดงปุ่ม Login หากไม่มีข้อมูลใน Local storage
                 div { class: "col-xs-3 col-sm-3 col-md-2 col-lg-1 col-xl-1",
                     button { class: "nav-login login-position",
                         onclick: move |_| {
-                            let mut is_dropdown: Write<bool> = state_auth.show_auth_card.write();
+                            let mut is_dropdown = state_auth.show_auth_card.write();
                             *is_dropdown = !*is_dropdown;
                             info!("Login clicked");
                         },
                         "Login"
                     }
                 }
-            }
 
-            if *state_auth.show_auth_card.read() {
-
-                // หน้า UI ตัวเลือกสำหรับ Login
-                AuthCard {
-                    state_auth: state_auth.clone(),
-                    state_account: state_account.clone()
+                if *state_auth.show_auth_card.read() {
+                    AccountCard {}
+                    // หน้า UI ตัวเลือกสำหรับ Login
+                    /*
+                    AuthCard {
+                        state_auth: state_auth.clone(),
+                        state_account: state_account.clone()
+                    }
+                    */
                 }
-
             }
-
         }
-
-        
     }
 }
