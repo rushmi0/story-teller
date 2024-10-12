@@ -2,32 +2,64 @@
 
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
-use web_sys::window;
 use crate::components::account::{AuthCard, AccountCard};
 use crate::styles::banner_style::STYLE;
+
+use web_sys::console;
+use nostr_sdk::prelude::*;
 
 use crate::components::shared::{
     SharedAccountVisibility,
     SharedAuthVisibility
 };
+use crate::model::local_storage::LocalStorage;
 
 const IMG_BANNER: &str = manganis::mg!(file("src/assets/nav-icon.svg"));
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
 
 #[component]
 pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisibility) -> Element {
+    // สร้าง Signal เพื่อควบคุมการแสดง AccountCard
+    let mut show_account_card = use_signal(|| false);
 
-    // ตรวจสอบ Local storage เมื่อ component ถูก mount
+    // สร้าง Signal เพื่อเก็บ key จาก LocalStorage
+    let story_teller_keys = use_signal(|| Vec::new());
+
+    // สร้าง Signal เพื่อเก็บข้อมูลที่ดึงมาจาก LocalStorage
+    let story_teller_data = use_signal(|| String::new());
+
+    // ตรวจสอบ Local Storage
     use_effect({
+        let mut story_teller_keys = story_teller_keys.clone();
         move || {
-            if let Some(storage) = window().and_then(|win| win.local_storage().ok().flatten()) {
-                // ค้นหา key ที่ขึ้นต้นด้วย 'story-teller_'
-                for i in 0..storage.length().unwrap_or(0) {
-                    if let Some(key) = storage.key(i).ok().flatten() {
-                        if key.starts_with("story-teller_") {
-                            state_account.show_account.set(true);
-                            break;
-                        }
+            // ใช้ LocalStorage ในการตรวจสอบค่า
+            if let Some(storage) = LocalStorage::get_all_keys() {
+                // เก็บเฉพาะ key ที่ขึ้นต้นด้วย 'story-teller_' ลงใน Signal
+                let filtered_keys: Vec<String> = storage
+                    .into_iter()
+                    .filter(|key| key.starts_with("story-teller_"))
+                    .collect();
+
+                if !filtered_keys.is_empty() {
+                    story_teller_keys.set(filtered_keys);
+                    state_account.show_account.set(true);
+                }
+            }
+            ()
+        }
+    });
+
+    // ตรวจสอบว่า show_account ถูกตั้งค่าหรือไม่
+    use_effect({
+        let story_teller_keys = story_teller_keys.clone();
+        let mut story_teller_data = story_teller_data.clone();
+        move || {
+            if !story_teller_keys.is_empty() {
+                // ดึงค่าคีย์คำแหน่งแรก
+                if let Some(first_key) = story_teller_keys.get(0) {
+                    // ดึงข้อมูลจาก LocalStorage
+                    if let Some(data) = LocalStorage::get(&first_key) {
+                        story_teller_data.set(data);
                     }
                 }
             }
@@ -35,7 +67,18 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
         }
     });
 
-    let mut show_account_card: Signal<bool> = use_signal(|| false);
+
+    // ใช้ use_effect เพื่อ log ข้อมูลเมื่อ show_account เป็น true
+    use_effect({
+        let story_teller_data = story_teller_data.clone();
+        move || {
+            if *state_account.show_account.read() {
+                console::log_1(&format!("Story Teller Data: {}", *story_teller_data.read()).into());
+            }
+            ()
+        }
+    });
+
 
     rsx! {
         style { {STYLE} }
@@ -59,11 +102,12 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
                 }
 
                 if *show_account_card.read() {
-                    AccountCard {}
+                    AccountCard {
+                        //data: story_teller_data.clone()
+                    }
                 }
 
             } else {
-
                 // แสดงปุ่ม Login หากไม่มีข้อมูลใน Local storage
                 div { class: "col-xs-3 col-sm-3 col-md-2 col-lg-1 col-xl-1",
                     button { class: "nav-login login-position",
@@ -77,14 +121,11 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
                 }
 
                 if *state_auth.show_auth_card.read() {
-                    //AccountCard {}
                     // หน้า UI ตัวเลือกสำหรับ Login
-
                     AuthCard {
                         state_auth: state_auth.clone(),
                         state_account: state_account.clone()
                     }
-
                 }
             }
         }
