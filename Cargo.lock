@@ -3028,6 +3028,7 @@ dependencies = [
  "manganis",
  "nostr-sdk",
  "serde",
+ "serde_json",
  "web-sys",
 ]
 

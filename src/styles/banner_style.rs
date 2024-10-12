@@ -13,7 +13,7 @@ pub const STYLE: &str = r#"
   align-items: center;
 }
 
-.round {
+.nav-profile-round img {
     background-color: #F4F4F4;
     border: 3px solid #3C3D37;
 	border-radius: 50%;
@@ -57,7 +57,6 @@ pub const STYLE: &str = r#"
     }
 
 }
-
 
 
 "#;

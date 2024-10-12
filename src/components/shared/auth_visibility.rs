@@ -13,16 +13,16 @@ pub struct SharedAuthVisibility {
 /// **HomePage**: `home_page.rs`
 ///
 /// - สร้าง instance ของ `SharedAuthVisibility`
-/// - ส่ง `state_channel` ไปยังคอมโพเนนต์ **Banner**
+/// - ส่ง `state_auth` ไปยังคอมโพเนนต์ **Banner**
 ///
 /// **Banner**: `banner.rs`
 ///
-/// - รับ `state_channel` ที่ส่งมาจาก **HomePage**
-/// - เมื่อคลิกที่ปุ่ม **Login** จะเปลี่ยนสถานะ `show_auth_card` โดยการเขียนค่าตรงข้ามจากสถานะปัจจุบันใน `state_channel`
+/// - รับ `state_auth` ที่ส่งมาจาก **HomePage**
+/// - เมื่อคลิกที่ปุ่ม **Login** จะเปลี่ยนสถานะ `show_auth_card` โดยการเขียนค่าตรงข้ามจากสถานะปัจจุบันใน `state_auth`
 ///
 /// **AuthCard**: `auth_card.rs`
 ///
-/// - รับ `state_channel` ที่ส่งมาจาก **Banner**
+/// - รับ `state_auth` ที่ส่งมาจาก **Banner**
 /// - มีฟังก์ชันจัดการ การคลิกที่ overlay และปุ่ม **cross** เพื่อปิด **AuthCard** โดยการตั้งค่า `show_auth_card` เป็น false
 /// - มีฟังก์ชันสำหรับจัดการการคลิกที่ปุ่ม **Sign in with extension** ซึ่งจะใช้ nip07 เพื่อรับ public key และปิด **AuthCard** เมื่อสำเร็จ
 

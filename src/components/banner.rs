@@ -2,14 +2,42 @@
 
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
-use crate::components::account::auth_card::AuthCard;
-use crate::components::shared::SharedAuthVisibility;
+use web_sys::window;
 use crate::styles::banner_style::STYLE;
+use crate::components::account::auth_card::AuthCard;
+
+use crate::components::shared::{
+    SharedAccountVisibility, 
+    SharedAuthVisibility
+};
 
 const IMG_BANNER: &str = manganis::mg!(file("src/assets/nav-icon.svg"));
+const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
 
 #[component]
-pub fn Banner(state_channel: SharedAuthVisibility) -> Element {
+pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisibility) -> Element {
+
+
+    // ตรวจสอบ Local storage เมื่อ component ถูก mount
+    use_effect({
+        move || {
+            if let Some(storage) = window().and_then(|win| win.local_storage().ok().flatten()) {
+                // ค้นหา key ที่ขึ้นต้นด้วย 'story-teller_'
+                for i in 0..storage.length().unwrap_or(0) {
+                    if let Some(key) = storage.key(i).ok().flatten() {
+                        if key.starts_with("story-teller_") {
+                            state_account.show_account.set(true);
+                            break;
+                        }
+                    }
+                }
+
+            }
+             ()
+        }
+    });
+
+
     rsx! {
         style { {STYLE} }
         div { class: "item-nav", id: "nav",
@@ -17,24 +45,39 @@ pub fn Banner(state_channel: SharedAuthVisibility) -> Element {
                 src: "{IMG_BANNER}"
             }
 
-            div { class: "col-xs-3 col-sm-3 col-md-2 col-lg-1 col-xl-1",
-                button { class: "nav-login login-position",
-                    onclick: move |_| {
-                        // เมื่อคลิกที่ปุ่ม Login จะทำการเปลี่ยนสถานะของ show_auth_card
-                        // โดยใช้ state_channel ที่ส่งมาจาก HomePage
-                        let mut is_dropdown: Write<bool> = state_channel.show_auth_card.write();
-                        *is_dropdown = !*is_dropdown;
-                        info!("Login clicked");
-                    },
-                    "Login"
+            if *state_account.show_account.read() {
+
+                // แสดงรูป Profile หากมีข้อมูลใน Local storage
+                div { class: "nav-profile-round",
+                    img { src: "{_IMG}" }
+                }
+                
+            } else {
+                // แสดงปุ่ม Login หากไม่มีข้อมูลใน Local storage
+                div { class: "col-xs-3 col-sm-3 col-md-2 col-lg-1 col-xl-1",
+                    button { class: "nav-login login-position",
+                        onclick: move |_| {
+                            let mut is_dropdown: Write<bool> = state_auth.show_auth_card.write();
+                            *is_dropdown = !*is_dropdown;
+                            info!("Login clicked");
+                        },
+                        "Login"
+                    }
                 }
             }
 
-            // หาก show_auth_card เป็น true จะทำการแสดง AuthCard
-            if *state_channel.show_auth_card.read() {
-                // ส่ง state_channel ให้ AuthCard
-                AuthCard { state_channel: state_channel.clone() }
+            if *state_auth.show_auth_card.read() {
+
+                // หน้า UI ตัวเลือกสำหรับ Login
+                AuthCard {
+                    state_auth: state_auth.clone(),
+                    state_account: state_account.clone()
+                }
+
             }
+
         }
+
+        
     }
 }
