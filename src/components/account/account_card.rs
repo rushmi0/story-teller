@@ -3,6 +3,8 @@
 use dioxus::prelude::*;
 use crate::styles::account_card_style::STYLE;
 
+const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
+
 #[component]
 pub fn AccountCard() -> Element {
     rsx! {
@@ -10,7 +12,7 @@ pub fn AccountCard() -> Element {
         div { class: "account-card",
 
             img { class: "profile-image",
-                src: "https://randomuser.me/api/portraits/women/79.jpg",
+                src: _IMG,
                 alt: "user",
             }
 

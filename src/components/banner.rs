@@ -17,8 +17,6 @@ const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg")
 #[component]
 pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisibility) -> Element {
 
-    let mut show_account_card = use_signal(|| false);
-
     // ตรวจสอบ Local storage เมื่อ component ถูก mount
     use_effect({
         move || {
@@ -37,6 +35,8 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
         }
     });
 
+    let mut show_account_card: Signal<bool> = use_signal(|| false);
+
     rsx! {
         style { {STYLE} }
         div { class: "item-nav", id: "nav",
@@ -53,9 +53,9 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
                             let mut is_show_account = show_account_card.write();
                             *is_show_account = !*is_show_account;
                             info!("Profile clicked");
-                        }
+                        },
+                        img { src: "{_IMG}" }
                     }
-                    img { src: "{_IMG}" }
                 }
 
                 if *show_account_card.read() {
@@ -77,14 +77,14 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
                 }
 
                 if *state_auth.show_auth_card.read() {
-                    AccountCard {}
+                    //AccountCard {}
                     // หน้า UI ตัวเลือกสำหรับ Login
-                    /*
+
                     AuthCard {
                         state_auth: state_auth.clone(),
                         state_account: state_account.clone()
                     }
-                    */
+
                 }
             }
         }
