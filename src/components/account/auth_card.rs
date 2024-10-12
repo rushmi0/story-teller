@@ -2,23 +2,23 @@ use dioxus::prelude::*;
 use nostr_sdk::nips::nip07;
 use nostr_sdk::ToBech32;
 use web_sys::console;
-use crate::components::account::state_show::StateShow;
+use crate::components::shared::SharedAuthVisibility;
 use crate::styles::auth_card_style::STYLE;
 
 const _ICON: &str = manganis::mg!(file("src/assets/icon.svg"));
 const _CROSS: &str = manganis::mg!(file("src/assets/fi-rr-cross-small.svg"));
 
 #[component]
-pub fn AuthCard(app_state: StateShow) -> Element {
+pub fn AuthCard(state_channel: SharedAuthVisibility) -> Element {
 
     // ฟังก์ชันจัดการการคลิกที่ overlay เพื่อซ่อน AuthCard
     let handle_click_overlay = move |_| {
-        app_state.show_auth_card.set(false);
+        state_channel.show_auth_card.set(false);
     };
 
     // ฟังก์ชันจัดการการคลิกที่ปุ่ม cross เพื่อปิด Card
     let handle_click_cross = move |_| {
-        app_state.show_auth_card.set(false);
+        state_channel.show_auth_card.set(false);
     };
 
     // ฟังก์ชันจัดการการคลิกที่ปุ่ม "Sign in with extension"
@@ -26,8 +26,8 @@ pub fn AuthCard(app_state: StateShow) -> Element {
         console::log_1(&"Sign in with extension clicked!".into());
         // เรียกใช้ use_future เพื่อดำเนินการ async
         use_future({
-            // เก็บ app_state เพื่อใช้ใน future
-            let mut app_state = app_state.clone();
+            // เก็บ state_channel เพื่อใช้ใน future
+            let mut state_channel = state_channel.clone();
             move || async move {
                 match nip07::Nip07Signer::new() {
                     Ok(signer) => {
@@ -38,7 +38,7 @@ pub fn AuthCard(app_state: StateShow) -> Element {
                                 console::log_1(&npub.into());
 
                                 // ปิด AuthCard หลังจากได้รับ public_key สำเร็จ
-                                app_state.show_auth_card.set(false);
+                                state_channel.show_auth_card.set(false);
                             }
                             Err(e) => {
                                 console::log_1(&format!("Error getting public key: {:?}", e).into());

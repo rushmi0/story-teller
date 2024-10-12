@@ -8,22 +8,19 @@ use crate::components::{
     SearchBar,
     Story
 };
-use crate::components::account::state_show::StateShow;
+
+use crate::components::shared::SharedAuthVisibility;
 use crate::styles::layout_style::STYLE;
 
-
-/// คอมโพเนนต์ HomePage สร้าง instance ของ StateShow
-/// เพื่อใช้ร่วมกับ Banner และส่วนอื่นๆ
 #[component]
 pub fn HomePage() -> Element {
-    // สร้าง instance ของ StateShow เพื่อจัดการสถานะการแสดง AuthCard
-    let app_state = StateShow::new();
+    /// สร้าง instance ของ `SharedAuthVisibility` เพื่อจัดการสถานะการแสดง AuthCard
+    let state_channel = SharedAuthVisibility::new();
 
     rsx! {
         style { {STYLE} }
 
-        // ส่ง app_state ไปยัง Banner
-        Banner { app_state: app_state }
+        Banner { state_channel: state_channel }
 
         SearchBar {}
         div { class: "control-box",

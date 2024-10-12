@@ -4,6 +4,7 @@ pub mod check_box;
 pub mod story;
 pub mod story_card;
 pub mod account;
+pub(crate) mod shared;
 
 pub use banner::Banner;
 pub use search_bar::SearchBar;
