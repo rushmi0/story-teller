@@ -1,58 +1,71 @@
 pub const STYLE: &str = r#"
 
 .account-card {
-    background-color: #1D212E; /* กำหนดสีพื้นหลัง */
-    background-image: radial-gradient(
-        ellipse farthest-corner at 45px 45px,
-        rgba(64, 70, 87, 0.8) 0%,
-        rgba(64, 70, 87, 0.2)
-    );
-    border-radius: 25px;
-    color: #343e66;
+    background-color: #303134; /* สีพื้นหลังเทาเข้มคล้ายในภาพ */
+    border-radius: 12px; /* ทำให้มุมโค้งมน */
+    color: #ffffff;
     padding-top: 30px;
-    position: fixed; /* แก้จาก relative เป็น fixed เพื่อให้ลอยอยู่ */
-    top: 60px;  /* ระบุตำแหน่งการ์ดจากด้านบน */
-    right: 20px; /* ระบุตำแหน่งการ์ดจากด้านขวา */
+    position: fixed;
+    top: 60px;
+    right: 20px;
     width: 350px;
     max-width: 100%;
     text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: center; /* จัดให้อยู่ตรงกลาง */
-    z-index: 1000; /* ใช้เพื่อให้การ์ดอยู่บนสุด */
+    align-items: center;
+    z-index: 1000;
+}
+
+.nip05-info {
+    font-size: 14px;
+    color: #bbbbbb; /* สีข้อความ nip05 เป็นสีเทาอ่อน */
+    margin-bottom: 10px;
 }
 
 .profile-image {
-    border: 1px solid #03BFCB;
+    border: 2px solid #03BFCB;
     border-radius: 50%;
-    padding: 7px;
-    width: 120px;
-    height: 120px;
+    width: 90px;
+    height: 90px;
     object-fit: cover;
     margin-bottom: 20px;
 }
 
 .user-info {
     margin-bottom: 20px;
+    width: 90%;
 }
 
 .user-name {
     margin: 10px 0;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
 }
 
-.user-location {
-    margin: 5px 0;
-    text-transform: uppercase;
-    font-size: 12px;
-    color: #666;
+#submit-on-card-pt {
+    margin-top: 10px;
 }
 
-.user-description {
-    font-size: 14px;
-    line-height: 21px;
-    color: #444;
+#submit-on-card {
+    width: 100%;
+    max-width: 300px;
+    background-color: #28292a; /* พื้นหลังปุ่มเป็นสีเดียวกับ card */
+    color: #ffffff;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+#submit-on-card:hover {
+    border: 1px solid #5f6368; /* กำหนดเส้นขอบ */
+    background-color: #444950; /* เปลี่ยนสีปุ่มเมื่อ hover */
+    color: #ffffff; /* สีตัวอักษรขาว */
+}
+
+
 
 "#;

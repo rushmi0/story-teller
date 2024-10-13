@@ -65,6 +65,7 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                                 if let Ok(events) = events {
                                     if let Some(storage) = window().and_then(|win| win.local_storage().ok().flatten()) {
                                         for event in events {
+
                                             // แปลง Event เป็น JSON string
                                             let json_string = serde_json::to_string(&event).unwrap();
 

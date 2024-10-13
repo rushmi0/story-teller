@@ -2,39 +2,44 @@
 
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
+use js_sys::wasm_bindgen::JsValue;
 use crate::components::account::{AuthCard, AccountCard};
 use crate::styles::banner_style::STYLE;
 
 use web_sys::console;
-use nostr_sdk::prelude::*;
-
-use crate::components::shared::{
-    SharedAccountVisibility,
-    SharedAuthVisibility
+use nostr_sdk::{
+    //Event,
+    serde_json
 };
+
+use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility, SharedMetadataVisibility};
 use crate::model::local_storage::LocalStorage;
 
 const IMG_BANNER: &str = manganis::mg!(file("src/assets/nav-icon.svg"));
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
 
 #[component]
-pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisibility) -> Element {
+pub fn Banner(
+    state_auth: SharedAuthVisibility,
+    state_account: SharedAccountVisibility,
+    state_metadata: SharedMetadataVisibility
+) -> Element {
+
     // สร้าง Signal เพื่อควบคุมการแสดง AccountCard
     let mut show_account_card = use_signal(|| false);
 
-    // สร้าง Signal เพื่อเก็บ key จาก LocalStorage
+    // เก็บ key จาก LocalStorage
     let story_teller_keys = use_signal(|| Vec::new());
-
-    // สร้าง Signal เพื่อเก็บข้อมูลที่ดึงมาจาก LocalStorage
-    let story_teller_data = use_signal(|| String::new());
 
     // ตรวจสอบ Local Storage
     use_effect({
         let mut story_teller_keys = story_teller_keys.clone();
         move || {
-            // ใช้ LocalStorage ในการตรวจสอบค่า
+
+            // ดึงค่า keyทั้งหมดใน LocalStorage
             if let Some(storage) = LocalStorage::get_all_keys() {
-                // เก็บเฉพาะ key ที่ขึ้นต้นด้วย 'story-teller_' ลงใน Signal
+
+                // เก็บเฉพาะ key ที่ขึ้นต้นด้วย 'story-teller_' ลงใน `story_teller_keys`
                 let filtered_keys: Vec<String> = storage
                     .into_iter()
                     .filter(|key| key.starts_with("story-teller_"))
@@ -52,14 +57,29 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
     // ตรวจสอบว่า show_account ถูกตั้งค่าหรือไม่
     use_effect({
         let story_teller_keys = story_teller_keys.clone();
-        let mut story_teller_data = story_teller_data.clone();
         move || {
             if !story_teller_keys.is_empty() {
                 // ดึงค่าคีย์คำแหน่งแรก
                 if let Some(first_key) = story_teller_keys.get(0) {
+
                     // ดึงข้อมูลจาก LocalStorage
                     if let Some(data) = LocalStorage::get(&first_key) {
-                        story_teller_data.set(data);
+
+                        state_metadata.raw_metadata.set(data.to_string().clone());
+                        state_metadata.metadata.set(serde_json::from_str(&data).unwrap());
+
+                        if let Some(event) = state_metadata.metadata.read().as_ref() {
+                            // ดึง content จาก event
+                            let metadata_content = &event.content;
+                            //console::log_1(&JsValue::from_str(metadata_content));
+
+                            state_metadata.user_metadata.set(serde_json::from_str(metadata_content).unwrap());
+
+
+                        } else {
+                            console::log_1(&JsValue::from_str("No event metadata available."));
+                        }
+
                     }
                 }
             }
@@ -70,15 +90,25 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
 
     // ใช้ use_effect เพื่อ log ข้อมูลเมื่อ show_account เป็น true
     use_effect({
-        let story_teller_data = story_teller_data.clone();
+        let state_metadata = state_metadata.clone();
         move || {
             if *state_account.show_account.read() {
-                console::log_1(&format!("Story Teller Data: {}", *story_teller_data.read()).into());
+
+                // สร้าง Event object จาก JSON string
+                // let data_object: Event = serde_json::from_str(&data_string).unwrap();
+                // let content = serde_json::from_str(&data_object.content).unwrap();
+
+                // อ่านค่าจาก raw_metadata
+                let metadata = state_metadata.raw_metadata.read();
+                console::log_1(&JsValue::from_str(&metadata));
             }
+
             ()
         }
     });
 
+    // ดึงค่าจาก state_metadata.user_metadata
+    let profile_image = state_metadata.user_metadata.read().picture.clone();
 
     rsx! {
         style { {STYLE} }
@@ -89,6 +119,8 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
 
             if *state_account.show_account.read() {
 
+
+
                 // แสดงรูป Profile หากมีข้อมูลใน Local storage
                 div { class: "nav-profile-round",
                     button {
@@ -97,14 +129,12 @@ pub fn Banner(state_auth: SharedAuthVisibility, state_account: SharedAccountVisi
                             *is_show_account = !*is_show_account;
                             info!("Profile clicked");
                         },
-                        img { src: "{_IMG}" }
+                        img { src: "{profile_image}" }
                     }
                 }
 
                 if *show_account_card.read() {
-                    AccountCard {
-                        //data: story_teller_data.clone()
-                    }
+                    AccountCard { state_metadata: state_metadata }
                 }
 
             } else {

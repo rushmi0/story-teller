@@ -9,7 +9,11 @@ use crate::components::{
     Story
 };
 
-use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility};
+use crate::components::shared::{
+    SharedAccountVisibility,
+    SharedAuthVisibility,
+    SharedMetadataVisibility
+};
 use crate::styles::layout_style::STYLE;
 
 #[component]
@@ -17,13 +21,15 @@ pub fn HomePage() -> Element {
 
     let state_auth = SharedAuthVisibility::new();
     let state_account = SharedAccountVisibility::new();
+    let state_metadata = SharedMetadataVisibility::new();
 
     rsx! {
         style { {STYLE} }
 
         Banner {
             state_auth: state_auth,
-            state_account: state_account
+            state_account: state_account,
+            state_metadata: state_metadata
         }
 
         SearchBar {}
