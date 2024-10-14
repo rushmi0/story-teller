@@ -5,9 +5,7 @@ use dioxus_logger::tracing::{info, error};
 use crate::components::account::{AuthCard, AccountCard};
 use crate::styles::banner_style::STYLE;
 
-use web_sys::console;
 use nostr_sdk::{serde_json, EventBuilder};
-use web_sys::console::info;
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility, SharedMetadataVisibility};
 use crate::model::local_storage::LocalStorage;
 
@@ -96,10 +94,20 @@ pub fn Banner(
     //     info!("profile image update {}", profile_image);
     // });
 
-    use_effect(move || {
-        let profile_image = state_metadata.user_metadata.read().picture.clone();
-        info!("profile image update {}", profile_image);
+    let profile_image = use_signal(|| state_metadata.user_metadata.read().picture.clone());
+
+    use_effect({
+        let state_metadata = state_metadata.clone();
+        let mut profile_image = profile_image.clone();
+        move || {
+            // เมื่อ user_metadata เปลี่ยนแปลง ให้ทำการอัปเดต profile_image
+            profile_image.set(state_metadata.user_metadata.read().picture.clone());
+
+            info!("Profile image updated: {}", profile_image.read());
+            ()
+        }
     });
+
 
     rsx! {
         style { {STYLE} }
@@ -118,7 +126,7 @@ pub fn Banner(
                             *is_show_account = !*is_show_account;
                             info!("Profile clicked");
                         },
-                        img { src: "{state_metadata.user_metadata.read().picture}" }
+                        img { src: "{profile_image.read()}" }
                     }
                 }
 
@@ -146,6 +154,7 @@ pub fn Banner(
                         state_account: state_account.clone()
                     }
                 }
+
             }
         }
     }
