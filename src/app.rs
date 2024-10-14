@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
+use dioxus_logger::tracing::info;
 use dioxus_router::prelude::*;
 use crate::pages::router::Route;
 use crate::styles::screen_config::STYLE;
@@ -67,4 +68,17 @@ pub fn App() -> Element {
         style { {STYLE} }
         Router::<Route> { }
     }
+
+    // let mut count = use_signal(|| 0);
+    //
+    // // effect จะทำงานทุกครั้งที่ count เปลี่ยนแปลง
+    // use_effect(move || {
+    //     info!("Count changed to {count}")
+    // });
+    //
+    // rsx! {
+    //     h1 { "High-Five counter: {count}" }
+    //     button { onclick: move |_| count += 1, "Up high!" }
+    //     button { onclick: move |_| count -= 1, "Down low!" }
+    // }
 }
