@@ -1,10 +1,11 @@
 #![allow(non_snake_case)]
 
-use std::time::Duration;
 use dioxus::prelude::*;
+use dioxus_logger::tracing::{error, info};
+use std::time::Duration;
 use nostr_sdk::nips::nip07;
 use nostr_sdk::{serde_json, Client, EventSource, Filter, Kind, ToBech32};
-use web_sys::{console, window};
+use web_sys::window;
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility};
 use crate::styles::auth_card_style::STYLE;
 
@@ -26,7 +27,7 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
 
     // ฟังก์ชันจัดการการคลิกที่ปุ่ม "Sign in with extension"
     let handle_sign_in_with_extension = move |_| {
-        console::log_1(&"Sign in with extension clicked!".into());
+        info!("Sign in with extension clicked!"); // ใช้ info! แทน console::log_1
         // เรียกใช้ use_future เพื่อดำเนินการ async
         use_future({
             // เก็บ state_auth เพื่อใช้ใน future
@@ -36,14 +37,13 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                     Ok(signer) => {
                         match signer.get_public_key().await {
                             Ok(public_key) => {
-
                                 let npub = public_key.to_bech32().unwrap();
-                                console::log_1(&npub.into());
+                                info!("Public key (npub): {}", npub); // ใช้ info! สำหรับ log ข้อมูล
 
                                 let client = Client::default();
                                 client.add_relay("wss://nos.lol").await.expect("Failed to connect");
                                 client.add_relay("wss://relay.damus.io").await.expect("Failed to connect");
-                                client.add_relay("wss://relay.siamstr.com").await.expect("Failed to connect");
+                                //client.add_relay("ws://localhost:6724").await.expect("Failed to connect");
                                 client.add_relay("wss://relay.notoshi.win").await.expect("Failed to connect");
                                 client.add_relay("wss://nostr-01.yakihonne.com").await.expect("Failed to connect");
                                 client.connect().await;
@@ -59,13 +59,12 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                                     )
                                     .await;
 
-                                console::log_1(&format!("{:?}", events).into());
+                                info!("Events received: {:?}", events);
 
                                 // ตรวจสอบว่ามี events หรือไม่
                                 if let Ok(events) = events {
                                     if let Some(storage) = window().and_then(|win| win.local_storage().ok().flatten()) {
                                         for event in events {
-
                                             // แปลง Event เป็น JSON string
                                             let json_string = serde_json::to_string(&event).unwrap();
 
@@ -76,8 +75,8 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                                             // กำหนดสถานะปัจจุบันว่ามีการบันทึกข้อมูล Metadata ลง Local Storage
                                             state_account.show_account.set(true);
 
-                                            // แสดงข้อมูลใน console
-                                            console::log_1(&format!("Stored event with key: {}", key).into());
+                                            // แสดงข้อมูลใน log
+                                            info!("Stored event with key: {}", key); // ใช้ info! สำหรับ log การบันทึกข้อมูล
                                         }
                                     }
                                 }
@@ -86,18 +85,17 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                                 state_auth.show_auth_card.set(false);
                             }
                             Err(e) => {
-                                console::log_1(&format!("Error getting public key: {:?}", e).into());
+                                error!("Error getting public key: {:?}", e);
                             }
                         }
                     }
                     Err(e) => {
-                        console::log_1(&format!("Error initializing Nip07Signer: {:?}", e).into());
+                        error!("Error initializing Nip07Signer: {:?}", e);
                     }
                 }
             }
         });
     };
-
 
     rsx! {
         style { {STYLE} }

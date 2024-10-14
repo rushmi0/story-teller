@@ -76,8 +76,8 @@ pub const STYLE: &str = r#"
 #welcome-line-2 {
     color: #ffffff;
     font-size: 18px;
-    margin-top: 5px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 40px;
 }
 
 #input-area {
@@ -121,24 +121,24 @@ pub const STYLE: &str = r#"
 #submit-button {
     display: block;
     width: 100%;
-    color: #00FF7F;
     background-color: transparent;
+    background-color: #28292a; /* พื้นหลังปุ่มเป็นสีเดียวกับ card */
+    color: #ffffff;
     font-weight: 600;
     font-size: 14px;
     margin: 0;
     padding: 14px 13px 12px 13px;
     border: 0;
-    outline: 1px solid #00FF7F;
     border-radius: 8px;
     line-height: 1;
     cursor: pointer;
-    transition: all ease-in-out .3s;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #submit-button:hover {
-    transition: all ease-in-out .3s;
-    background-color: #00FF7F;
-    color: #161616;
+    border: 1px solid #5f6368; /* กำหนดเส้นขอบ */
+    background-color: #444950; /* เปลี่ยนสีปุ่มเมื่อ hover */
+    color: #ffffff; /* สีตัวอักษรขาว */
     cursor: pointer;
 }
 

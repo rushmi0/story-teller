@@ -7,16 +7,13 @@ use crate::components::account::{AuthCard, AccountCard};
 use crate::styles::banner_style::STYLE;
 
 use web_sys::console;
-use nostr_sdk::{
-    //Event,
-    serde_json
-};
+use nostr_sdk::{serde_json, EventBuilder};
 
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility, SharedMetadataVisibility};
 use crate::model::local_storage::LocalStorage;
 
 const IMG_BANNER: &str = manganis::mg!(file("src/assets/nav-icon.svg"));
-const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
+//const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
 
 #[component]
 pub fn Banner(
@@ -74,8 +71,6 @@ pub fn Banner(
                             //console::log_1(&JsValue::from_str(metadata_content));
 
                             state_metadata.user_metadata.set(serde_json::from_str(metadata_content).unwrap());
-
-
                         } else {
                             console::log_1(&JsValue::from_str("No event metadata available."));
                         }
@@ -101,14 +96,29 @@ pub fn Banner(
                 // อ่านค่าจาก raw_metadata
                 let metadata = state_metadata.raw_metadata.read();
                 console::log_1(&JsValue::from_str(&metadata));
+                let public_key = state_metadata.metadata.read().as_ref().map(|event| event.pubkey).unwrap();
+
+                let event = EventBuilder::text_note("POW text note from rust-nostr", []).to_unsigned_event(public_key);
+                let event_str = serde_json::to_string(&event).unwrap();
+                info!("event_str: {}", event_str);
             }
 
             ()
         }
     });
 
-    // ดึงค่าจาก state_metadata.user_metadata
-    let profile_image = state_metadata.user_metadata.read().picture.clone();
+    let profile_image = use_signal(|| String::new());
+
+    use_effect({
+        let mut profile_image = profile_image.clone();
+        let user_metadata = state_metadata.user_metadata.clone();
+        move || {
+            let picture = user_metadata.read().picture.clone();
+            profile_image.set(picture);
+            info!("profile image update: {}", profile_image);
+            ()
+        }
+    });
 
     rsx! {
         style { {STYLE} }
@@ -118,8 +128,6 @@ pub fn Banner(
             }
 
             if *state_account.show_account.read() {
-
-
 
                 // แสดงรูป Profile หากมีข้อมูลใน Local storage
                 div { class: "nav-profile-round",

@@ -1,6 +1,7 @@
 pub const STYLE: &str = r#"
 
 .account-card {
+    background-color: transparent;
     background-color: #303134; /* สีพื้นหลังเทาเข้มคล้ายในภาพ */
     border-radius: 12px; /* ทำให้มุมโค้งมน */
     color: #ffffff;
@@ -18,13 +19,13 @@ pub const STYLE: &str = r#"
 }
 
 .nip05-info {
-    font-size: 14px;
+    font-size: 12px;
     color: #bbbbbb; /* สีข้อความ nip05 เป็นสีเทาอ่อน */
     margin-bottom: 10px;
 }
 
 .profile-image {
-    border: 2px solid #03BFCB;
+    border: 4px solid #3C3D37;
     border-radius: 50%;
     width: 90px;
     height: 90px;
@@ -50,6 +51,7 @@ pub const STYLE: &str = r#"
 #submit-on-card {
     width: 100%;
     max-width: 300px;
+    background-color: transparent;
     background-color: #28292a; /* พื้นหลังปุ่มเป็นสีเดียวกับ card */
     color: #ffffff;
     padding: 12px;
