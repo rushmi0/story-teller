@@ -10,6 +10,8 @@ const _FAV: &str = manganis::mg!(file("src/assets/fav.svg"));
 #[derive(PartialEq, Props, Clone)]
 pub struct StoryCardProps {
     image: String,
+    title: String,
+    summary: String,
 }
 
 #[component]
@@ -33,8 +35,8 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
                 }
             }
             div { class: "note-desc",
-                h2 { "title note" }
-                p { class: "note-text", "Lorem Ipsum ay ginagamit na modelo" }
+                h2 { "{props.title}" }
+                p { class: "note-text", "{props.summary}" }
                 hr {}
                 div { class: "note-icon",
                     img {

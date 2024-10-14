@@ -46,6 +46,7 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                                 let client = Client::default();
                                 client.add_relay("wss://nos.lol").await.expect("Failed to connect");
                                 client.add_relay("wss://relay.damus.io").await.expect("Failed to connect");
+                                client.add_relay("wss://relay.nostr.band").await.expect("Failed to connect");
                                 client.add_relay("wss://relay.notoshi.win").await.expect("Failed to connect");
                                 client.add_relay("wss://nostr-01.yakihonne.com").await.expect("Failed to connect");
                                 client.connect().await;
