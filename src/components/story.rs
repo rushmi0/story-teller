@@ -3,8 +3,9 @@
 use std::time::Duration;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
-use nostr_sdk::{Client, EventSource, Filter, Kind, FromBech32, PublicKey, Event};
+use nostr_sdk::{EventSource, Filter, Kind, FromBech32, PublicKey, Event};
 use crate::components::StoryCard;
+use crate::nostr::nostr_client::NostrClient;
 use crate::styles::story_style::STYLE;
 
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_5.jpg"));
@@ -41,7 +42,6 @@ fn extract_tags(event: Event) -> StoryData {
     StoryData { image, title, summary }
 }
 
-
 #[component]
 pub fn Story() -> Element {
     // สร้างตัวแปร signal เพื่อเก็บรายการ events
@@ -56,16 +56,9 @@ pub fn Story() -> Element {
         let mut story_data_signal = story_data_signal.clone();
 
         move || async move {
-            let client = Client::default();
-            client.add_relay("wss://nos.lol").await.expect("Failed to connect");
-            client.add_relay("wss://relay.damus.io").await.expect("Failed to connect");
-            client.add_relay("wss://relay.nostr.band").await.expect("Failed to connect");
-            client.add_relay("wss://relay.notoshi.win").await.expect("Failed to connect");
-            client.add_relay("wss://nostr-01.yakihonne.com").await.expect("Failed to connect");
-            client.connect().await;
+            let client = NostrClient::setup_and_connect().await.expect("Failed to setup client");
 
-            let author = FromBech32::from_bech32("npub1mqcwu7muxz3kfvfyfdme47a579t8x0lm3jrjx5yxuf4sknnpe43q7rnz85").expect("TODO: panic message");
-
+            let author = FromBech32::from_bech32("npub1mqcwu7muxz3kfvfyfdme47a579t8x0lm3jrjx5yxuf4sknnpe43q7rnz85").expect("Invalid author key");
 
             let _public_key = PublicKey::from_bech32(
                 "npub1drvpzev3syqt0kjrls50050uzf25gehpz9vgdw08hvex7e0vgfeq0eseet",
@@ -74,8 +67,7 @@ pub fn Story() -> Element {
 
             let filter = Filter::new()
                 .kind(Kind::LongFormTextNote)
-                .authors(vec![author])
-                .limit(20);
+                .authors(vec![author]);
 
             let events = client
                 .get_events_of(
@@ -92,6 +84,9 @@ pub fn Story() -> Element {
                 // สร้าง StoryData จาก events และอัพเดต story_data_signal
                 let stories: Vec<StoryData> = events.into_iter().map(extract_tags).collect();
                 story_data_signal.set(stories);
+
+                // ตัดการเชื่อมต่อหลังจากได้รับข้อมูล
+                client.disconnect().await.expect("Failed to disconnect");
             } else {
                 info!("Failed to retrieve events");
             }
@@ -105,8 +100,8 @@ pub fn Story() -> Element {
                 // แสดง StoryCard สำหรับแต่ละ StoryData
                 StoryCard {
                     image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
-                    title: story.title.clone().unwrap(),
-                    summary: story.summary.clone().unwrap(),
+                    title: story.title.clone().unwrap_or_default(),
+                    summary: story.summary.clone().unwrap_or_default(),
                 }
             }
         }

@@ -51,4 +51,4 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
             }
         }
     }
-}
+} // unwrap_or_default()

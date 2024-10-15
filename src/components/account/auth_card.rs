@@ -4,18 +4,35 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::{error, info};
 use std::time::Duration;
 use nostr_sdk::nips::nip07;
-use nostr_sdk::{serde_json, Client, EventSource, Filter, Kind};
+use nostr_sdk::{serde_json, EventSource, Filter, Kind, Event};
 use web_sys::window;
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility};
+use crate::model::local_storage::LocalStorage;
+use crate::nostr::nostr_client::NostrClient;
 use crate::styles::auth_card_style::STYLE;
 
 const _ICON: &str = manganis::mg!(file("src/assets/icon.svg"));
 const _CROSS: &str = manganis::mg!(file("src/assets/fi-rr-cross-small.svg"));
 
+// ฟังก์ชันบันทึก event ลง localStorage
+fn store_events_in_local_storage(events: Vec<Event>, public_key: String) {
+    for event in events {
+        let json_string = serde_json::to_string(&event).unwrap();
+        let key = format!("story-teller_{}", public_key);
+
+        // เรียกใช้ฟังก์ชัน set จาก local_storage.rs
+        if let Err(e) = LocalStorage::set(&key, &json_string) {
+            error!("Failed to store event with key: {}. Error: {}", key, e);
+        } else {
+            info!("Stored event with key: {}", key);
+        }
+    }
+}
+
 #[component]
 pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVisibility) -> Element {
 
-    let loading_animation = use_signal(|| false);
+    let loading_animation = use_signal(|| true);
 
     // ฟังก์ชันจัดการการคลิกที่ overlay เพื่อซ่อน AuthCard
     let handle_click_overlay = move |_| {
@@ -27,69 +44,58 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
         state_auth.show_auth_card.set(false);
     };
 
-    // ฟังก์ชันจัดการการคลิกที่ปุ่ม "Sign in with extension"
 
+    // ฟังก์ชันจัดการการคลิกที่ปุ่ม "Sign in with nsec"
+    let handle_sign_in_with_nsec = move |_| {
+        info!("Sign in with nsec clicked!");
+    };
+
+
+    // ฟังก์ชันจัดการการคลิกที่ปุ่ม "Sign in with extension"
     let handle_sign_in_with_extension = move |_| {
         info!("Sign in with extension clicked!");
 
-        // แสดง animation loading ก่อนทำงาน
         use_future({
-            // เก็บ state_auth เพื่อใช้ใน future
             let mut state_auth = state_auth.clone();
-            let mut loading_animation = loading_animation.clone();
+            let mut state_account = state_account.clone();
             move || async move {
+
                 match nip07::Nip07Signer::new() {
                     Ok(signer) => {
                         match signer.get_public_key().await {
                             Ok(public_key) => {
+                                match NostrClient::setup_and_connect().await {
+                                    Ok(client) => {
+                                        let filter = Filter::new()
+                                            .author(public_key)
+                                            .kind(Kind::Metadata);
 
-                                let client = Client::default();
-                                client.add_relay("wss://nos.lol").await.expect("Failed to connect");
-                                client.add_relay("wss://relay.damus.io").await.expect("Failed to connect");
-                                client.add_relay("wss://relay.nostr.band").await.expect("Failed to connect");
-                                client.add_relay("wss://relay.notoshi.win").await.expect("Failed to connect");
-                                client.add_relay("wss://nostr-01.yakihonne.com").await.expect("Failed to connect");
-                                client.connect().await;
+                                        let events = client
+                                            .get_events_of(
+                                                vec![filter],
+                                                EventSource::relays(Some(Duration::from_secs(10))),
+                                            )
+                                            .await;
 
-                                let filter = Filter::new()
-                                    .author(public_key)
-                                    .kind(Kind::Metadata);
+                                        info!("Events received: {:?}", events);
 
-                                let events = client
-                                    .get_events_of(
-                                        vec![filter],
-                                        EventSource::relays(Some(Duration::from_secs(10))),
-                                    )
-                                    .await;
+                                        if let Ok(events) = events {
+                                            store_events_in_local_storage(events, public_key.to_hex());
 
-                                info!("Events received: {:?}", events);
-
-                                // ตรวจสอบว่ามี events หรือไม่
-                                if let Ok(events) = events {
-                                    loading_animation.set(true);
-                                    if let Some(storage) = window().and_then(|win| win.local_storage().ok().flatten()) {
-                                        for event in events {
-                                            // แปลง Event เป็น JSON string
-                                            let json_string = serde_json::to_string(&event).unwrap();
-
-                                            // บันทึกลง Local Storage
-                                            let key = format!("story-teller_{}", &public_key.to_hex());
-                                            storage.set_item(&key, &json_string).expect("failed to set item in localStorage");
-
-                                            // กำหนดสถานะปัจจุบันว่ามีการบันทึกข้อมูล Metadata ลง Local Storage
+                                            // อัพเดทสถานะหลังบันทึกข้อมูล
                                             state_account.show_account.set(true);
-                                            info!("Stored event with key: {}", key);
+                                            state_auth.show_auth_card.set(false);
+
+                                            // รีโหลดหน้าเว็บหลังจากสำเร็จ
+                                            if let Some(win) = window() {
+                                                win.location().reload().expect("Failed to reload");
+                                            }
                                         }
                                     }
+                                    Err(e) => {
+                                        error!("Error setting up client: {:?}", e);
+                                    }
                                 }
-
-                                //sleep(Duration::from_secs(2)).await;
-                                // ปิด AuthCard หลังจากได้รับ public_key สำเร็จ
-                                state_auth.show_auth_card.set(false);
-                                if let Some(win) = window() {
-                                    win.location().reload().expect("Failed to reload");
-                                }
-
                             }
                             Err(e) => {
                                 error!("Error getting public key: {:?}", e);
@@ -100,11 +106,10 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                         error!("Error initializing Nip07Signer: {:?}", e);
                     }
                 }
-
-                // ปิด loading animation หลังจากทำงานเสร็จ
-                loading_animation.set(false);
             }
         });
+
+
     };
 
 
@@ -144,6 +149,7 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                         div { id: "submit-button-cvr",
                             button { id: "submit-button",
                                 r#type: "button",
+                                onclick: handle_sign_in_with_nsec,
                                 "Sign in with nsec"
                             }
                         }
