@@ -85,8 +85,8 @@ display: -webkit-box;
 }
 
 #note-author-bar {
-    background-color: #505566;
-    /*background-color: rgba(40, 41, 42, 0.8);*/
+    /*background-color: #505566;*/
+    background-color: rgba(80, 85, 102, 0.8);
     border-radius: 10px;
     width: 100%;
     height: 60px;

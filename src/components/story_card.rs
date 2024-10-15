@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
+use chrono::{NaiveDateTime, TimeZone, Utc};
 use crate::pages::router::Route;
 
 const _PLAY: &str = manganis::mg!(file("src/assets/play.svg"));
@@ -22,13 +23,22 @@ pub struct StoryCardProps {
 pub fn StoryCard(props: StoryCardProps) -> Element {
     let navigator: Navigator = use_navigator();
 
+    // ฟังก์ชันแปลง Unix timestamp เป็นวันที่ในรูปแบบ "July 14, 2022"
+    fn format_unix_to_date(unix_timestamp: &str) -> String {
+        let timestamp = unix_timestamp.parse::<i64>().unwrap_or(0);
+        let naive = NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap();
+        let datetime = Utc.from_utc_datetime(&naive); // แปลงเป็น datetime ที่ใช้ UTC
+
+        // แปลงเป็นรูปแบบ "July 14, 2022"
+        datetime.format("%B %d, %Y").to_string()
+    }
+
+    // แปลง published_at จาก Unix timestamp เป็นวันที่
+    let formatted_date = format_unix_to_date(&props.published_at);
+
     rsx! {
         div {
             class: "note-box note-out",
-            // ใช้ onclick เพื่อให้คลิกการ์ดแล้วเปลี่ยนหน้า
-            // onclick: move |_| {
-            //     navigator.push(Route::ErrorPage {});
-            // },
             div {
                 img {
                     src: "{props.image}",
@@ -55,7 +65,7 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
                             }
                             div { class: "author-info",
                                 h3 { "{props.name}" }
-                                p { "{props.published_at}" }
+                                p { "{formatted_date}" }
                             }
                         }
 
