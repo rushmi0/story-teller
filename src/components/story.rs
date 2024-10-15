@@ -3,27 +3,37 @@
 use std::time::Duration;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
-use nostr_sdk::{EventSource, Filter, Kind, FromBech32, PublicKey, Event};
+use nostr_sdk::{
+    EventSource,
+    PublicKey,
+    Filter,
+    Event,
+    Kind,
+    FromBech32
+};
+use crate::components::anim::EllipsisLoading;
 use crate::components::StoryCard;
 use crate::nostr::nostr_client::NostrClient;
 use crate::styles::story_style::STYLE;
 
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_5.jpg"));
 
-// สร้าง struct ใหม่เพื่อเก็บข้อมูล image, title, และ summary
+
 #[derive(Debug, Clone)]
 struct StoryData {
     image: Option<String>,
     title: Option<String>,
     summary: Option<String>,
+    published_at: Option<String>
 }
 
 // ฟังก์ชันเพื่อดึงข้อมูลจาก event tags
 fn extract_tags(event: Event) -> StoryData {
-    let tags_to_find = ["image", "title", "summary"];
+    let tags_to_find = ["image", "title", "summary", "published_at"];
     let mut image: Option<String> = None;
     let mut title: Option<String> = None;
     let mut summary: Option<String> = None;
+    let mut published_at: Option<String> = None;
 
     // วนซ้ำผ่าน tags ของ event
     for tag in event.tags.iter() {
@@ -34,16 +44,18 @@ fn extract_tags(event: Event) -> StoryData {
                 "image" => image = Some(tag_data[1].to_string()),
                 "title" => title = Some(tag_data[1].to_string()),
                 "summary" => summary = Some(tag_data[1].to_string()),
+                "published_at" => published_at = Some(tag_data[1].to_string()),
                 _ => {}
             }
         }
     }
 
-    StoryData { image, title, summary }
+    StoryData { image, title, summary, published_at }
 }
 
 #[component]
 pub fn Story() -> Element {
+
     // สร้างตัวแปร signal เพื่อเก็บรายการ events
     let events_signal: Signal<Vec<Event>> = use_signal(Vec::new);
 
@@ -77,7 +89,7 @@ pub fn Story() -> Element {
                 .await;
 
             if let Ok(events) = events {
-                info!("Events received: {:?}", events);
+                //info!("Events received: {:?}", events);
                 // อัพเดตค่า signal ด้วยรายการ events ที่ได้รับ
                 events_signal.set(events.clone());
 
@@ -93,17 +105,36 @@ pub fn Story() -> Element {
         }
     });
 
+    for story in story_data_signal.iter() {
+        info!("Story data: {:?}", story);
+    }
+
     rsx! {
         style { {STYLE} }
         div { class: "note-container",
-            for story in story_data_signal.iter() {
-                // แสดง StoryCard สำหรับแต่ละ StoryData
-                StoryCard {
-                    image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
-                    title: story.title.clone().unwrap_or_default(),
-                    summary: story.summary.clone().unwrap_or_default(),
+            // StoryCard { name: "Eimi Fukada", image: _IMG, title: "this title note event", summary: "Matagal na nating alam na nakukuha ang atensyon ng nagbabasa ang nababasa na nilalaman ng", published_at: "1296962229" }
+            // StoryCard { name: "Eimi Fukada", image: _IMG, title: "this title note event", summary: "Matagal na nating alam na nakukuha ang atensyon ng nagbabasa ang nababasa na nilalaman ng", published_at: "1296962229" }
+            // StoryCard { name: "Eimi Fukada", image: _IMG, title: "this title note event", summary: "Matagal na nating alam na nakukuha ang atensyon ng nagbabasa ang nababasa na nilalaman ng", published_at: "1296962229" }
+            // StoryCard { name: "Eimi Fukada", image: _IMG, title: "this title note event", summary: "Matagal na nating alam na nakukuha ang atensyon ng nagbabasa ang nababasa na nilalaman ng", published_at: "1296962229" }
+            // StoryCard { name: "Eimi Fukada", image: _IMG, title: "this title note event", summary: "Matagal na nating alam na nakukuha ang atensyon ng nagbabasa ang nababasa na nilalaman ng", published_at: "1296962229" }
+            // StoryCard { name: "Eimi Fukada", image: _IMG, title: "this title note event", summary: "Matagal na nating alam na nakukuha ang atensyon ng nagbabasa ang nababasa na nilalaman ng", published_at: "1296962229" }
+            // StoryCard { name: "Eimi Fukada", image: _IMG, title: "this title note event", summary: "Matagal na nating alam na nakukuha ang atensyon ng nagbabasa ang nababasa na nilalaman ng", published_at: "1296962229" }
+
+
+            if story_data_signal.read().is_empty() {
+                EllipsisLoading {}
+            } else {
+                for story in story_data_signal.iter() {
+                    StoryCard {
+                        name: "Eimi Fukada",
+                        image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
+                        title: story.title.clone().unwrap_or_default(),
+                        summary: story.summary.clone().unwrap_or_default(),
+                        published_at: story.published_at.clone().unwrap_or_default()
+                    }
                 }
             }
+
         }
     }
 }

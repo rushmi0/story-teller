@@ -15,4 +15,5 @@ pub mod error_style;
 pub mod auth_card_style;
 
 pub mod account_card_style;
+pub mod ellipsis_loading_style;
 

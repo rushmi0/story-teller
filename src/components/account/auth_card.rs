@@ -4,7 +4,13 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::{error, info};
 use std::time::Duration;
 use nostr_sdk::nips::nip07;
-use nostr_sdk::{serde_json, EventSource, Filter, Kind, Event};
+use nostr_sdk::{
+    serde_json,
+    EventSource,
+    Filter,
+    Kind,
+    Event
+};
 use web_sys::window;
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility};
 use crate::model::local_storage::LocalStorage;
@@ -31,8 +37,6 @@ fn store_events_in_local_storage(events: Vec<Event>, public_key: String) {
 
 #[component]
 pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVisibility) -> Element {
-
-    let loading_animation = use_signal(|| true);
 
     // ฟังก์ชันจัดการการคลิกที่ overlay เพื่อซ่อน AuthCard
     let handle_click_overlay = move |_| {
@@ -163,17 +167,7 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
 
                     }
 
-                    if *loading_animation.read() {
-                        div { class: "lds-ellipsis-container",
-                            div { class: "lds-ellipsis",
-                               div {} div {} div {}
-                            }
-                        }
-                    }
-
                 }
-
-
             }
         }
     }

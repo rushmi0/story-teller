@@ -4,8 +4,8 @@ use dioxus::prelude::*;
 use crate::pages::router::Route;
 use crate::styles::error_style::STYLE;
 
-// https://dribbble.com/shots/3965778-Cezan-404-Page-Not-Found
-// Cezan - 404 Page Not Found' by Masoud Ardestani
+/// https://dribbble.com/shots/3965778-Cezan-404-Page-Not-Found
+/// Cezan - 404 Page Not Found' by Masoud Ardestani
 
 #[component]
 pub fn ErrorPage() -> Element {

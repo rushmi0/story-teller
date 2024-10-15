@@ -18,7 +18,7 @@ pub const STYLE: &str = r#"
     box-sizing: border-box;
     overflow: hidden;
     width: 100%; /* ปรับให้การ์ดใช้พื้นที่ให้เต็ม */
-    max-width: 252px; /* กำหนดขนาดสูงสุด */
+    max-width: 280px; /* กำหนดขนาดสูงสุด */
     margin: 20px;
 }
 
@@ -42,10 +42,23 @@ pub const STYLE: &str = r#"
 }
 
 .note-text {
-    padding-bottom: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.note-text h2 {
+    margin-bottom: 10px;
+}
+
+.line-clamping {
+display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .note-desc {
@@ -68,16 +81,62 @@ pub const STYLE: &str = r#"
     padding-top: 10px;
     padding-bottom: 10px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
 }
 
-hr {
-    margin-top: 5px;
-    border-width: 0.01em;
-    border-color: #a7aab5;
-    font-size: 1px;
+#note-author-bar {
+    background-color: #505566;
+    /*background-color: rgba(40, 41, 42, 0.8);*/
+    border-radius: 10px;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
 }
+
+#note-author {
+    display: flex;
+    justify-content: column;
+    align-items: center;
+    width: 80%;
+}
+
+
+.note-profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 27%;
+    object-fit: cover; /* ให้ภาพไม่บิดเบี้ยว */
+    margin: 5px;
+}
+
+.mark-icon {
+    fill: #FFFFFF;
+    width: 24px;
+    height: 24px;
+}
+
+.author-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.author-info h3 {
+    margin: 0;
+    font-size: 12px;
+    color: #f7f7f7;
+}
+
+.author-info p {
+    margin: 0;
+    font-size: 10px;
+    color: #a7aab5;
+}
+
+
 
 
 @media only screen and (max-width: 923px) {
