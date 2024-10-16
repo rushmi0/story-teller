@@ -2,13 +2,12 @@
 
 use dioxus::prelude::*;
 use chrono::{NaiveDateTime, TimeZone, Utc};
+use dioxus_logger::tracing::{info, warn};
+use reqwest::StatusCode;
 use crate::pages::router::Route;
 
-const _PLAY: &str = manganis::mg!(file("src/assets/play.svg"));
-const _FAV: &str = manganis::mg!(file("src/assets/fav.svg"));
-const _MARK: &str = manganis::mg!(file("src/assets/mark.svg"));
-
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_4.jpg"));
+const _MARK: &str = manganis::mg!(file("src/assets/mark.svg"));
 
 #[derive(PartialEq, Props, Clone)]
 pub struct StoryCardProps {
@@ -23,11 +22,13 @@ pub struct StoryCardProps {
 
 #[component]
 pub fn StoryCard(props: StoryCardProps) -> Element {
-    // ฟังก์ชันแปลง Unix timestamp เป็นวันที่ในรูปแบบ "July 14, 2022"
+
+    let navigator: Navigator = use_navigator();
+
     fn format_unix_to_date(unix_timestamp: &str) -> String {
         let timestamp = unix_timestamp.parse::<i64>().unwrap_or(0);
         let naive = NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap();
-        let datetime = Utc.from_utc_datetime(&naive); // แปลงเป็น datetime ที่ใช้ UTC
+        let datetime = Utc.from_utc_datetime(&naive);
 
         // แปลงเป็นรูปแบบ "July 14, 2022"
         datetime.format("%B %d, %Y").to_string()
@@ -36,23 +37,45 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
     // แปลง published_at จาก Unix timestamp เป็นวันที่
     let formatted_date = format_unix_to_date(&props.published_at);
 
-    // ตรวจสอบ author_image ว่า URL ใช้งานได้หรือไม่
-    let mut author_image_future = use_resource(|| async move {
-        match reqwest::get(&props.author_image).await {
-            Ok(response) if response.status().is_success() => Ok(props.author_image.clone()),
-            _ => Err(()),
+    // ใช้งาน use_resource เพื่อตรวจสอบ URL ของ author_image
+    let author_image_future: Resource<Result<String, ()>> = use_resource(move || {
+        let value = props.author_image.clone();
+        async move {
+            let response = reqwest::get(&value).await;
+
+            match response {
+                Ok(res) if res.status().is_success() => {
+                    //info!("this image: available {}", &value);
+                    Ok(value.clone())
+                },
+                Ok(res) => {
+                    // หากได้รับสถานะที่ไม่ใช่ 2xx (เช่น 4xx หรือ 5xx)
+                    warn!("this image: unavailable with status: {:?}", res.status());
+                    Err(())
+                },
+                Err(err) => {
+                    // หากเกิดข้อผิดพลาดในการเชื่อมต่อ
+                    warn!("Failed to fetch image: {:?}", err);
+                    Err(())
+                },
+            }
         }
     });
 
-    // ดึงค่าจาก future
-    let author_image_src = match author_image_future.read_unchecked() {
-        Some(Ok(url)) => url,
-        _ => String::from(_IMG.to_string()),
+
+    let binding = author_image_future.read_unchecked();
+    let author_image_url = match &*binding {
+        Some(Ok(url)) => url, // ใช้ URL ของ author_image
+        _ => &_IMG.to_string(), // ใช้ _IMG แทน
     };
 
     rsx! {
         div {
             class: "note-box note-out",
+            // ใช้ onclick เพื่อให้คลิกการ์ดแล้วเปลี่ยนหน้า
+            onclick: move |_| {
+                navigator.push(Route::ErrorPage {});
+            },
             div {
                 img {
                     src: "{props.image}",
@@ -63,6 +86,7 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
                 }
             }
             div { class: "note-desc",
+
                 div {
                     h2 { class: "note-text", "{props.title}" }
                     p { class: "line-clamping", "{props.summary}" }
@@ -70,9 +94,10 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
 
                 div { class: "note-icon",
                     div { id: "note-author-bar",
+
                         div { id: "note-author",
                             img { class: "note-profile-image",
-                                src: "{author_image_src}",
+                                src: "{author_image_url}",
                                 alt: "Profile Icon"
                             }
                             div { class: "author-info",
@@ -87,6 +112,7 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
                         }
                     }
                 }
+
             }
         }
     }

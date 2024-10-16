@@ -104,12 +104,18 @@ pub fn Story() -> Element {
                 let client = NostrClient::setup_and_connect().await.expect("Failed to setup client");
                 let author_1 = FromBech32::from_bech32("npub1mqcwu7muxz3kfvfyfdme47a579t8x0lm3jrjx5yxuf4sknnpe43q7rnz85").expect("Invalid author key");
                 let author_2 = FromBech32::from_bech32("npub1vm0kq43djwdd4psjgdjgn9z6fm836c35dv7eg7x74z3n3ueq83jqhkxp8e").expect("Invalid author key");
-
+                let author_3 = FromBech32::from_bech32("npub1qd6zcgzukmydscp3eyauf2dn6xzgfsevsetrls8zrzgs5t0e4fws7re0mj").expect("Invalid author key");
                 let filter = Filter::new()
                     .kind(Kind::LongFormTextNote)
-                    .authors(vec![author_1, author_2]);
+                    .authors(vec![author_1, author_2, author_3]);
 
-                if let Ok(events) = client.get_events_of(vec![filter], EventSource::relays(Some(Duration::from_secs(10)))).await {
+
+                if let Ok(events) = client.
+                    get_events_of(
+                        vec![filter],
+                        EventSource::relays(Some(Duration::from_secs(10)))
+                    ).await {
+
                     events_signal.set(events.clone());
 
                     let stories: Vec<StoryData> = events.iter().map(extract_story).collect();
@@ -130,7 +136,7 @@ pub fn Story() -> Element {
 
                     story_author_signal.set(authors);
 
-                    client.disconnect().await.expect("Failed to disconnect");
+                    //client.disconnect().await.expect("Failed to disconnect");
                 } else {
                     info!("Failed to retrieve events");
                 }
@@ -138,6 +144,9 @@ pub fn Story() -> Element {
         }
     });
 
+    for (story, author) in story_data_signal.iter().zip(story_author_signal.iter()) {
+        info!("{:#?}, {:#?}", story.clone(), author.clone());
+    }
 
     rsx! {
         style { {STYLE} }

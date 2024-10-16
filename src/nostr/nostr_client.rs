@@ -33,6 +33,8 @@ impl NostrClient {
         let relays: Vec<&str> = vec![
             "wss://nos.lol",
             "wss://relay.notoshi.win",
+            "wss://nostr.mom",
+            "wss://relay.snort.social",
             "wss://nostr-01.yakihonne.com",
         ];
 
