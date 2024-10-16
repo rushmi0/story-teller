@@ -54,11 +54,11 @@ pub const STYLE: &str = r#"
 }
 
 .line-clamping {
-display: -webkit-box;
+    display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-  text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 
 .note-desc {
