@@ -4,20 +4,31 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, error};
 use crate::components::account::{AuthCard, AccountCard};
 use crate::styles::banner_style::STYLE;
-
-use nostr_sdk::{serde_json, EventBuilder};
+use std::time::Duration;
+use nostr_sdk::{
+    serde_json,
+    EventBuilder,
+    EventSource,
+    PublicKey,
+    Filter,
+    Kind,
+    Event
+};
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility, SharedMetadataVisibility};
-use crate::model::local_storage::LocalStorage;
+use crate::model::LocalStorage;
+use crate::nostr::NostrClient;
 
 const IMG_BANNER: &str = manganis::mg!(file("src/assets/nav-icon.svg"));
 //const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
 
 #[component]
-pub fn Banner(
-    state_auth: SharedAuthVisibility,
-    state_account: SharedAccountVisibility,
-    state_metadata: SharedMetadataVisibility
-) -> Element {
+pub fn Banner() -> Element {
+
+    let mut state_auth = SharedAuthVisibility::new();
+    let mut state_account = SharedAccountVisibility::new();
+    let mut state_metadata = SharedMetadataVisibility::new();
+
+
 
     // สร้าง Signal เพื่อควบคุมการแสดง AccountCard
     let mut show_account_card = use_signal(|| false);
@@ -42,6 +53,43 @@ pub fn Banner(
             }
         }
     });
+
+
+    use_future( move || async move {
+        if !story_teller_keys.is_empty() {
+            // ดึงค่าคีย์ตำแหน่งแรกจาก LocalStorage
+            if let Some(first_key) = story_teller_keys.get(0) {
+
+                // ดึงข้อมูลที่เกี่ยวข้องจาก LocalStorage
+                if let Some(data) = LocalStorage::get(&first_key) {
+                    let client = NostrClient::setup_and_connect().await.expect("Failed to setup client");
+                    let metadata = serde_json::from_str::<Event>(&data).unwrap();
+
+                    let follow_filter = Filter::new()
+                        .authors(vec![metadata.pubkey])
+                        .kind(Kind::ContactList);
+
+                    let events = client
+                        .get_events_of(
+                            vec![follow_filter],
+                            EventSource::relays(Some(Duration::from_secs(10))),
+                        )
+                        .await;
+
+                    if let Ok(events) = events {
+                        for event in events {
+                            info!("Follow List received: {:?}", event);
+
+                        }
+                    }
+
+                }
+
+            }
+        }
+    });
+
+
 
     // ตรวจสอบว่า show_account ถูกตั้งค่าหรือไม่
     use_future( move || async move {
