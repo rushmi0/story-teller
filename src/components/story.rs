@@ -1,24 +1,34 @@
 #![allow(non_snake_case)]
 
-// นำเข้า libraries และ dependencies ที่ต้องใช้ เช่น dioxus และ nostr_sdk
+
 use std::time::Duration;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
-use nostr_sdk::{EventSource, PublicKey, Filter, Event, Kind, FromBech32, Client, serde_json, Metadata};
+use nostr_sdk::{
+    EventSource,
+    PublicKey,
+    Filter,
+    Event,
+    Kind,
+    FromBech32,
+    Client,
+    serde_json,
+    Metadata
+};
 
 use crate::components::anim::EllipsisLoading;
 use crate::components::StoryCard;
 use crate::nostr::nostr_client::NostrClient;
 use crate::styles::story_style::STYLE;
 
-const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_5.jpg"));
+const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/Untitled.webp"));
 
 /// โครงสร้างข้อมูลสำหรับเก็บข้อมูล
 /// Struct นี้จะเก็บข้อมูลเช่น id ของ story, รูปภาพ, ชื่อเรื่อง, บทสรุป, เวลาที่เผยแพร่,
 /// ชื่อและรูปภาพของผู้เขียน
 #[derive(Debug, Clone)]
 struct StoryData {
-    note_id: Option<String>,        // รหัสของ note
+    note_id: Option<String>,        // ค่า Event id ของ note
     image: Option<String>,          // รูปภาพของ note
     title: Option<String>,          // ชื่อของ note
     summary: Option<String>,        // สรุปของ note
