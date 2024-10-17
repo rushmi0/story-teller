@@ -80,7 +80,7 @@ pub async fn check_image(url: &str) -> bool {
 ///
 /// # Returns
 /// คืนค่าเป็น Struct `StoryData` ที่ประกอบไปด้วยข้อมูล story ทั้งหมด
-fn extract_tags(
+async fn extract_tags(
     event: Event,
     author_name: Option<String>,
     author_image: Option<String>,
@@ -96,11 +96,20 @@ fn extract_tags(
 
     // วนซ้ำเพื่อตรวจสอบ tags ภายใน event
     for tag in event.tags.iter() {
-        let tag_data = tag.as_vec(); // แปลง tag เป็นรูปแบบเวกเตอร์
-                                     // ตรวจสอบว่ามีข้อมูลใน tag และเป็น tag ที่เราต้องการหรือไม่
-        if tag_data.len() > 1 && tags_to_find.contains(&&**&tag_data[0]) {
+        let tag_data = tag.as_slice(); // แปลง tag เป็นรูปแบบเวกเตอร์
+                                       // ตรวจสอบว่ามีข้อมูลใน tag และเป็น tag ที่เราต้องการหรือไม่
+        if tag_data.len() > 1 && tags_to_find.contains(&tag_data[0].as_str()) {
             match tag_data[0].as_str() {
-                "image" => image = Some(tag_data[1].to_string()), // หากเป็น image, เก็บข้อมูล
+                "image" => {
+                    image = {
+                        let image = tag_data[1].to_string();
+                        if check_image(&image).await {
+                            Some(image)
+                        } else {
+                            Some(_IMG.to_string())
+                        }
+                    }
+                } // หากเป็น image, เก็บข้อมูล
                 "title" => title = Some(tag_data[1].to_string()), // หากเป็น title, เก็บข้อมูล
                 "summary" => summary = Some(tag_data[1].to_string()), // หากเป็น summary, เก็บข้อมูล
                 "published_at" => published_at = Some(tag_data[1].to_string()), // หากเป็น published_at, เก็บข้อมูล
@@ -236,7 +245,8 @@ pub fn Story() -> Element {
                         event.clone(),
                         author_name.clone(),
                         author_image.clone(),
-                    );
+                    )
+                    .await;
                     stories.push(story);
                     story_data_signal.set(stories.clone());
                 }
