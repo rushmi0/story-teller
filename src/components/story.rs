@@ -8,10 +8,9 @@ use nostr_sdk::{
 };
 use std::time::Duration;
 use wasm_bindgen::closure::Closure;
-use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{window, HtmlImageElement};
+use web_sys::HtmlImageElement;
 
 use crate::components::anim::EllipsisLoading;
 use crate::components::StoryCard;
@@ -33,7 +32,6 @@ struct StoryData {
     published_at: Option<String>, // เวลาที่เผยแพร่
     author_name: Option<String>,  // ชื่อผู้เขียน
     author_image: Option<String>, // รูปภาพผู้เขียน
-    author_pubkey: String,        // Hex pubkey
 }
 
 pub async fn check_image(url: &str) -> bool {
@@ -127,7 +125,6 @@ async fn extract_tags(
         published_at,
         author_name,
         author_image,
-        author_pubkey: event.pubkey.to_hex(),
     }
 }
 
@@ -220,7 +217,7 @@ pub fn Story() -> Element {
                         let result =
                             check_image(author_image.clone().unwrap().as_str())
                                 .await;
-                        if result {
+                        if !result {
                             let pk = event.pubkey.to_hex();
                             let image_proxy = format!(
                             "https://media.nostr.band/thumbs/{}/{}-picture-64",
@@ -232,8 +229,6 @@ pub fn Story() -> Element {
                             } else {
                                 author_image = Some(_IMG.to_string());
                             }
-                        } else {
-                            author_image = Some(_IMG.to_string());
                         }
                     } else {
                         author_image = Some(_IMG.to_string());
