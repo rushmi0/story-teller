@@ -5,7 +5,7 @@ use dioxus_logger::tracing::{error, info};
 use web_sys::window;
 use crate::components::shared::SharedMetadataVisibility;
 use crate::styles::account_card_style::STYLE;
-use crate::model::local_storage::LocalStorage;
+use crate::model::LocalStorage;
 
 #[component]
 pub fn AccountCard(state_metadata: SharedMetadataVisibility) -> Element {
