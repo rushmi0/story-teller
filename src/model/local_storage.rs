@@ -10,8 +10,13 @@ impl LocalStorage {
         let mut keys = Vec::new();
 
         for i in 0..storage.length().unwrap_or(0) {
+
+            // เก็บเฉพาะ key ที่ขึ้นต้นด้วย 'story-teller_' ลงใน `story_teller_keys`
             if let Some(key) = storage.key(i).ok().flatten() {
-                keys.push(key);
+                // เพิ่มเงื่อนไขในการตรวจสอบคีย์ที่ขึ้นต้นด้วย "story-teller_"
+                if key.starts_with("story-teller_") {
+                    keys.push(key);
+                }
             }
         }
 

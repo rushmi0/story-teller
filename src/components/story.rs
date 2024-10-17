@@ -13,7 +13,9 @@ use wasm_bindgen_futures::JsFuture;
 use web_sys::HtmlImageElement;
 
 use crate::components::anim::EllipsisLoading;
+use crate::components::banner::FollowList;
 use crate::components::StoryCard;
+use crate::model::SessionStorage;
 use crate::nostr::NostrClient;
 use crate::styles::story_style::STYLE;
 
@@ -152,11 +154,36 @@ pub fn Story() -> Element {
                 .await
                 .expect("Failed to setup client");
 
-            // Public key ของผู้ใช้งาน (ระบุเป็นค่าเบื้องต้น)
-            //let _public_key = PublicKey::from_bech32("npub1drvpzev3syqt0kjrls50050uzf25gehpz9vgdw08hvex7e0vgfeq0eseet").unwrap();
+
+            // ตรวจสอบว่า SessionStorage มีค่า key ที่ขึ้นต้นด้วย story-teller_
+            let key_exists = SessionStorage::has_key_starting_with("story-teller_");
+
+            let mut authors: Vec<PublicKey> = Vec::new();
+
+            if key_exists {
+                // ถ้ามี ให้ดึงข้อมูลจาก key story-teller_follow_1
+                if let Some(json_str) = SessionStorage::get("story-teller_follow_1") {
+                    // แปลง JSON string เป็น FollowList object
+                    let follow_list: FollowList = serde_json::from_str(&json_str)
+                        .expect("Failed to parse follow list");
+
+                    // วน loop เพื่อแปลง public_key เป็น PublicKey
+                    for public_key in follow_list.public_key {
+                        if let Ok(pk) = PublicKey::from_hex(&public_key) {
+                            authors.push(pk); // เก็บค่า PublicKey ลงใน authors
+                        }
+                    }
+                }
+            }
 
             // สร้าง filter สำหรับดึงข้อมูล event ที่เป็นประเภท LongFormTextNote
-            let filter = Filter::new().kind(Kind::LongFormTextNote);
+            let mut filter = Filter::new().kind(Kind::LongFormTextNote);
+
+            // ถ้ามีค่า authors ให้เพิ่มลงใน filter
+            if !authors.is_empty() {
+                info!("Now query follows list...");
+                filter = filter.authors(authors);
+            }
 
             // ดึงข้อมูล events จากเครือข่ายด้วย filter ที่เรากำหนด
             let events = client
@@ -165,6 +192,7 @@ pub fn Story() -> Element {
                     EventSource::relays(Some(Duration::from_secs(10))),
                 )
                 .await;
+
 
             // ถ้าการดึงข้อมูลสำเร็จ
             if let Ok(events) = events {

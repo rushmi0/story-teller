@@ -14,12 +14,36 @@ use nostr_sdk::{
     Kind,
     Event
 };
+use serde::{Deserialize, Serialize};
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility, SharedMetadataVisibility};
-use crate::model::LocalStorage;
+use crate::model::{LocalStorage, SessionStorage};
 use crate::nostr::NostrClient;
 
 const IMG_BANNER: &str = manganis::mg!(file("src/assets/nav-icon.svg"));
 //const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct FollowList {
+    pub(crate) public_key: Vec<String>,
+}
+
+fn process_event(event: &Event) -> FollowList {
+    let mut follow_list = FollowList { public_key: Vec::new() };
+
+    // ตรวจสอบ tags ใน Event
+    for tag in &event.tags {
+        let tag_data = tag.as_slice(); // แปลง tag เป็น slice
+
+        // ตรวจสอบว่า tag มี prefix เป็น "p" และมีอย่างน้อย 2 ค่า
+        if tag_data.len() > 1 && tag_data[0] == "p" {
+            // เพิ่ม value เข้าไปใน FollowList
+            follow_list.public_key.push(tag_data[1].to_string());
+        }
+
+    }
+
+    follow_list
+}
 
 #[component]
 pub fn Banner() -> Element {
@@ -40,15 +64,9 @@ pub fn Banner() -> Element {
     use_future( move || async move {
         // ดึงค่า keyทั้งหมดใน LocalStorage
         if let Some(storage) = LocalStorage::get_all_keys() {
-
-            // เก็บเฉพาะ key ที่ขึ้นต้นด้วย 'story-teller_' ลงใน `story_teller_keys`
-            let filtered_keys: Vec<String> = storage
-                .into_iter()
-                .filter(|key| key.starts_with("story-teller_"))
-                .collect();
-
-            if !filtered_keys.is_empty() {
-                story_teller_keys.set(filtered_keys);
+            // ไม่ต้องกรองอีกต่อไปเนื่องจาก get_all_keys คืนคีย์ที่ต้องการแล้ว
+            if !storage.is_empty() {
+                story_teller_keys.set(storage);
                 state_account.show_account.set(true);
             }
         }
@@ -77,10 +95,38 @@ pub fn Banner() -> Element {
                         .await;
 
                     if let Ok(events) = events {
-                        for event in events {
-                            info!("Follow List received: {:?}", event);
+                        // เลือก Event ที่มีค่า created_at มากที่สุด
+                        if let Some(latest_event) = events.iter().max_by_key(|e| e.created_at) {
+                            info!("Latest Follow List Event received: {:?}", latest_event);
+
+                            // ส่ง Event ไปยังฟังก์ชัน process_event เพื่อประมวลผล
+                            let follow_list = process_event(latest_event);
+                            info!("Follow List: {:?}", follow_list);
+
+                            let follow_list_string = serde_json::to_string(&follow_list).unwrap();
+
+                            // ตรวจสอบว่ามี key ที่ขึ้นต้นด้วย "story-teller_" อยู่ใน SessionStorage หรือไม่
+                            if let Some(existing_keys) = SessionStorage::get_all_keys() {
+                                // ถ้าไม่มี key ที่ขึ้นต้นด้วย "story-teller_" ให้บันทึกข้อมูลใหม่
+                                if !existing_keys.iter().any(|key| key.starts_with("story-teller_")) {
+                                    match SessionStorage::set("story-teller_follow_1", &follow_list_string) {
+                                        Ok(_) => info!("Follow List saved to Session Storage"),
+                                        Err(err) => error!("Failed to save to Session Storage: {}", err),
+                                    }
+                                } else {
+                                    info!("Key 'story-teller_' exists. Skipping save.");
+                                }
+                            } else {
+                                // ถ้าไม่สามารถดึง key จาก SessionStorage ได้ (อาจเกิดข้อผิดพลาด)
+                                match SessionStorage::set("story-teller_follow_1", &follow_list_string) {
+                                    Ok(_) => info!("Follow List saved to Session Storage"),
+                                    Err(err) => error!("Failed to save to Session Storage: {}", err),
+                                }
+                            }
+
 
                         }
+
                     }
 
                 }

@@ -5,7 +5,7 @@ use dioxus_logger::tracing::{error, info};
 use web_sys::window;
 use crate::components::shared::SharedMetadataVisibility;
 use crate::styles::account_card_style::STYLE;
-use crate::model::LocalStorage;
+use crate::model::{LocalStorage, SessionStorage};
 
 #[component]
 pub fn AccountCard(state_metadata: SharedMetadataVisibility) -> Element {
@@ -17,23 +17,29 @@ pub fn AccountCard(state_metadata: SharedMetadataVisibility) -> Element {
     let public_key = state_metadata.metadata.read().as_ref().map(|event| event.pubkey.to_hex()).unwrap_or_default();
 
     let handle_sign_out = move |_| {
-
         let key = format!("story-teller_{}", public_key);
 
         // ลบข้อมูลจาก Local Storage
         match LocalStorage::remove(&key) {
-            Ok(_) => info!("Successfully removed key: {}", key),
-            Err(e) => error!("Failed to remove item from localStorage: {}", e),
+            Ok(_) => info!("Removed key: {}", key),
+            Err(e) => error!("Error removing from Local Storage: {}", e),
+        }
+
+        // ลบข้อมูลจาก Session Storage
+        match SessionStorage::remove("story-teller_follow_1") {
+            Ok(_) => info!("Removed key: story-teller_follow_1"),
+            Err(e) => error!("Error removing from Session Storage: {}", e),
         }
 
         // รีเฟรชหน้าเว็บ
         if let Some(win) = window() {
             match win.location().reload() {
-                Ok(_) => info!("Page reloaded successfully"),
-                Err(e) => error!("Failed to reload the page: {:?}", e),
+                Ok(_) => info!("Page reloaded"),
+                Err(e) => error!("Error reloading the page: {:?}", e),
             }
         }
     };
+
 
     rsx! {
         style { {STYLE} }

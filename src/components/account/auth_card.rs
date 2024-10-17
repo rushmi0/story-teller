@@ -112,8 +112,6 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                 }
             }
         });
-
-
     };
 
 

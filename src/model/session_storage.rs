@@ -1,4 +1,6 @@
 use web_sys::window;
+use std::thread::sleep;
+use std::time::Duration;
 
 pub struct SessionStorage;
 
@@ -47,5 +49,13 @@ impl SessionStorage {
         }
     }
 
+
+    pub fn has_key_starting_with(prefix: &str) -> bool {
+        if let Some(keys) = Self::get_all_keys() {
+            keys.iter().any(|key| key.starts_with(prefix))
+        } else {
+            false
+        }
+    }
 
 }
