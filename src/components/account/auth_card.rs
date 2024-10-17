@@ -13,8 +13,8 @@ use nostr_sdk::{
 };
 use web_sys::window;
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility};
-use crate::model::local_storage::LocalStorage;
-use crate::nostr::nostr_client::NostrClient;
+use crate::model::LocalStorage;
+use crate::nostr::NostrClient;
 use crate::styles::auth_card_style::STYLE;
 
 const _ICON: &str = manganis::mg!(file("src/assets/icon.svg"));

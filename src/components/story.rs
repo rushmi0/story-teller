@@ -18,7 +18,7 @@ use nostr_sdk::{
 
 use crate::components::anim::EllipsisLoading;
 use crate::components::StoryCard;
-use crate::nostr::nostr_client::NostrClient;
+use crate::nostr::NostrClient;
 use crate::styles::story_style::STYLE;
 
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/Untitled.webp"));
@@ -92,13 +92,12 @@ fn extract_tags(event: Event, author_name: Option<String>, author_image: Option<
 #[component]
 pub fn Story() -> Element {
 
-    // สร้าง signal เพื่อเก็บ events ที่ได้จากการดึงข้อมูล
+    // เก็บ `events` ที่ได้จากการดึงข้อมูล
     let events_signal: Signal<Vec<Event>> = use_signal(Vec::new);
 
-    // สร้าง signal เพื่อเก็บข้อมูล StoryData ที่ประมวลผลแล้วจาก event
+    // เก็บข้อมูล StoryData ที่ประมวลผลแล้วจาก `event`
     let story_data_signal: Signal<Vec<StoryData>> = use_signal(Vec::new);
 
-    // ใช้ future ในการเรียกข้อมูล events แบบ asynchronous
     use_future({
         // clone ตัวแปร signal ที่สร้างขึ้นเพื่อใช้ใน future
         let mut events_signal = events_signal.clone();
