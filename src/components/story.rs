@@ -1,176 +1,197 @@
-// story.rs
-
 #![allow(non_snake_case)]
 
-use futures::stream::StreamExt;
-use std::sync::{Arc, Mutex};
+// นำเข้า libraries และ dependencies ที่ต้องใช้ เช่น dioxus และ nostr_sdk
 use std::time::Duration;
 use dioxus::prelude::*;
-use dioxus_logger::tracing::{error, info};
-use nostr_sdk::{EventSource, PublicKey, Filter, Event, Kind, FromBech32, Metadata, Client};
+use dioxus_logger::tracing::info;
+use nostr_sdk::{EventSource, PublicKey, Filter, Event, Kind, FromBech32, Client, serde_json, Metadata};
+
 use crate::components::anim::EllipsisLoading;
-use crate::components::shared::metadata_visibility::UserMetadata;
-use crate::components::shared::SharedMetadataVisibility;
 use crate::components::StoryCard;
 use crate::nostr::nostr_client::NostrClient;
 use crate::styles::story_style::STYLE;
 
-const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/Untitled.webp"));
+const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_5.jpg"));
 
+/// โครงสร้างข้อมูลสำหรับเก็บข้อมูล
+/// Struct นี้จะเก็บข้อมูลเช่น id ของ story, รูปภาพ, ชื่อเรื่อง, บทสรุป, เวลาที่เผยแพร่,
+/// ชื่อและรูปภาพของผู้เขียน
 #[derive(Debug, Clone)]
 struct StoryData {
-    image: Option<String>,
-    title: Option<String>,
-    summary: Option<String>,
-    published_at: Option<String>,
+    note_id: Option<String>,        // รหัสของ note
+    image: Option<String>,          // รูปภาพของ note
+    title: Option<String>,          // ชื่อของ note
+    summary: Option<String>,        // สรุปของ note
+    published_at: Option<String>,   // เวลาที่เผยแพร่
+    author_name: Option<String>,    // ชื่อผู้เขียน
+    author_image: Option<String>    // รูปภาพผู้เขียน
 }
 
-#[derive(Debug, Clone)]
-struct StoryAuthor {
-    note_id: Option<String>,
-    author_name: Option<String>,
-    author_image: Option<String>,
-}
-
-// ฟังก์ชันเพื่อดึงข้อมูลจาก event tags
-fn extract_story(event: &Event) -> StoryData {
+/// ฟังก์ชัน `extract_tags`
+/// ฟังก์ชันนี้ใช้สำหรับดึงข้อมูลจาก tags ของ event ที่ได้รับ เช่น รูปภาพ ชื่อเรื่อง สรุป และเวลาที่เผยแพร่
+/// และนำข้อมูลของผู้เขียนจาก parameter `author_name` และ `author_image` เข้ามาประกอบ
+///
+/// # Arguments
+/// - `event`: ข้อมูล event ที่ได้รับจากเครือข่าย Nostr
+/// - `author_name`: ชื่อผู้เขียน (เป็น Option เผื่อว่าอาจจะไม่มีข้อมูล)
+/// - `author_image`: รูปภาพของผู้เขียน (เป็น Option เช่นกัน)
+///
+/// # Returns
+/// คืนค่าเป็น Struct `StoryData` ที่ประกอบไปด้วยข้อมูล story ทั้งหมด
+fn extract_tags(event: Event, author_name: Option<String>, author_image: Option<String>) -> StoryData {
+    // กำหนดประเภทของ tags ที่ต้องการหา
     let tags_to_find = ["image", "title", "summary", "published_at"];
-    let mut image: Option<String> = None;
-    let mut title: Option<String> = None;
-    let mut summary: Option<String> = None;
-    let mut published_at: Option<String> = None;
 
+
+    let mut image: Option<String> = None;               // ตัวแปรเก็บค่า image
+    let mut title: Option<String> = None;               // ตัวแปรเก็บค่า title
+    let mut summary: Option<String> = None;             // ตัวแปรเก็บค่า summary
+    let mut published_at: Option<String> = None;        // ตัวแปรเก็บค่า published_at
+    let note_id = Some(event.id.to_hex());              // แปลง id ของ event เป็นรูปแบบ hex และเก็บใน note_id
+
+    // วนซ้ำเพื่อตรวจสอบ tags ภายใน event
     for tag in event.tags.iter() {
-        let tag_data = tag.as_vec();
-        if tag_data.len() > 1 && tags_to_find.contains(&tag_data[0].as_str()) {
+        let tag_data = tag.as_vec(); // แปลง tag เป็นรูปแบบเวกเตอร์
+        // ตรวจสอบว่ามีข้อมูลใน tag และเป็น tag ที่เราต้องการหรือไม่
+        if tag_data.len() > 1 && tags_to_find.contains(&&**&tag_data[0]) {
             match tag_data[0].as_str() {
-                "image" => image = Some(tag_data[1].to_string()),
-                "title" => title = Some(tag_data[1].to_string()),
-                "summary" => summary = Some(tag_data[1].to_string()),
-                "published_at" => published_at = Some(tag_data[1].to_string()),
+                "image" => image = Some(tag_data[1].to_string()),                   // หากเป็น image, เก็บข้อมูล
+                "title" => title = Some(tag_data[1].to_string()),                   // หากเป็น title, เก็บข้อมูล
+                "summary" => summary = Some(tag_data[1].to_string()),               // หากเป็น summary, เก็บข้อมูล
+                "published_at" => published_at = Some(tag_data[1].to_string()),     // หากเป็น published_at, เก็บข้อมูล
                 _ => {}
             }
         }
     }
 
-    StoryData { image, title, summary, published_at }
-}
-
-async fn extract_author(event: &Event, state_metadata: &mut SharedMetadataVisibility, client: &Client) -> Option<StoryAuthor> {
-    let pubkey = event.pubkey;
-    let filter_metadata = Filter::new().author(pubkey).kind(Kind::Metadata);
-
-    // ใช้ client เพื่อเรียก metadata ของ author
-    if let Ok(metadata_events) = client.get_events_of(vec![filter_metadata], EventSource::relays(Some(Duration::from_secs(10)))).await {
-        // สมมติว่าเราใช้เฉพาะ event แรกที่ดึงได้เป็น metadata
-        if let Some(metadata_event) = metadata_events.get(0) {
-            state_metadata.metadata.set(Some(metadata_event.clone()));
-
-            if let Some(metadata) = state_metadata.metadata.read().as_ref() {
-                if let Ok(user_metadata) = serde_json::from_str::<UserMetadata>(&metadata.content) {
-                    return Some(StoryAuthor {
-                        note_id: Some(metadata.id.to_string()),
-                        author_name: Some(user_metadata.name),
-                        author_image: Some(user_metadata.picture),
-                    });
-                }
-            }
-        }
+    // คืนค่า StoryData ที่ประกอบไปด้วยข้อมูลที่เราดึงมาได้จาก tags และข้อมูลผู้เขียน
+    StoryData {
+        note_id,
+        image,
+        title,
+        summary,
+        published_at,
+        author_name,
+        author_image,
     }
-
-    None
 }
 
-
+/// ฟังก์ชัน `Story`
+/// เป็น component ที่ทำหน้าที่ดึงข้อมูล NIP-23 (Long-form Content) จากเครือข่าย Nostr
+/// และแสดงผลออกมาเป็นรายการของ story โดยใช้ `StoryCard` component
 #[component]
 pub fn Story() -> Element {
+
+    // สร้าง signal เพื่อเก็บ events ที่ได้จากการดึงข้อมูล
     let events_signal: Signal<Vec<Event>> = use_signal(Vec::new);
+
+    // สร้าง signal เพื่อเก็บข้อมูล StoryData ที่ประมวลผลแล้วจาก event
     let story_data_signal: Signal<Vec<StoryData>> = use_signal(Vec::new);
-    let story_author_signal: Signal<Vec<StoryAuthor>> = use_signal(Vec::new);
-    let state_metadata = SharedMetadataVisibility::new();
 
-    let state_metadata = Arc::new(Mutex::new(SharedMetadataVisibility::new()));
-
+    // ใช้ future ในการเรียกข้อมูล events แบบ asynchronous
     use_future({
+        // clone ตัวแปร signal ที่สร้างขึ้นเพื่อใช้ใน future
         let mut events_signal = events_signal.clone();
+
+        // clone ตัวแปร signal เพื่อเก็บ story data
         let mut story_data_signal = story_data_signal.clone();
-        let mut story_author_signal = story_author_signal.clone();
-        let state_metadata = state_metadata.clone();
 
-        move || {
-            let state_metadata = state_metadata.clone();
+        // ฟังก์ชัน async ที่ดึงข้อมูล events จาก Nostr
+        move || async move {
+            let client = NostrClient::setup_and_connect().await.expect("Failed to setup client");
 
-            async move {
-                let client = NostrClient::setup_and_connect().await.expect("Failed to setup client");
-                let author_1 = FromBech32::from_bech32("npub1mqcwu7muxz3kfvfyfdme47a579t8x0lm3jrjx5yxuf4sknnpe43q7rnz85").expect("Invalid author key");
-                let author_2 = FromBech32::from_bech32("npub1vm0kq43djwdd4psjgdjgn9z6fm836c35dv7eg7x74z3n3ueq83jqhkxp8e").expect("Invalid author key");
-                let author_3 = FromBech32::from_bech32("npub1qd6zcgzukmydscp3eyauf2dn6xzgfsevsetrls8zrzgs5t0e4fws7re0mj").expect("Invalid author key");
-                let filter = Filter::new()
-                    .kind(Kind::LongFormTextNote)
-                    .authors(vec![author_1, author_2, author_3]);
+            // Public key ของผู้ใช้งาน (ระบุเป็นค่าเบื้องต้น)
+            //let _public_key = PublicKey::from_bech32("npub1drvpzev3syqt0kjrls50050uzf25gehpz9vgdw08hvex7e0vgfeq0eseet").unwrap();
 
+            // สร้าง filter สำหรับดึงข้อมูล event ที่เป็นประเภท LongFormTextNote
+            let filter = Filter::new()
+                .limit(64)
+                .kind(Kind::LongFormTextNote);
 
-                if let Ok(events) = client.
-                    get_events_of(
-                        vec![filter],
-                        EventSource::relays(Some(Duration::from_secs(10)))
-                    ).await {
+            // ดึงข้อมูล events จากเครือข่ายด้วย filter ที่เรากำหนด
+            let events = client
+                .get_events_of(
+                    vec![filter],
+                    EventSource::relays(Some(Duration::from_secs(10))),
+                )
+                .await;
 
-                    events_signal.set(events.clone());
+            // ถ้าการดึงข้อมูลสำเร็จ
+            if let Ok(events) = events {
+                // อัพเดตค่า signal ด้วยรายการ events ที่ได้รับมา
+                events_signal.set(events.clone());
 
-                    let stories: Vec<StoryData> = events.iter().map(extract_story).collect();
-                    story_data_signal.set(stories);
+                // สร้างเวกเตอร์เปล่าเพื่อเก็บ StoryData
+                let mut stories: Vec<StoryData> = Vec::new();
 
-                    let authors: Vec<StoryAuthor> = futures::stream::iter(events.iter())
-                        .filter_map(|e| {
-                            let client = client.clone();
-                            let state_metadata = state_metadata.clone();
+                // วนซ้ำผ่านแต่ละ event เพื่อดึงข้อมูล Metadata ของผู้เขียน
+                for event in events.iter() {
 
-                            async move {
-                                let mut state_metadata_lock = state_metadata.lock().unwrap();
-                                extract_author(e, &mut state_metadata_lock, &client).await
-                            }
-                        })
-                        .collect()
-                        .await;
+                    // สร้าง filter เพื่อดึง metadata ของผู้เขียน
+                    let metadata_filter = Filter::new()
+                        .author(event.pubkey)
+                        .kind(Kind::Metadata);
 
-                    story_author_signal.set(authors);
+                    let metadata_events = client
+                        .get_events_of(
+                            vec![metadata_filter],
+                            EventSource::relays(Some(Duration::from_secs(10)))
+                        ).await;
 
-                    //client.disconnect().await.expect("Failed to disconnect");
-                } else {
-                    info!("Failed to retrieve events");
+                    let mut author_name = None;    // ตัวแปรเก็บชื่อผู้เขียน
+                    let mut author_image = None;   // ตัวแปรเก็บรูปภาพของผู้เขียน
+
+                    // ถ้าการดึงข้อมูล Metadata สำเร็จ
+                    if let Ok(metadata_events) = metadata_events {
+                        for metadata_event in metadata_events {
+                            let user_metadata: Metadata = serde_json::from_str::<Metadata>(&*metadata_event.content).unwrap();
+
+                            // ดึงข้อมูลชื่อและรูปภาพของผู้เขียนจาก Metadata
+                            author_name = user_metadata.name.clone();
+                            author_image = user_metadata.picture.clone();
+
+                            //info!("User Metadata - Name: {:?}, Picture: {:?}", author_name, author_image);
+                        }
+                    }
+
+                    // ใช้ฟังก์ชัน extract_tags เพื่อดึงข้อมูลจาก event และ Metadata ของผู้เขียน
+                    let story = extract_tags(event.clone(), author_name.clone(), author_image.clone());
+                    stories.push(story);
                 }
+
+                // อัพเดตค่า signal ด้วยข้อมูล story ที่ประมวลผลแล้ว
+                story_data_signal.set(stories);
+
+                // ตัดการเชื่อมต่อหลังจากดึงข้อมูลเสร็จ
+                client.disconnect().await.expect("Failed to disconnect");
+            } else {
+                info!("Failed to retrieve events");
             }
         }
     });
 
-    for (story, author) in story_data_signal.iter().zip(story_author_signal.iter()) {
-        info!("{:#?}, {:#?}", story.clone(), author.clone());
-    }
 
     rsx! {
         style { {STYLE} }
         div { class: "note-container",
 
+            // ถ้าข้อมูลใน story_data_signal ยังว่างอยู่ ให้แสดง EllipsisLoading
             if story_data_signal.read().is_empty() {
                 EllipsisLoading {}
             } else {
-
-                if !story_data_signal.read().is_empty() && !story_author_signal.read().is_empty() {
-                    for (story, author) in story_data_signal.iter().zip(story_author_signal.iter()) {
-                        StoryCard {
-                            image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
-                            title: story.title.clone().unwrap_or_default(),
-                            summary: story.summary.clone().unwrap_or_default(),
-                            published_at: story.published_at.clone().unwrap_or_default(),
-                            author_name: author.author_name.clone().unwrap_or_else(|| "Unknown Author".to_string()),
-                            note_id: author.note_id.clone().unwrap_or_default(),
-                            author_image: author.author_image.clone().unwrap_or_default(),
-                        }
+                // ถ้ามีข้อมูลแล้ว ให้วนซ้ำแสดงผลแต่ละ story โดยใช้ StoryCard component
+                for story in story_data_signal.iter() {
+                    StoryCard {
+                        note_id: story.note_id.clone().unwrap_or_default(),
+                        name: story.author_name.clone().unwrap_or("Unknown Author".to_string()),
+                        image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
+                        title: story.title.clone().unwrap_or_default(),
+                        summary: story.summary.clone().unwrap_or_default(),
+                        published_at: story.published_at.clone().unwrap_or_default(),
+                        author_name: story.author_name.clone().unwrap_or_default(),
+                        author_image: story.author_image.clone().unwrap_or_default()
                     }
                 }
-
-
             }
         }
     }

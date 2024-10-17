@@ -33,6 +33,10 @@ pub const STYLE: &str = r#"
 }
 
 
+.textbox-note {
+   height: 70px;
+}
+
 
 .note-image {
     width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
