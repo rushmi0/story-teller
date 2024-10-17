@@ -5,7 +5,6 @@ use dioxus::prelude::*;
 use chrono::{NaiveDateTime, TimeZone, Utc};
 use crate::pages::router::Route;
 
-// กำหนดค่าคงที่สำหรับเส้นทางของไฟล์ SVG และรูปภาพที่จะใช้ใน component นี้
 const _MARK: &str = manganis::mg!(file("src/assets/mark.svg"));
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/Untitled.webp"));
 
@@ -58,9 +57,9 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
         div { class: "note-box note-out",
 
             // ตั้ง onclick event สำหรับคลิกการ์ดแล้วนำไปยังหน้า ErrorPage
-            onclick: move |_| {
-                navigator.push(Route::ErrorPage {});
-            },
+            // onclick: move |_| {
+            //     navigator.push(Route::ErrorPage {});
+            // },
 
             // ส่วนของรูปภาพของ note
             div {

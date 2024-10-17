@@ -116,11 +116,21 @@ pub const STYLE: &str = r#"
     margin: 5px;
 }
 
+
+/******************************************/
 .mark-icon {
     fill: #FFFFFF;
     width: 24px;
     height: 24px;
+    transition: fill 0.3s;
 }
+
+.mark-icon:hover,
+.mark-icon:active {
+    fill: ##ff004c;
+}
+/******************************************/
+
 
 .author-info {
     display: flex;
