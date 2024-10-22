@@ -47,7 +47,7 @@ pub fn ArticlePage(note_id: String) -> Element {
                 Some(story)
             }
             Err(err) => {
-                info!("Error decoding JSON: {}", err);
+                //info!("Error decoding JSON: {}", err);
                 None
             }
         }

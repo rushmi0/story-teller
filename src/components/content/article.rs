@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
+use dioxus_logger::tracing::info;
 use pulldown_cmark::{Parser, Options, html};
 use crate::components::story_card::format_unix_to_date;
 use crate::styles::article_style::STYLE;
@@ -21,7 +22,8 @@ pub struct ArticleProps {
 }
 
 fn markdown_to_html(markdown_input: &str) -> String {
-    let options = Options::empty();
+    // เพิ่ม options สำหรับตารางและ fenced code blocks
+    let options = Options::ENABLE_TABLES;
     let parser = Parser::new_ext(markdown_input, options);
 
     let mut html_output = String::new();
@@ -33,7 +35,8 @@ fn markdown_to_html(markdown_input: &str) -> String {
 #[component]
 pub fn Article(props: ArticleProps) -> Element {
     let formatted_date = format_unix_to_date(&props.published_at);
-    let article = markdown_to_html(&props.article);
+    let article = markdown_to_html(&props.article);  // แปลง markdown เป็น html
+    info!("{}", article);
 
     rsx! {
         style { {STYLE} }
@@ -53,7 +56,7 @@ pub fn Article(props: ArticleProps) -> Element {
                 }
 
                 div { class: "article-field-text",
-                    dangerous_inner_html: "{article}"
+                    dangerous_inner_html: "{article}"  // ใช้ html ที่แปลงจาก markdown
                 }
 
             }
