@@ -32,7 +32,7 @@ impl NostrClient {
         let mut client = NostrClient::new();
         let relays: Vec<&str> = vec![
             //"ws://localhost:6724",
-            "wss://relay.rushmi0.win",
+            // "wss://relay.rushmi0.win",
             "wss://nos.lol",
             "wss://relay.notoshi.win",
             "wss://nostr.mom",

@@ -26,14 +26,15 @@ const _IMG: manganis::ImageAsset =
 /// Struct นี้จะเก็บข้อมูลเช่น id ของ story, รูปภาพ, ชื่อเรื่อง, บทสรุป, เวลาที่เผยแพร่,
 /// ชื่อและรูปภาพของผู้เขียน
 #[derive(Debug, Clone)]
-struct StoryData {
-    note_id: Option<String>,      // ค่า Event id ของ note
-    image: Option<String>,        // รูปภาพของ note
-    title: Option<String>,        // ชื่อของ note
-    summary: Option<String>,      // สรุปของ note
-    published_at: Option<String>, // เวลาที่เผยแพร่
-    author_name: Option<String>,  // ชื่อผู้เขียน
-    author_image: Option<String>, // รูปภาพผู้เขียน
+pub struct StoryData {
+    pub(crate) note_id: Option<String>,      // ค่า Event id ของ note
+    pub(crate) image: Option<String>,        // รูปภาพของ note
+    pub(crate) title: Option<String>,        // ชื่อของ note
+    pub(crate) summary: Option<String>,      // สรุปของ note
+    pub(crate) article: Option<String>,      // เนื้อหาบทความ
+    pub(crate) published_at: Option<String>, // เวลาที่เผยแพร่
+    pub(crate) author_name: Option<String>,  // ชื่อผู้เขียน
+    pub(crate) author_image: Option<String>, // รูปภาพผู้เขียน
 }
 
 pub async fn check_image(url: &str) -> bool {
@@ -80,7 +81,7 @@ pub async fn check_image(url: &str) -> bool {
 ///
 /// # Returns
 /// คืนค่าเป็น Struct `StoryData` ที่ประกอบไปด้วยข้อมูล story ทั้งหมด
-async fn extract_tags(
+pub async fn extract_tags(
     event: Event,
     author_name: Option<String>,
     author_image: Option<String>,
@@ -93,6 +94,7 @@ async fn extract_tags(
     let mut summary: Option<String> = None; // ตัวแปรเก็บค่า summary
     let mut published_at: Option<String> = None; // ตัวแปรเก็บค่า published_at
     let note_id = Some(event.id.to_hex()); // แปลง id ของ event เป็นรูปแบบ hex และเก็บใน note_id
+    let article = Some(event.content);
 
     // วนซ้ำเพื่อตรวจสอบ tags ภายใน event
     for tag in event.tags.iter() {
@@ -124,6 +126,7 @@ async fn extract_tags(
         image,
         title,
         summary,
+        article,
         published_at,
         author_name,
         author_image,
@@ -181,7 +184,7 @@ pub fn Story() -> Element {
 
             // ถ้ามีค่า authors ให้เพิ่มลงใน filter
             if !authors.is_empty() {
-                info!("Now query follows list...");
+                //info!("Now query follows list...");
                 filter = filter.authors(authors);
             }
 
@@ -273,7 +276,6 @@ pub fn Story() -> Element {
                     story_data_signal.set(stories.clone());
                 }
 
-                // อัพเดตค่า signal ด้วยข้อมูล story ที่ประมวลผลแล้ว
 
                 // ตัดการเชื่อมต่อหลังจากดึงข้อมูลเสร็จ
                 client.disconnect().await.expect("Failed to disconnect");
@@ -295,12 +297,12 @@ pub fn Story() -> Element {
                 for story in story_data_signal.iter() {
                     StoryCard {
                         note_id: story.note_id.clone().unwrap_or_default(),
-                        name: story.author_name.clone().unwrap_or("Unknown Author".to_string()),
                         image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
                         title: story.title.clone().unwrap_or_default(),
                         summary: story.summary.clone().unwrap_or_default(),
+                        article: story.article.clone().unwrap_or_default(),
                         published_at: story.published_at.clone().unwrap_or_default(),
-                        author_name: story.author_name.clone().unwrap_or_default(),
+                        author_name:story.author_name.clone().unwrap_or("Unknown Author".to_string()),
                         author_image: story.author_image.clone().unwrap_or_default(),
                     }
                 }

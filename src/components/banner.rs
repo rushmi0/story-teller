@@ -1,5 +1,6 @@
 #![allow(non_snake_case)]
 
+use crate::pages::router::Route;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, error};
 use crate::components::account::{AuthCard, AccountCard};
@@ -47,6 +48,8 @@ fn process_event(event: &Event) -> FollowList {
 
 #[component]
 pub fn Banner() -> Element {
+
+    let navigator: Navigator = use_navigator();
 
     let mut state_auth = SharedAuthVisibility::new();
     let mut state_account = SharedAccountVisibility::new();
@@ -97,11 +100,11 @@ pub fn Banner() -> Element {
                     if let Ok(events) = events {
                         // เลือก Event ที่มีค่า created_at มากที่สุด
                         if let Some(latest_event) = events.iter().max_by_key(|e| e.created_at) {
-                            info!("Latest Follow List Event received: {:?}", latest_event);
+                            //info!("Latest Follow List Event received: {:?}", latest_event);
 
                             // ส่ง Event ไปยังฟังก์ชัน process_event เพื่อประมวลผล
                             let follow_list = process_event(latest_event);
-                            info!("Follow List: {:?}", follow_list);
+                            //info!("Follow List: {:?}", follow_list);
 
                             let follow_list_string = serde_json::to_string(&follow_list).unwrap();
 
@@ -152,7 +155,7 @@ pub fn Banner() -> Element {
                     if let Some(event) = state_metadata.metadata.read().as_ref() {
                         // ดึง content จาก event
                         let metadata_content = &event.content;
-                        info!("{}", metadata_content);
+                        //info!("{}", metadata_content);
 
                         state_metadata.user_metadata.set(serde_json::from_str(metadata_content).unwrap());
                     } else {
@@ -175,7 +178,7 @@ pub fn Banner() -> Element {
 
             // อ่านค่าจาก raw_metadata
             let metadata = state_metadata.raw_metadata.read();
-            info!("{}", &metadata);
+            //info!("{}", &metadata);
             // let public_key = state_metadata.metadata.read().as_ref().map(|event| event.pubkey).unwrap();
             // let event = EventBuilder::text_note("POW text note from rust-nostr", []).to_unsigned_event(public_key);
             // let event_str = serde_json::to_string(&event).unwrap();
@@ -207,7 +210,10 @@ pub fn Banner() -> Element {
         style { {STYLE} }
         div { class: "item-nav", id: "nav",
             img {
-                src: "{IMG_BANNER}"
+                src: "{IMG_BANNER}",
+                onclick: move |_| {
+                    navigator.push(Route::HomePage {});
+                }
             }
 
             if *state_account.show_account.read() {

@@ -11,8 +11,14 @@ const _MARKING: &str = manganis::mg!(file("src/assets/marking.svg"));
 
 const _FOLLOW: &str = manganis::mg!(file("src/assets/plus.svg"));
 
+#[derive(PartialEq, Props, Clone)]
+pub struct AuthorInfoProps {
+    author_name: String,
+    author_image: String
+}
+
 #[component]
-pub fn ArticleAuthor() -> Element {
+pub fn ArticleAuthor(props: AuthorInfoProps) -> Element {
 
     let handle_share = move |_| {
         info!("Share clicked!");
@@ -61,9 +67,9 @@ pub fn ArticleAuthor() -> Element {
              div { class: "author-info",
                 div { class: "article-author-bar",
                     div { id: "article-author",
-                        img { class: "article-profile-image", src: "{_IMG}", alt: "Profile image" }
+                        img { class: "article-profile-image", src: "{props.author_image}", alt: "Profile image" }
                         div { class: "article-author-details",
-                            h4 { class: "article-author-name", "Eimi Fukada" }
+                            h4 { class: "article-author-name", "{props.author_name}" }
                             button { class: "article-button-follow",
                                 r#type: "button",
                                 img { src: "{_FOLLOW}", alt: "Follow Icon" }

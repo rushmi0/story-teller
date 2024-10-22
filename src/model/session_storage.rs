@@ -1,10 +1,9 @@
 use web_sys::window;
-use std::thread::sleep;
-use std::time::Duration;
 
 pub struct SessionStorage;
 
 impl SessionStorage {
+
     // ฟังก์ชันเพื่อดึงคีย์ทั้งหมดใน Session Storage ที่ขึ้นต้นด้วย "story-teller_"
     pub fn get_all_keys() -> Option<Vec<String>> {
         let storage = window().and_then(|win| win.session_storage().ok().flatten())?;
