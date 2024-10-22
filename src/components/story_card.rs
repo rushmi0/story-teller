@@ -53,13 +53,19 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
     // แปลง `published_at` ของ note ให้เป็นวันที่ในรูปแบบที่อ่านง่าย
     let formatted_date = format_unix_to_date(&props.published_at);
 
+    let handle_click = move |_| {
+        navigator.push(
+            Route::ArticlePage {
+                note_id: props.note_id.clone()
+            }
+        );
+    };
+
     rsx! {
         div { class: "note-box note-out",
 
-            // ตั้ง onclick event สำหรับคลิกการ์ดแล้วนำไปยังหน้า ErrorPage
-            // onclick: move |_| {
-            //     navigator.push(Route::ErrorPage {});
-            // },
+            // ตั้ง onclick event สำหรับคลิกการ์ดแล้วนำไปยังหน้า ArticlePage
+            onclick: handle_click,
 
             // ส่วนของรูปภาพของ note
             div {

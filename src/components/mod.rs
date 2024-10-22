@@ -6,6 +6,7 @@ pub mod story_card;
 pub mod account;
 pub(crate) mod shared;
 pub mod anim;
+pub mod content;
 
 pub use banner::Banner;
 pub use search_bar::SearchBar;
