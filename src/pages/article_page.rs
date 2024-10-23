@@ -33,21 +33,21 @@ pub fn ArticlePage(note_id: String) -> Element {
     let stored_story: Option<StoryCardProps> = if let Some(story_string) = SessionStorage::get(&key) {
         match serde_json::from_str::<StoryCardProps>(&story_string) {
             Ok(story) => {
-                let story_data = StoryData {
-                    note_id: Some(story.note_id.clone()),
-                    image: Some(story.image.clone()),
-                    title: Some(story.title.clone()),
-                    summary: Some(story.summary.clone()),
-                    article: Some(story.article.clone()),
-                    published_at: Some(story.published_at.clone()),
-                    author_name: Some(story.author_name.clone()),
-                    author_image: Some(story.author_image.clone()),
-                };
-                article_data_signal.set(Some(story_data));
+                // let story_data = StoryData {
+                //     note_id: Some(story.note_id.clone()),
+                //     image: Some(story.image.clone()),
+                //     title: Some(story.title.clone()),
+                //     summary: Some(story.summary.clone()),
+                //     article: Some(story.article.clone()),
+                //     published_at: Some(story.published_at.clone()),
+                //     author_name: Some(story.author_name.clone()),
+                //     author_image: Some(story.author_image.clone()),
+                // };
+                // article_data_signal.set(Some(story_data));
                 Some(story)
             }
             Err(err) => {
-                //info!("Error decoding JSON: {}", err);
+                info!("Error decoding JSON: {}", err);
                 None
             }
         }
@@ -59,8 +59,7 @@ pub fn ArticlePage(note_id: String) -> Element {
             let mut article_data_signal = article_data_signal.clone();
             move || async move {
                 let client = NostrClient::setup_and_connect()
-                    .await
-                    .expect("Failed to setup client");
+                    .await.expect("Failed to setup client");
 
                 let filter = Filter::new()
                     .id(event_id)

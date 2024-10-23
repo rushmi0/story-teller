@@ -32,6 +32,30 @@ fn markdown_to_html(markdown_input: &str) -> String {
     html_output
 }
 
+
+fn filter_text(markdown_input: &str) -> String {
+    let options = Options::all();
+    let parser = Parser::new_ext(markdown_input, options);
+
+    let mut filtered_text = String::new();
+
+    for event in parser {
+        match event {
+            pulldown_cmark::Event::Text(text) => {
+                filtered_text.push_str(&text);
+            }
+            pulldown_cmark::Event::HardBreak | pulldown_cmark::Event::SoftBreak => {
+                filtered_text.push_str("\n\n");
+            }
+            _ => {}
+        }
+    }
+
+    filtered_text
+}
+
+
+
 #[component]
 pub fn Article(props: ArticleProps) -> Element {
     let formatted_date = format_unix_to_date(&props.published_at);
@@ -39,12 +63,18 @@ pub fn Article(props: ArticleProps) -> Element {
     //info!("{}", &props.content);
     //info!("{}", content);
 
+    // กรองข้อความจากเนื้อหาที่เป็น Markdown
+    let filtered_content = filter_text(&props.content);
+
+    // แสดงผลใน console
+    info!("Filtered content: {}", filtered_content);
+
     rsx! {
         style { {STYLE} }
         div { class: "article-box",
 
             div { class: "article-field",
-                div { class: "article-field-text-title", "{props.title}" }
+                div { class: "markdown-field-text-title", "{props.title}" }
                 div { class: "article-field-image-header",
                     img { class: "field-image-box", src: "{props.image}", max_height: "420px", }
                     div { class: "field-pt",
@@ -56,7 +86,7 @@ pub fn Article(props: ArticleProps) -> Element {
                     }
                 }
 
-                div { class: "article-field-text",
+                div { class: "markdown-field-text",
                     dangerous_inner_html: "{content}"
                 }
 

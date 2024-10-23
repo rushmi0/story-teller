@@ -1,5 +1,4 @@
 pub const STYLE: &str = r#"
-
 .article-box {
     max-width: 1000px; /* ปรับขนาดความกว้างให้การ์ด */
     margin: 20px auto; /* จัดการ์ดให้อยู่ตรงกลาง */
@@ -15,7 +14,7 @@ pub const STYLE: &str = r#"
     gap: 15px;
 }
 
-.article-field-text-title {
+.markdown-field-text-title {
     color: #FFFFFF;
     font-size: 24px;
     font-weight: bold;
@@ -62,8 +61,10 @@ pub const STYLE: &str = r#"
     object-fit: cover;  /* ให้ขนาดของไอคอนไม่บิดเบี้ยว */
 }
 
+/*******************************/
 
-.article-field-text {
+
+.markdown-field-text {
     white-space: pre-wrap;
     font-size: 16px;
     line-height: 1.3;
@@ -71,33 +72,39 @@ pub const STYLE: &str = r#"
     margin-top: 10px;
 }
 
-
-.article-field-text pre {
-    background-color: #242430; /* หรือสีที่คุณต้องการ */
+.markdown-field-text pre {
+    background-color: #242430;
     padding: 10px;
     border-radius: 5px;
     overflow-x: auto; /* ทำให้สามารถเลื่อนด้านข้างได้เมื่อเนื้อหายาว */
 }
 
+/* สไตล์สำหรับลิงก์ */
+.markdown-field-text a {
+    color: blue;
+    text-decoration: underline;
+}
+
+.markdown-field-text a:hover {
+    color: darkblue;
+}
 
 /* เพิ่มสไตล์สำหรับการแสดงผลตาราง */
-.article-field-text table {
+.markdown-field-text table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
 }
 
-.article-field-text th, .article-field-text td {
+.markdown-field-text th, .markdown-field-text td {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-.article-field-text th {
+.markdown-field-text th {
     background-color: #404657;
     color: white;
     text-align: center;
 }
-
-
 
 "#;

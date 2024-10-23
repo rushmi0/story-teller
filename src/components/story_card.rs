@@ -65,7 +65,7 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
         let props = props.clone();
         move |_| {
             let story_string = serde_json::to_string(&props).unwrap();
-            info!("Story String {}", story_string);
+            //info!("Story String {}", story_string);
 
             // สร้างคีย์ที่ไม่ซ้ำกัน
             let key = format!("story-teller_note_{}", props.note_id);
