@@ -11,6 +11,8 @@ const _ICON: &str = manganis::mg!(file("src/assets/logo.svg"));
 const _CALENDAR: &str = manganis::mg!(file("src/assets/date.svg"));
 const _CATEGORY: &str = manganis::mg!(file("src/assets/category.svg"));
 const _COMMENT: &str = manganis::mg!(file("src/assets/comment.svg"));
+const _PLAY: &str = manganis::mg!(file("src/assets/play.svg"));
+const _PLAYING: &str = manganis::mg!(file("src/assets/playing.svg"));
 
 #[derive(PartialEq, Props, Clone)]
 pub struct ArticleProps {
@@ -58,16 +60,24 @@ fn filter_text(markdown_input: &str) -> String {
 
 #[component]
 pub fn Article(props: ArticleProps) -> Element {
+    // สถานะสำหรับจัดการการแสดง play icon
+    let mut play_signal = use_signal(|| false);
+
     let formatted_date = format_unix_to_date(&props.published_at);
     let content = markdown_to_html(&props.content);
-    //info!("{}", &props.content);
-    //info!("{}", content);
 
     // กรองข้อความจากเนื้อหาที่เป็น Markdown
     let filtered_content = filter_text(&props.content);
 
     // แสดงผลใน console
     info!("Filtered content: {}", filtered_content);
+
+    // ฟังก์ชันจัดการการกดปุ่ม play
+    let handle_play = move |_| {
+        let mut is_playing = play_signal.write();
+        *is_playing = !*is_playing;  // เปลี่ยนสถานะการเล่น
+        info!("Play clicked!");
+    };
 
     rsx! {
         style { {STYLE} }
@@ -79,6 +89,18 @@ pub fn Article(props: ArticleProps) -> Element {
                     img { class: "field-image-box", src: "{props.image}", max_height: "420px", }
                     div { class: "field-pt",
                         div { class: "article-field-icons",
+
+                            // ปุ่มกด play
+                            div { class: "field-icon-box", onclick: handle_play,
+                                img {
+                                    src: if *play_signal.read() { _PLAYING } else { _PLAY },
+                                    alt: "Play Icon"
+                                }
+                                span {
+                                    if *play_signal.read() { "Playing" } else { "Play" }
+                                }
+                            }
+
                             div { class: "field-icon-box", img { src: "{_CALENDAR}" }, "{formatted_date}" }
                             div { class: "field-icon-box", img { src: "{_COMMENT}" }, "comments : 35" }
                             div { class: "field-icon-box", img { src: "{_CATEGORY}" }, "Category : Sport" }

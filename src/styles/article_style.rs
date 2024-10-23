@@ -1,4 +1,6 @@
 pub const STYLE: &str = r#"
+
+
 .article-box {
     max-width: 1000px; /* ปรับขนาดความกว้างให้การ์ด */
     margin: 20px auto; /* จัดการ์ดให้อยู่ตรงกลาง */
