@@ -5,8 +5,8 @@ use crate::pages::{HomePage, ArticlePage, ErrorPage};
 pub enum Route {
     #[route("/")]
     HomePage {},
-    #[route("/article/id/:note_id")]
-    ArticlePage { note_id: String },
+    #[route("/story/id/:event_id")]
+    ArticlePage { event_id: String },
     #[route("/error")]
     ErrorPage {},
 }

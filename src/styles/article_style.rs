@@ -67,7 +67,7 @@ pub const STYLE: &str = r#"
 .markdown-field-text {
     white-space: pre-wrap;
     font-size: 16px;
-    line-height: 1.3;
+    line-height: 1.5;
     color: #FFFFFF;
     margin-top: 10px;
 }

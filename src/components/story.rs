@@ -3,10 +3,20 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
 use nostr_sdk::{
-    serde_json, Client, Event, EventSource, Filter, FromBech32, Kind, Metadata,
+    serde_json,
+    Client,
+    Event,
+    EventSource,
+    Filter,
+    ToBech32,
+    FromBech32,
+    Kind,
+    Metadata,
     PublicKey,
+    EventId
 };
 use std::time::Duration;
+use nostr_sdk::prelude::{Nip19, Nip19Event, PREFIX_BECH32_NOTE_ID};
 use wasm_bindgen::closure::Closure;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
@@ -16,7 +26,7 @@ use crate::components::anim::EllipsisLoading;
 use crate::components::banner::FollowList;
 use crate::components::StoryCard;
 use crate::model::SessionStorage;
-use crate::nostr::NostrClient;
+use crate::nostr::{Nip19Tool, NostrClient};
 use crate::styles::story_style::STYLE;
 
 const _IMG: manganis::ImageAsset =
@@ -96,6 +106,7 @@ pub async fn extract_tags(
     let note_id = Some(event.id.to_hex()); // แปลง id ของ event เป็นรูปแบบ hex และเก็บใน note_id
     let article = Some(event.content);
 
+
     // วนซ้ำเพื่อตรวจสอบ tags ภายใน event
     for tag in event.tags.iter() {
         let tag_data = tag.as_slice(); // แปลง tag เป็นรูปแบบเวกเตอร์
@@ -138,6 +149,7 @@ pub async fn extract_tags(
 /// และแสดงผลออกมาเป็นรายการของ story โดยใช้ `StoryCard` component
 #[component]
 pub fn Story() -> Element {
+
     // สร้าง signal เพื่อเก็บ events ที่ได้จากการดึงข้อมูล
     let events_signal: Signal<Vec<Event>> = use_signal(Vec::new);
 
@@ -296,7 +308,7 @@ pub fn Story() -> Element {
                 // ถ้ามีข้อมูลแล้ว ให้วนซ้ำแสดงผลแต่ละ story โดยใช้ StoryCard component
                 for story in story_data_signal.iter() {
                     StoryCard {
-                        note_id: story.note_id.clone().unwrap_or_default(),
+                        note_id: Nip19Tool::id_encode(story.note_id.clone().unwrap_or_default()),
                         image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
                         title: story.title.clone().unwrap_or_default(),
                         summary: story.summary.clone().unwrap_or_default(),

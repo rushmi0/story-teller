@@ -85,7 +85,7 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
 
             navigator.push(
                 Route::ArticlePage {
-                    note_id: props.note_id.clone()
+                    event_id: props.note_id.clone()
                 }
             );
         }

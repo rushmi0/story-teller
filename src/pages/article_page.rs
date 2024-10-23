@@ -12,12 +12,13 @@ use nostr_sdk::{EventId, EventSource, Metadata, Filter, Kind};
 use crate::components::anim::EllipsisLoading;
 use crate::components::story::{check_image, extract_tags, StoryData};
 use crate::components::story_card::StoryCardProps;
-use crate::nostr::NostrClient;
+use crate::nostr::{Nip19Tool, NostrClient};
 
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/Untitled.webp"));
 
 #[component]
-pub fn ArticlePage(note_id: String) -> Element {
+pub fn ArticlePage(event_id: String) -> Element {
+    let note_id = Nip19Tool::id_decode(event_id);
     let mut image: String = String::new();
     let mut title: String = String::new();
     let mut summary: String = String::new();
@@ -54,6 +55,7 @@ pub fn ArticlePage(note_id: String) -> Element {
     } else {
         None
     };
+
     if stored_story.is_none() {
         use_future({
             let mut article_data_signal = article_data_signal.clone();
