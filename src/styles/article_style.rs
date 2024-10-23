@@ -64,11 +64,40 @@ pub const STYLE: &str = r#"
 
 
 .article-field-text {
+    white-space: pre-wrap;
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.3;
     color: #FFFFFF;
     margin-top: 10px;
 }
+
+
+.article-field-text pre {
+    background-color: #242430; /* หรือสีที่คุณต้องการ */
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto; /* ทำให้สามารถเลื่อนด้านข้างได้เมื่อเนื้อหายาว */
+}
+
+
+/* เพิ่มสไตล์สำหรับการแสดงผลตาราง */
+.article-field-text table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.article-field-text th, .article-field-text td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.article-field-text th {
+    background-color: #404657;
+    color: white;
+    text-align: center;
+}
+
 
 
 "#;

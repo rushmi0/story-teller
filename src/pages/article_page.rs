@@ -141,7 +141,7 @@ pub fn ArticlePage(note_id: String) -> Element {
                             image: image,
                             title: title,
                             summary: summary,
-                            article: article,
+                            content: article,
                             published_at: published_at
                         }
                     }
