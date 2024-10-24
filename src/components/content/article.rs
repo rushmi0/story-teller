@@ -47,7 +47,7 @@ fn filter_text(markdown_input: &str) -> String {
                 filtered_text.push_str(&text);
             }
             pulldown_cmark::Event::HardBreak | pulldown_cmark::Event::SoftBreak => {
-                filtered_text.push_str("\n");
+                filtered_text.push_str("\n\n");
             }
             _ => {}
         }
@@ -62,7 +62,7 @@ fn filter_text(markdown_input: &str) -> String {
 
 fn filter_links(input: String) -> String {
     let re = Regex::new(r"https?://[^\s]+").unwrap();
-    re.replace_all(&input, "\n\n").to_string()
+    re.replace_all(&input, "\n").to_string()
 }
 
 
