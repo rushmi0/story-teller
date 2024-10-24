@@ -79,9 +79,6 @@ pub fn CheckBox() -> Element {
         div { class: "checkbox-container",
             div { class: "checkbox-sidebar",
 
-                //h3 { style: "color: white; text-align: center", "Current dropdown status: {is_dropdown}" }
-                //h3 { style: "color: white", "Current Screen Size: Width:{width} x Height:{height}" }
-
                 div {
                     button {
                         class: "icon-container",
