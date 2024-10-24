@@ -3,8 +3,13 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
 use pulldown_cmark::{Parser, Options, html};
+use web_sys::{window, SpeechSynthesisUtterance};
 use crate::components::story_card::format_unix_to_date;
 use crate::styles::article_style::STYLE;
+
+use text_to_sounds::{parse, SoundKind, Sound};
+
+
 
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_5.jpg"));
 const _ICON: &str = manganis::mg!(file("src/assets/logo.svg"));
@@ -57,6 +62,24 @@ fn filter_text(markdown_input: &str) -> String {
 }
 
 
+// ฟังก์ชันแปลงข้อความเป็นเสียง
+fn play_sound(text: String) {
+    let window = window().expect("no global `window` exists");
+    let speech_synthesis = window
+        .speech_synthesis()
+        .expect("Speech synthesis not supported");
+
+    let utterance = SpeechSynthesisUtterance::new_with_text(&text).expect("Unable to create utterance");
+
+    // ปรับความเร็วเสียง (rate), ความดังเสียง (volume), และโทนเสียง (pitch)
+    utterance.set_rate(1.0);
+    utterance.set_pitch(1.0);
+    utterance.set_volume(1.0);
+
+    speech_synthesis.speak(&utterance);
+}
+
+
 
 #[component]
 pub fn Article(props: ArticleProps) -> Element {
@@ -74,9 +97,14 @@ pub fn Article(props: ArticleProps) -> Element {
 
     // ฟังก์ชันจัดการการกดปุ่ม play
     let handle_play = move |_| {
+
         let mut is_playing = play_signal.write();
-        *is_playing = !*is_playing;  // เปลี่ยนสถานะการเล่น
+        *is_playing = !*is_playing;
         info!("Play clicked!");
+
+        if *is_playing {
+            play_sound(filtered_content.clone());
+        }
     };
 
     rsx! {
