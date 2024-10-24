@@ -7,10 +7,6 @@ use web_sys::{window, SpeechSynthesisUtterance};
 use crate::components::story_card::format_unix_to_date;
 use crate::styles::article_style::STYLE;
 
-use text_to_sounds::{parse, SoundKind, Sound};
-
-
-
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_5.jpg"));
 const _ICON: &str = manganis::mg!(file("src/assets/logo.svg"));
 const _CALENDAR: &str = manganis::mg!(file("src/assets/date.svg"));
