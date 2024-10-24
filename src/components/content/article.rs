@@ -4,6 +4,7 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
 use pulldown_cmark::{Parser, Options, html};
 use web_sys::{window, SpeechSynthesisUtterance};
+use regex::Regex;
 use crate::components::story_card::format_unix_to_date;
 use crate::styles::article_style::STYLE;
 
@@ -25,7 +26,6 @@ pub struct ArticleProps {
 }
 
 fn markdown_to_html(markdown_input: &str) -> String {
-
     let options = Options::all();
     let parser = Parser::new_ext(markdown_input, options);
 
@@ -34,7 +34,6 @@ fn markdown_to_html(markdown_input: &str) -> String {
 
     html_output
 }
-
 
 fn filter_text(markdown_input: &str) -> String {
     let options = Options::all();
@@ -48,34 +47,45 @@ fn filter_text(markdown_input: &str) -> String {
                 filtered_text.push_str(&text);
             }
             pulldown_cmark::Event::HardBreak | pulldown_cmark::Event::SoftBreak => {
-                filtered_text.push_str("\n\n");
+                filtered_text.push_str("\n");
             }
             _ => {}
         }
     }
 
-    filtered_text
+    // ฟิลเตอร์ลิงก์ในข้อความที่ได้จาก Markdown
+    let filtered_with_links = filter_links(filtered_text);
+
+    filtered_with_links
 }
 
 
-// ฟังก์ชันแปลงข้อความเป็นเสียง
-fn play_sound(text: String) {
+fn filter_links(input: String) -> String {
+    let re = Regex::new(r"https?://[^\s]+").unwrap();
+    re.replace_all(&input, "\n\n").to_string()
+}
+
+
+fn play_sound(text: String, is_playing: bool) {
     let window = window().expect("no global `window` exists");
     let speech_synthesis = window
         .speech_synthesis()
         .expect("Speech synthesis not supported");
 
-    let utterance = SpeechSynthesisUtterance::new_with_text(&text).expect("Unable to create utterance");
+    if !is_playing {
+        speech_synthesis.cancel();
+        return;
+    }
 
-    // ปรับความเร็วเสียง (rate), ความดังเสียง (volume), และโทนเสียง (pitch)
-    utterance.set_rate(1.0);
-    utterance.set_pitch(1.0);
-    utterance.set_volume(1.0);
+    let utterance = SpeechSynthesisUtterance::new_with_text(&text)
+        .expect("Unable to create utterance");
+
+    utterance.set_rate(0.9);    // ปรับความเร็วเสียง (rate)
+    utterance.set_pitch(1.0);   // และโทนเสียง (pitch)
+    utterance.set_volume(1.0);  // ความดังเสียง (volume)
 
     speech_synthesis.speak(&utterance);
 }
-
-
 
 #[component]
 pub fn Article(props: ArticleProps) -> Element {
@@ -93,14 +103,14 @@ pub fn Article(props: ArticleProps) -> Element {
 
     // ฟังก์ชันจัดการการกดปุ่ม play
     let handle_play = move |_| {
-
         let mut is_playing = play_signal.write();
         *is_playing = !*is_playing;
         info!("Play clicked!");
 
-        if *is_playing {
-            play_sound(filtered_content.clone());
-        }
+        play_sound(
+            filtered_content.clone(),
+            *is_playing
+        );
     };
 
     rsx! {
@@ -121,7 +131,8 @@ pub fn Article(props: ArticleProps) -> Element {
                                     alt: "Play Icon"
                                 }
                                 span {
-                                    if *play_signal.read() { "Playing" } else { "Play" }
+                                    //if *play_signal.read() { "Playing" } else { "Play" }
+                                    "Play"
                                 }
                             }
 
@@ -135,9 +146,7 @@ pub fn Article(props: ArticleProps) -> Element {
                 div { class: "markdown-field-text",
                     dangerous_inner_html: "{content}"
                 }
-
             }
-
         }
     }
 }
