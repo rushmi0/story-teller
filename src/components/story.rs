@@ -52,7 +52,6 @@ pub async fn check_image(url: &str) -> bool {
     let img = HtmlImageElement::new().unwrap();
     img.set_src(url);
 
-    // Create a promise to check if the image loads successfully
     let promise = js_sys::Promise::new(&mut |resolve, reject| {
         let img_clone = img.clone();
         let resolve = resolve.clone();

@@ -18,47 +18,45 @@ const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/Untitled.we
 
 #[component]
 pub fn ArticlePage(event_id: String) -> Element {
-    let note_id = Nip19Tool::id_decode(event_id);
-    let mut image: String = String::new();
-    let mut title: String = String::new();
-    let mut summary: String = String::new();
-    let mut article: String = String::new();
-    let mut published_at: String = String::new();
-    let mut author_name: String = String::new();
-    let mut author_image: String = String::new();
+    let note_id = Nip19Tool::id_decode(event_id.clone());
+    let article_data_signal: Signal<Option<StoryData>> = use_signal(|| None);
 
-    let mut article_data_signal: Signal<Option<StoryData>> = use_signal(|| None);
-    let key = format!("story-teller_note_{}", note_id);
+    let key = format!("story-teller_note_{}", event_id);
+    info!("key: {}", key);
     let event_id = EventId::from_str(&note_id).expect("Invalid note_id format");
 
-    let stored_story: Option<StoryCardProps> = if let Some(story_string) = SessionStorage::get(&key) {
-        match serde_json::from_str::<StoryCardProps>(&story_string) {
-            Ok(story) => {
-                // let story_data = StoryData {
-                //     note_id: Some(story.note_id.clone()),
-                //     image: Some(story.image.clone()),
-                //     title: Some(story.title.clone()),
-                //     summary: Some(story.summary.clone()),
-                //     article: Some(story.article.clone()),
-                //     published_at: Some(story.published_at.clone()),
-                //     author_name: Some(story.author_name.clone()),
-                //     author_image: Some(story.author_image.clone()),
-                // };
-                // article_data_signal.set(Some(story_data));
-                Some(story)
-            }
-            Err(err) => {
-                info!("Error decoding JSON: {}", err);
-                None
+    // ดึงข้อมูลจาก SessionStorage และเก็บในตัวแปร
+    let story_string = SessionStorage::get(&key);
+
+    // เช็คว่ามีข้อมูลหรือไม่
+    if let Some(story_string) = story_string {
+        info!("Story found: {}", story_string);
+        let mut article_data_signal = article_data_signal.clone();
+        use_future( move || {
+        let value = story_string.clone();
+        async move {
+            if let Ok(story) = serde_json::from_str::<StoryCardProps>(&value) {
+                let story_data = StoryData {
+                    note_id: Some(story.note_id.clone()),
+                    image: Some(story.image.clone()),
+                    title: Some(story.title.clone()),
+                    summary: Some(story.summary.clone()),
+                    article: Some(story.article.clone()),
+                    published_at: Some(story.published_at.clone()),
+                    author_name: Some(story.author_name.clone()),
+                    author_image: Some(story.author_image.clone()),
+                };
+                article_data_signal.set(Some(story_data));
             }
         }
+        });
     } else {
-        None
-    };
+        info!("No story found, fetching from the Relay.");
 
-    if stored_story.is_none() {
+        // ใช้ use_future เพื่อดึงข้อมูลจาก Relay
+        let mut article_data_signal = article_data_signal.clone();
+        let event_id = event_id.clone();
         use_future({
-            let mut article_data_signal = article_data_signal.clone();
             move || async move {
                 let client = NostrClient::setup_and_connect()
                     .await.expect("Failed to setup client");
@@ -75,7 +73,10 @@ pub fn ArticlePage(event_id: String) -> Element {
                     if let Some(event) = events.get(0) {
                         let metadata_filter = Filter::new().author(event.pubkey).kind(Kind::Metadata);
                         let metadata_events = client
-                            .get_events_of(vec![metadata_filter], EventSource::relays(Some(Duration::from_secs(10))))
+                            .get_events_of(
+                                vec![metadata_filter],
+                                EventSource::relays(Some(Duration::from_secs(10)))
+                            )
                             .await;
 
                         let mut author_name = None;
@@ -99,11 +100,7 @@ pub fn ArticlePage(event_id: String) -> Element {
                                 let pk = event.pubkey.to_hex();
                                 let image_proxy = format!("https://media.nostr.band/thumbs/{}/{}-picture-64", &pk[60..], pk);
                                 let result = check_image(&image_proxy).await;
-                                if result {
-                                    author_image = Some(image_proxy);
-                                } else {
-                                    author_image = Some(_IMG.to_string());
-                                }
+                                author_image = if result { Some(image_proxy) } else { Some(_IMG.to_string()) };
                             }
                         } else {
                             author_image = Some(_IMG.to_string());
@@ -117,15 +114,16 @@ pub fn ArticlePage(event_id: String) -> Element {
         });
     }
 
-    if let Some(story_data) = article_data_signal.read().clone() {
-        image = story_data.image.clone().unwrap_or_default();
-        title = story_data.title.clone().unwrap_or_default();
-        summary = story_data.summary.clone().unwrap_or_default();
-        article = story_data.article.clone().unwrap_or_default();
-        published_at = story_data.published_at.clone().unwrap_or_default();
-        author_name = story_data.author_name.clone().unwrap_or_default();
-        author_image = story_data.author_image.clone().unwrap_or_default();
-    }
+    // แสดงข้อมูลจากสัญญาณ
+    let story_data = article_data_signal.read().clone();
+
+    let image = story_data.as_ref().and_then(|s| s.image.clone()).unwrap_or_default();
+    let title = story_data.as_ref().and_then(|s| s.title.clone()).unwrap_or_default();
+    let summary = story_data.as_ref().and_then(|s| s.summary.clone()).unwrap_or_default();
+    let article = story_data.as_ref().and_then(|s| s.article.clone()).unwrap_or_default();
+    let published_at = story_data.as_ref().and_then(|s| s.published_at.clone()).unwrap_or_default();
+    let author_name = story_data.as_ref().and_then(|s| s.author_name.clone()).unwrap_or_default();
+    let author_image = story_data.as_ref().and_then(|s| s.author_image.clone()).unwrap_or_default();
 
     rsx! {
         style { {STYLE} }

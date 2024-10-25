@@ -42,21 +42,21 @@ pub fn ArticleAuthor(props: AuthorInfoProps) -> Element {
                     button { class: "article-button-item",
                         r#type: "button",
                         onclick: handle_share,
-                        img { src: "{_COMMENT}", alt: "Play Icon" }
+                        img { src: "{_SHARE}", alt: "Play Icon" }
                         span { class: "article-lable-item", "Share" }
                     }
 
                     button { class: "article-button-item",
                         r#type: "button",
                         onclick: handle_marking,
-                        img { src: "{_SHARE}", alt: "Play Icon" }
+                        img { src: "{_MARKING}", alt: "Play Icon" }
                         span { class: "article-lable-item", "Marking" }
                     }
 
                     button { class: "article-button-item",
                         r#type: "button",
                         onclick: handle_comment,
-                        img { src: "{_MARKING}", alt: "Play Icon" }
+                        img { src: "{_COMMENT}", alt: "Play Icon" }
                         span { class: "article-lable-item", "Comment" }
                     }
                 }

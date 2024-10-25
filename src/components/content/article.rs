@@ -87,8 +87,36 @@ fn play_sound(text: String, is_playing: bool) {
     speech_synthesis.speak(&utterance);
 }
 
+fn detect_browser() -> String {
+    if let Some(navigator) = window().and_then(|win| win.navigator().user_agent().ok()) {
+        if navigator.contains("Edg") {
+            "Microsoft Edge".to_string()
+        } else if navigator.contains("Chrome") && !navigator.contains("Chromium") {
+            "Google Chrome".to_string()
+        } else if navigator.contains("Firefox") {
+            "Mozilla Firefox".to_string()
+        } else if navigator.contains("Safari") && !navigator.contains("Chrome") {
+            "Safari".to_string()
+        } else if navigator.contains("Opera") || navigator.contains("OPR") {
+            "Opera".to_string()
+        } else {
+            "Unknown Browser".to_string()
+        }
+    } else {
+        "Unable to detect browser".to_string()
+    }
+}
+
+
+
+
 #[component]
 pub fn Article(props: ArticleProps) -> Element {
+
+    let browser_name = detect_browser();
+    info!("Browser detected: {}", browser_name);
+
+
     // สถานะสำหรับจัดการการแสดง play icon
     let mut play_signal = use_signal(|| false);
 
@@ -99,7 +127,9 @@ pub fn Article(props: ArticleProps) -> Element {
     let filtered_content = filter_text(&props.content);
 
     // แสดงผลใน console
-    info!("Filtered content: {}", filtered_content);
+    //info!("Filtered content: {}", filtered_content);
+    //info!("Raw content: {}", &props.content);
+    //info!("HTML content: {}", content);
 
     // ฟังก์ชันจัดการการกดปุ่ม play
     let handle_play = move |_| {

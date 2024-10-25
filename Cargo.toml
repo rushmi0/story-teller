@@ -15,7 +15,7 @@ dioxus = { version = "0.5", features = ["router", "web"] }
 dioxus-logger = "0.5.1"
 manganis = "0.2.2"
 nostr-sdk = "0.35.0"
-web-sys = { version = "0.3.70", features = ["HtmlImageElement", "SpeechSynthesis"] }
+web-sys = { version = "0.3.70", features = ["HtmlImageElement", "SpeechSynthesis", "Navigator"] }
 js-sys = "0.3.70"
 serde = "1.0.210"
 serde_json = "1.0.127"
