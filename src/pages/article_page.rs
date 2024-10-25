@@ -22,7 +22,7 @@ pub fn ArticlePage(event_id: String) -> Element {
     let article_data_signal: Signal<Option<StoryData>> = use_signal(|| None);
 
     let key = format!("story-teller_note_{}", event_id);
-    info!("key: {}", key);
+    //info!("key: {}", key);
     let event_id = EventId::from_str(&note_id).expect("Invalid note_id format");
 
     // ดึงข้อมูลจาก SessionStorage และเก็บในตัวแปร
@@ -30,7 +30,7 @@ pub fn ArticlePage(event_id: String) -> Element {
 
     // เช็คว่ามีข้อมูลหรือไม่
     if let Some(story_string) = story_string {
-        info!("Story found: {}", story_string);
+        //info!("Story found: {}", story_string);
         let mut article_data_signal = article_data_signal.clone();
         use_future( move || {
         let value = story_string.clone();
@@ -51,7 +51,7 @@ pub fn ArticlePage(event_id: String) -> Element {
         }
         });
     } else {
-        info!("No story found, fetching from the Relay.");
+        //info!("No story found, fetching from the Relay.");
 
         // ใช้ use_future เพื่อดึงข้อมูลจาก Relay
         let mut article_data_signal = article_data_signal.clone();

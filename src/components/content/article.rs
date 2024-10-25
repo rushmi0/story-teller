@@ -81,7 +81,7 @@ fn play_sound(text: String, is_playing: bool) {
         .expect("Unable to create utterance");
 
     utterance.set_rate(0.9);    // ปรับความเร็วเสียง (rate)
-    utterance.set_pitch(1.0);   // และโทนเสียง (pitch)
+    utterance.set_pitch(0.9);   // และโทนเสียง (pitch)
     utterance.set_volume(1.0);  // ความดังเสียง (volume)
 
     speech_synthesis.speak(&utterance);
@@ -109,7 +109,6 @@ fn detect_browser() -> String {
 
 
 
-
 #[component]
 pub fn Article(props: ArticleProps) -> Element {
 
@@ -127,9 +126,9 @@ pub fn Article(props: ArticleProps) -> Element {
     let filtered_content = filter_text(&props.content);
 
     // แสดงผลใน console
-    //info!("Filtered content: {}", filtered_content);
-    //info!("Raw content: {}", &props.content);
-    //info!("HTML content: {}", content);
+    info!("Filtered content: {}", filtered_content);
+    info!("Raw content: {}", &props.content);
+    info!("HTML content: {}", content);
 
     // ฟังก์ชันจัดการการกดปุ่ม play
     let handle_play = move |_| {
@@ -154,15 +153,16 @@ pub fn Article(props: ArticleProps) -> Element {
                     div { class: "field-pt",
                         div { class: "article-field-icons",
 
-                            // ปุ่มกด play
-                            div { class: "field-icon-box", onclick: handle_play,
-                                img {
-                                    src: if *play_signal.read() { _PLAYING } else { _PLAY },
-                                    alt: "Play Icon"
-                                }
-                                span {
-                                    //if *play_signal.read() { "Playing" } else { "Play" }
-                                    "Play"
+                            // ตรวจสอบเบราว์เซอร์ก่อนแสดงปุ่ม play
+                            if browser_name == "Microsoft Edge" {
+                                div { class: "field-icon-box", onclick: handle_play,
+                                    img {
+                                        src: if *play_signal.read() { _PLAYING } else { _PLAY },
+                                        alt: "Play Icon"
+                                    }
+                                    span {
+                                        "Play"
+                                    }
                                 }
                             }
 
