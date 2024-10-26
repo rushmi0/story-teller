@@ -23,7 +23,7 @@ use wasm_bindgen_futures::JsFuture;
 use web_sys::HtmlImageElement;
 
 use crate::components::anim::EllipsisLoading;
-use crate::components::banner::FollowList;
+use crate::components::navigation_bar::FollowList;
 use crate::components::StoryCard;
 use crate::model::SessionStorage;
 use crate::nostr::{Nip19Tool, NostrClient};

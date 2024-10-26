@@ -4,7 +4,7 @@ use crate::pages::router::Route;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, error};
 use crate::components::account::{AuthCard, AccountCard};
-use crate::styles::banner_style::STYLE;
+use crate::styles::navigation_bar_style::STYLE;
 use std::time::Duration;
 use nostr_sdk::{
     serde_json,
@@ -47,7 +47,7 @@ fn process_event(event: &Event) -> FollowList {
 }
 
 #[component]
-pub fn Banner() -> Element {
+pub fn NavigationBar() -> Element {
 
     let navigator: Navigator = use_navigator();
 

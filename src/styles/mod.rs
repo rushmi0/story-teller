@@ -1,4 +1,4 @@
-pub mod banner_style;
+pub mod navigation_bar_style;
 
 pub mod screen_config;
 

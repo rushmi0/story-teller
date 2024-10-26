@@ -15,7 +15,7 @@ pub struct SharedAuthVisibility {
 /// - สร้าง instance ของ `SharedAuthVisibility`
 /// - ส่ง `state_auth` ไปยังคอมโพเนนต์ **Banner**
 ///
-/// **Banner**: `banner.rs`
+/// **Banner**: `navigation_bar`
 ///
 /// - รับ `state_auth` ที่ส่งมาจาก **HomePage**
 /// - เมื่อคลิกที่ปุ่ม **Login** จะเปลี่ยนสถานะ `show_auth_card` โดยการเขียนค่าตรงข้ามจากสถานะปัจจุบันใน `state_auth`

@@ -3,7 +3,7 @@
 use dioxus::prelude::*;
 
 use crate::components::{
-    Banner,
+    NavigationBar,
     CheckBox,
     SearchBar,
     Story
@@ -15,7 +15,7 @@ pub fn HomePage() -> Element {
     rsx! {
         style { {STYLE} }
 
-        Banner {}
+        NavigationBar {}
         SearchBar {}
         div { class: "",
             div { class: "control-box",

@@ -3,7 +3,7 @@
 use std::str::FromStr;
 use std::time::Duration;
 use dioxus::prelude::*;
-use crate::components::{Banner, SearchBar};
+use crate::components::{NavigationBar, SearchBar};
 use crate::components::content::{Article, ArticleAuthor};
 use crate::model::SessionStorage;
 use dioxus_logger::tracing::info;
@@ -183,7 +183,7 @@ pub fn ArticlePage(event_id: String) -> Element {
 
     rsx! {
         style { {STYLE} }
-        Banner {}
+        NavigationBar {}
         SearchBar {}
         div { class: "container",
 

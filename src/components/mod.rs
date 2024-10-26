@@ -1,4 +1,4 @@
-pub mod banner;
+pub mod navigation_bar;
 pub mod search_bar;
 pub mod check_box;
 pub mod story;
@@ -8,7 +8,7 @@ pub(crate) mod shared;
 pub mod anim;
 pub mod content;
 
-pub use banner::Banner;
+pub use navigation_bar::NavigationBar;
 pub use search_bar::SearchBar;
 pub use check_box::CheckBox;
 
