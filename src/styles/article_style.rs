@@ -18,7 +18,7 @@ pub const STYLE: &str = r#"
 
 .markdown-field-text-title {
     color: #FFFFFF;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: bold;
     margin-bottom: 10px;
     text-align: center;
@@ -30,11 +30,13 @@ pub const STYLE: &str = r#"
     height: auto;
 }
 
-.field-image-box {
-    width: 100%;
+.field-title-image-box {
     height: auto;
+    max-width: 100%;
+    max-height: 420px;
     border-radius: 8px;
-    object-fit: cover;
+    object-fit: cover;   /* ให้ภาพอยู่ในกรอบโดยไม่เสียสัดส่วน */
+    margin: 0 auto;        /* จัดให้อยู่ตรงกลาง */
 }
 
 .field-pt {
@@ -68,7 +70,7 @@ pub const STYLE: &str = r#"
 
 .markdown-field-text {
     white-space: pre-wrap;
-    font-size: 16px;
+    font-size: 19px;
     line-height: 1.5;
     color: #FFFFFF;
     margin-top: 10px;
@@ -83,30 +85,153 @@ pub const STYLE: &str = r#"
 
 /* สไตล์สำหรับลิงก์ */
 .markdown-field-text a {
-    color: blue;
+    color: #90EE90;
     text-decoration: underline;
+    transition: color 0.3s;
+    white-space: nowrap;       /* ทำให้ข้อความไม่ขึ้นบรรทัดใหม่ */
+    overflow: hidden;          /* ซ่อนข้อความที่เกินขอบเขต */
+    text-overflow: ellipsis;   /* แสดงจุดสามจุดเมื่อข้อความเกินขอบเขต */
+    max-width: 100%;           /* กำหนดขอบเขตความกว้างสูงสุด */
+    display: inline-block;     /* ปรับให้ทำงานกับ max-width ได้ */
 }
 
 .markdown-field-text a:hover {
-    color: darkblue;
+    color: #32CD32;
 }
+
+
+.markdown-field-text img {
+    margin-top: 10px;
+    border-radius: 8px;
+    max-width: 100%; /* ให้รูปภาพไม่กว้างเกินขอบเขตของ container */
+    height: auto;    /* รักษาอัตราส่วนภาพ */
+    object-fit: cover;
+}
+
+
 
 /* เพิ่มสไตล์สำหรับการแสดงผลตาราง */
 .markdown-field-text table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
 }
 
-.markdown-field-text th, .markdown-field-text td {
+/* ปรับให้เซลล์ของตารางเรียงอยู่ตรงกลางและเพิ่มพื้นที่ padding */
+.markdown-field-text th,
+.markdown-field-text td {
     border: 1px solid #ddd;
     padding: 8px;
+    text-align: center;
 }
 
+/* สไตล์สำหรับ header ของตาราง */
 .markdown-field-text th {
     background-color: #404657;
     color: white;
-    text-align: center;
+    font-weight: bold;
 }
+
+
+
+@media only screen and (max-width: 768px) {
+
+    .field-pt {
+        max-width: 500px;
+        padding: 5px;
+    }
+
+    .article-field-icons {
+        gap: 5px;               /* เพิ่มระยะห่างระหว่าง icon */
+    }
+
+    .field-icon-box span {
+        font-size: 12px;         /* ปรับขนาดฟอนต์ของ icon ใหญ่ขึ้น */
+        /*gap: 5px;*/
+    }
+
+    .field-icon-box img {
+        width: 17px;             /* ปรับขนาดไอคอน */
+        height: 17px;
+    }
+}
+
+
+
+@media only screen and (max-width: 600px) {
+
+    .markdown-field-text {
+        font-size: 16px;
+        line-height: 1.5;
+        margin-top: 10px;
+    }
+
+    .markdown-field-text table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .markdown-field-text th, .markdown-field-text td {
+        font-size: 14px; /* ลดขนาดฟอนต์ในหน้าจอเล็ก */
+        padding: 6px;
+    }
+}
+
+
+
+@media only screen and (max-width: 599px) {
+
+    .markdown-field-text-title {
+        font-size: 23px;
+    }
+
+
+    .field-pt {
+        max-width: 440px;
+        padding: 5px;
+    }
+
+    .article-field-icons {
+        gap: 5px;               /* เพิ่มระยะห่างระหว่าง icon */
+    }
+
+    .field-icon-box span {
+        font-size: 10px;         /* ปรับขนาดฟอนต์ของ icon ใหญ่ขึ้น */
+    }
+
+    .field-icon-box img {
+        width: 14px;             /* ปรับขนาดไอคอน */
+        height: 14px;
+    }
+
+}
+
+
+
+@media only screen and (max-width: 450px) {
+
+    .markdown-field-text-title {
+        font-size: 17px;
+    }
+
+    .field-pt {
+        max-width: 430px;
+    }
+
+    .field-icon-box span {
+        font-size: 7px;         /* ปรับขนาดฟอนต์ของ icon ใหญ่ขึ้น */
+    }
+
+    .field-icon-box img {
+        width: 15px;             /* ปรับขนาดไอคอน */
+        height: 15px;
+    }
+
+}
+
 
 "#;

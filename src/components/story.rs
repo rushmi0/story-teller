@@ -103,8 +103,8 @@ pub async fn extract_tags(
     let mut summary: Option<String> = None; // ตัวแปรเก็บค่า summary
     let mut published_at: Option<String> = None; // ตัวแปรเก็บค่า published_at
     let note_id = Some(event.id.to_hex()); // แปลง id ของ event เป็นรูปแบบ hex และเก็บใน note_id
-    let article = Some(event.content);
-
+    let article = Some(event.content.clone());
+    //info!("event: {:#?}", event);
 
     // วนซ้ำเพื่อตรวจสอบ tags ภายใน event
     for tag in event.tags.iter() {
@@ -229,8 +229,8 @@ pub fn Story() -> Element {
                         )
                         .await;
 
-                    let mut author_name = None; // ตัวแปรเก็บชื่อผู้เขียน
-                    let mut author_image = None; // ตัวแปรเก็บรูปภาพของผู้เขียน
+                    let mut author_name = None;
+                    let mut author_image = None;
 
                     // ถ้าการดึงข้อมูล Metadata สำเร็จ
                     if let Ok(metadata_events) = metadata_events {

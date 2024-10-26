@@ -140,6 +140,7 @@ pub fn StoryCard(props: StoryCardProps) -> Element {
                     }
                 }
 
+
             }
         }
     }

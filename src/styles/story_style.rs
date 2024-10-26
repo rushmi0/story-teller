@@ -152,17 +152,13 @@ pub const STYLE: &str = r#"
 
 
 
-
-@media only screen and (max-width: 923px) {
+@media only screen and (max-width: 991px) {
 
     .note-box {
         width: 100%; /* ปรับให้การ์ดใช้พื้นที่ให้เต็ม */
-        max-width: 185px; /* กำหนดขนาดสูงสุด */
-        margin: 20px;
-    }
-
-    .note-icon {
-
+        max-width: 240px; /* กำหนดขนาดสูงสุด */
+        margin: 15px;
+        height: 350px;
     }
 
     .note-image {
@@ -178,66 +174,17 @@ pub const STYLE: &str = r#"
         font-size: 16px;
     }
 
-
-}
-
-
-@media only screen and (max-width: 721px) {
-
-    .note-box {
-        width: 100%; /* ปรับให้การ์ดใช้พื้นที่ให้เต็ม */
-        max-width: 156px; /* กำหนดขนาดสูงสุด */
-        margin: 20px;
+    .author-info h3 {
+        font-size: 10px;
     }
 
-    .note-icon img {
-        width: 16px; /* ขนาดไอคอนสำหรับหน้าจอที่เล็กลง */
+    .author-info p {
+        font-size: 8px;
     }
-
-    .note-image {
-        width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
-        height: 134px;
-    }
-
-    .note-desc {
-        font-size: 12px;
-    }
-
-    .note-desc h2 {
-        font-size: 14px; /* ปรับขนาดตัวอักษรหัวข้อ */
-    }
-
 
 }
 
 
 
-@media only screen and (max-width: 460px) {
-
-    .note-box {
-        width: 100%; /* ปรับให้การ์ดใช้พื้นที่ให้เต็ม */
-        max-width: 140px; /* กำหนดขนาดสูงสุด */
-        margin: 10px;
-    }
-
-    .note-icon img {
-        width: 14px; /* ขนาดไอคอนสำหรับหน้าจอที่เล็กที่สุด */
-    }
-
-    .note-image {
-        width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
-        height: 124px;
-    }
-
-    .note-desc {
-        font-size: 10px; /* ปรับขนาดตัวอักษรลง */
-    }
-
-    .note-desc h2 {
-        font-size: 12px; /* ปรับขนาดตัวอักษรหัวข้อ */
-    }
-
-
-}
 
 "#;

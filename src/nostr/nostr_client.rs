@@ -44,9 +44,7 @@ impl NostrClient {
             client.add_relay(relay).await?;
         }
 
-        // ตรวจสอบการเชื่อมต่อ
         client.connect().await?;
-
         Ok(client.client)
     }
 }

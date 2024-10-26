@@ -8,6 +8,7 @@ pub const STYLE: &str = r#"
     align-items: center;
     border-radius: 12px;       /* เพิ่มมุมโค้ง */
     max-width: 800px;
+    margin: 0 auto;
 }
 
 
@@ -56,6 +57,7 @@ pub const STYLE: &str = r#"
 
 .field-button-pt {
     max-width: 600px;
+    /*width: 100%;*/
     margin: 0 auto;
     padding: 15px;
 }
@@ -77,7 +79,6 @@ pub const STYLE: &str = r#"
 
 #article-author {
     display: flex;
-    justify-content: column;
     align-items: center;
 }
 
@@ -126,6 +127,88 @@ pub const STYLE: &str = r#"
     font-size: 14px;
     margin-bottom: 52px;
     width: 20%;
+}
+
+
+@media only screen and (max-width: 1298px) {
+
+    .article-author-box {
+        max-width: 870px;
+    }
+
+    .field-button-util {
+        gap: 16px;
+    }
+
+    .article-lable-item {
+        line-height: 22px;
+        font-size: 16px;
+        letter-spacing: 1px;
+    }
+
+    .article-author-bar {
+       width: 600px;
+    }
+
+    .article-button-item {
+        padding: 5px 15px;
+        gap: 12px;
+        height: 50px;
+    }
+
+}
+
+
+@media only screen and (max-width: 641px) {
+
+    .article-lable-item {
+        line-height: 22px;
+        font-size: 14px;
+        letter-spacing: 1px;
+    }
+
+    .article-author-bar {
+       width: 500px;
+    }
+
+    .article-button-item {
+        padding: 5px 15px;
+        gap: 8px;
+        height: 40px;
+    }
+
+    .author-info {
+        margin-top: 10px;
+        width: 90%;
+    }
+
+}
+
+
+@media only screen and (max-width: 450px) {
+
+    .field-button-pt {
+        max-width: 340px;
+        margin: 0 auto;
+        padding: 15px;
+    }
+
+    .article-lable-item {
+        line-height: 22px;
+        font-size: 10px;
+    }
+
+    .article-button-item {
+        padding: 5px 14px;
+        gap: 8px;
+        height: 35px;
+    }
+
+    .author-info {
+        margin-top: 10px;
+        width: 90%;
+    }
+
 }
 
 "#;

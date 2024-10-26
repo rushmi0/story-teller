@@ -81,7 +81,7 @@ fn play_sound(text: String, is_playing: bool) {
         .expect("Unable to create utterance");
 
     utterance.set_rate(0.9);    // ปรับความเร็วเสียง (rate)
-    utterance.set_pitch(0.9);   // และโทนเสียง (pitch)
+    utterance.set_pitch(0.9);   // โทนเสียง (pitch)
     utterance.set_volume(1.0);  // ความดังเสียง (volume)
 
     speech_synthesis.speak(&utterance);
@@ -113,8 +113,7 @@ fn detect_browser() -> String {
 pub fn Article(props: ArticleProps) -> Element {
 
     let browser_name = detect_browser();
-    info!("Browser detected: {}", browser_name);
-
+    //info!("Browser detected: {}", browser_name);
 
     // สถานะสำหรับจัดการการแสดง play icon
     let mut play_signal = use_signal(|| false);
@@ -149,7 +148,11 @@ pub fn Article(props: ArticleProps) -> Element {
             div { class: "article-field",
                 div { class: "markdown-field-text-title", "{props.title}" }
                 div { class: "article-field-image-header",
-                    img { class: "field-image-box", src: "{props.image}", max_height: "420px", }
+                    img {
+                        class: "field-title-image-box",
+                        src: "{props.image}",
+                        max_height: "420px"
+                    }
                     div { class: "field-pt",
                         div { class: "article-field-icons",
 
@@ -166,9 +169,9 @@ pub fn Article(props: ArticleProps) -> Element {
                                 }
                             }
 
-                            div { class: "field-icon-box", img { src: "{_CALENDAR}" }, "{formatted_date}" }
-                            div { class: "field-icon-box", img { src: "{_COMMENT}" }, "comments : 35" }
-                            div { class: "field-icon-box", img { src: "{_CATEGORY}" }, "Category : Sport" }
+                            div { class: "field-icon-box", img { src: "{_CALENDAR}" }, span { "{formatted_date}" } }
+                            div { class: "field-icon-box", img { src: "{_COMMENT}" }, span { "comments : 35" } }
+                            div { class: "field-icon-box", img { src: "{_CATEGORY}" }, span { "Category : Sport" } }
                         }
                     }
                 }

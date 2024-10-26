@@ -8,7 +8,7 @@ use crate::components::{
     SearchBar,
     Story
 };
-use crate::styles::layout_style::STYLE;
+use crate::styles::home_layout_style::STYLE;
 
 #[component]
 pub fn HomePage() -> Element {
