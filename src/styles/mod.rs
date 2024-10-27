@@ -26,3 +26,5 @@ pub mod article_layout_style;
 
 pub mod profile_style;
 
+pub mod new_story_style;
+

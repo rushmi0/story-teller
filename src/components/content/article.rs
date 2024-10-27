@@ -9,7 +9,6 @@ use crate::components::story_card::format_unix_to_date;
 use crate::styles::article_style::STYLE;
 
 const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_5.jpg"));
-const _ICON: &str = manganis::mg!(file("src/assets/logo.svg"));
 const _CALENDAR: &str = manganis::mg!(file("src/assets/date.svg"));
 const _CATEGORY: &str = manganis::mg!(file("src/assets/category.svg"));
 const _COMMENT: &str = manganis::mg!(file("src/assets/comment.svg"));
@@ -25,7 +24,7 @@ pub struct ArticleProps {
     published_at: String,
 }
 
-fn markdown_to_html(markdown_input: &str) -> String {
+pub fn markdown_to_html(markdown_input: &str) -> String {
     let options = Options::all();
     let parser = Parser::new_ext(markdown_input, options);
 

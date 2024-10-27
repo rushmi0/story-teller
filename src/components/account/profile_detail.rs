@@ -7,15 +7,15 @@ use crate::components::story::check_image;
 use crate::nostr::NostrClient;
 use crate::styles::profile_style::STYLE;
 
-const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/banner.jpg"));
-const _PROFILE: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_4.jpg"));
+const _BANNER: manganis::ImageAsset = manganis::mg!(image("./src/assets/banner.jpg"));
+const _PROFILE: manganis::ImageAsset = manganis::mg!(image("./src/assets/Untitled.webp"));
 const _EDIT: &str = manganis::mg!(file("src/assets/edit.svg"));
 
 #[component]
 pub fn ProfileDetail(npub: Option<String>) -> Element {
-    let mut show_new_post = use_signal(|| false);  // สถานะสำหรับ New Post
-    let mut show_article_list = use_signal(|| false); // สถานะสำหรับ Article List
-    let metadata_signal = use_signal::<Option<Metadata>>(|| None);  // สร้างตัวแปรเพื่อเก็บ Metadata
+    let mut show_new_post = use_signal(|| false);
+    let mut show_article_list = use_signal(|| false);
+    let metadata_signal = use_signal::<Option<Metadata>>(|| None);
 
     // กำหนดค่าเริ่มต้นให้แสดง Story {}
     let is_story_visible = !*show_new_post.read() && !*show_article_list.read();
@@ -78,7 +78,7 @@ pub fn ProfileDetail(npub: Option<String>) -> Element {
                             // ตรวจสอบลิงก์ของฟิลด์ `banner`
                             if let Some(ref banner_url) = metadata.banner {
                                 if !check_image(banner_url).await {
-                                    metadata.banner = Some(_IMG.to_string());
+                                    metadata.banner = Some(_BANNER.to_string());
                                 }
                             }
 
@@ -94,9 +94,9 @@ pub fn ProfileDetail(npub: Option<String>) -> Element {
     // อ่านค่าจาก metadata_signal
     let metadata = metadata_signal.read().clone();
     let name = metadata.as_ref().and_then(|m| m.display_name.clone()).unwrap_or_else(|| "Unknown".to_string());
-    let about = metadata.as_ref().and_then(|m| m.about.clone()).unwrap_or_else(|| "No bio available".to_string());
+    //let about = metadata.as_ref().and_then(|m| m.about.clone()).unwrap_or_else(|| "No bio available".to_string());
     let picture = metadata.as_ref().and_then(|m| m.picture.clone()).unwrap_or_else(|| _PROFILE.to_string());
-    let banner = metadata.as_ref().and_then(|m| m.banner.clone()).unwrap_or_else(|| _IMG.to_string());
+    let banner = metadata.as_ref().and_then(|m| m.banner.clone()).unwrap_or_else(|| _BANNER.to_string());
 
 
 
@@ -142,6 +142,7 @@ pub fn ProfileDetail(npub: Option<String>) -> Element {
         div { class: "container",
             if is_story_visible {
                 Story { npub_value: npub }
+                //NewStory {}
             } else if *show_new_post.read() {
                 NewStory {}
             } else if *show_article_list.read() {

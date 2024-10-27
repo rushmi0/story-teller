@@ -13,7 +13,7 @@ pub const STYLE: &str = r#"
 .banner-box img {
     margin-bottom: 10px;
     width: 100%;
-    height: 170px;
+    height: 270px;
     border-radius: 10px;
     object-fit: cover;
 }
