@@ -129,6 +129,7 @@ pub const STYLE: &str = r#"
 .mark-icon:active {
     fill: ##ff004c;
 }
+
 /******************************************/
 
 
@@ -150,7 +151,60 @@ pub const STYLE: &str = r#"
     color: #a7aab5;
 }
 
+/******************************************/
+/* pagination */
 
+.pagination-box {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.btn-pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.btn-pagination .page-item {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.btn-pagination .page-item label {
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.btn-pagination .page-item.ellipsis {
+    pointer-events: none;
+    color: #888;
+}
+
+.btn-pagination .page-item.next label {
+    background-color: #28a745;
+}
+
+.btn-pagination .page-item label:hover {
+    background-color: #0056b3;
+}
+
+
+.foot-pt {
+    margin-top: 10px;
+}
+
+
+/******************************************/
 
 @media only screen and (max-width: 991px) {
 

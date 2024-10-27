@@ -13,7 +13,7 @@ use nostr_sdk::{
     Kind,
     Metadata,
     PublicKey,
-    EventId
+    EventId,
 };
 use std::time::Duration;
 use nostr_sdk::prelude::{Nip19, Nip19Event, PREFIX_BECH32_NOTE_ID};
@@ -109,7 +109,7 @@ pub async fn extract_tags(
     // วนซ้ำเพื่อตรวจสอบ tags ภายใน event
     for tag in event.tags.iter() {
         let tag_data = tag.as_slice(); // แปลง tag เป็นรูปแบบเวกเตอร์
-                                       // ตรวจสอบว่ามีข้อมูลใน tag และเป็น tag ที่เราต้องการหรือไม่
+        // ตรวจสอบว่ามีข้อมูลใน tag และเป็น tag ที่เราต้องการหรือไม่
         if tag_data.len() > 1 && tags_to_find.contains(&tag_data[0].as_str()) {
             match tag_data[0].as_str() {
                 "image" => {
@@ -240,7 +240,7 @@ pub fn Story() -> Element {
                                 serde_json::from_str::<Metadata>(
                                     &*metadata_event.content,
                                 )
-                                .unwrap();
+                                    .unwrap();
 
                             if !metadata_event.is_expired()
                                 && ts.lt(&metadata_event.created_at.as_u64())
@@ -262,9 +262,9 @@ pub fn Story() -> Element {
                         if !result {
                             let pk = event.pubkey.to_hex();
                             let image_proxy = format!(
-                            "https://media.nostr.band/thumbs/{}/{}-picture-64",
-                            &pk[60..],
-                            pk);
+                                "https://media.nostr.band/thumbs/{}/{}-picture-64",
+                                &pk[60..],
+                                pk);
                             let result = check_image(&image_proxy).await;
                             if result {
                                 author_image = Some(image_proxy);
@@ -282,7 +282,7 @@ pub fn Story() -> Element {
                         author_name.clone(),
                         author_image.clone(),
                     )
-                    .await;
+                        .await;
                     stories.push(story);
                     story_data_signal.set(stories.clone());
                 }
@@ -296,16 +296,38 @@ pub fn Story() -> Element {
         }
     });
 
+    // Signal สำหรับหน้าเซ็ตปัจจุบัน
+    let mut current_page: Signal<usize> = use_signal(|| 0);
+
+    // จำนวน Card ต่อหนึ่งหน้าเซ็ต
+    const CARDS_PER_PAGE: usize = 20;
+    // รายการข้อมูลทั้งหมด
+    let stories = story_data_signal.read();
+    // จำนวนทั้งหมดของหน้าเซ็ต
+    let total_pages = (stories.len() + CARDS_PER_PAGE - 1) / CARDS_PER_PAGE;
+
+    // ฟังก์ชันแบ่ง Card เป็นเซ็ต ๆ
+    let displayed_stories: Vec<StoryData> = stories
+        .iter()
+        .skip(current_page.with(|p| *p) * CARDS_PER_PAGE)
+        .take(CARDS_PER_PAGE)
+        .cloned()
+        .collect();
+
+
     rsx! {
         style { {STYLE} }
-        div { class: "note-container",
 
-            // ถ้าข้อมูลใน story_data_signal ยังว่างอยู่ ให้แสดง EllipsisLoading
-            if story_data_signal.read().is_empty() {
-                EllipsisLoading {}
-            } else {
+        // ถ้าข้อมูลใน story_data_signal ยังว่างอยู่ ให้แสดง EllipsisLoading
+        if story_data_signal.read().is_empty() {
+            EllipsisLoading {}
+        } else {
+            div {
+                class: "note-container",
+                style: "background-color: red;",
+
                 // ถ้ามีข้อมูลแล้ว ให้วนซ้ำแสดงผลแต่ละ story โดยใช้ StoryCard component
-                for story in story_data_signal.iter() {
+                for story in displayed_stories {
                     StoryCard {
                         note_id: Nip19Tool::id_encode(story.note_id.clone().unwrap_or_default()),
                         image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
@@ -313,11 +335,47 @@ pub fn Story() -> Element {
                         summary: story.summary.clone().unwrap_or_default(),
                         article: story.article.clone().unwrap_or_default(),
                         published_at: story.published_at.clone().unwrap_or_default(),
-                        author_name:story.author_name.clone().unwrap_or("Unknown Author".to_string()),
+                        author_name: story.author_name.clone().unwrap_or("Unknown Author".to_string()),
                         author_image: story.author_image.clone().unwrap_or_default(),
+                    }
+                }
+            }
+
+            div { class: "foot-pt",
+
+                section { class: "pagination-box",
+                    div { class: "btn-pagination",
+
+                        ul {
+                            li {
+                                class: "page-item",
+                                label { onclick: move |_| current_page.set(0), "1" }
+                            }
+                            li {
+                                class: "page-item",
+                                label { onclick: move |_| current_page.set(1), "2" }
+                            }
+                            li {
+                                class: "page-item",
+                                label { onclick: move |_| current_page.set(2), "3" }
+                            }
+                            li {
+                                class: "page-item ellipsis",
+                                "..."
+                            }
+                            li {
+                                class: "page-item",
+                                label { onclick: move |_| current_page.set(total_pages - 1), "{total_pages}" }
+                            }
+                            li {
+                                class: "page-item next",
+                                label { onclick: move |_| current_page.set(current_page + 1), "Next" }
+                            }
+                        }
                     }
                 }
             }
         }
     }
+
 }
