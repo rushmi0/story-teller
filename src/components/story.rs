@@ -43,6 +43,7 @@ pub struct StoryData {
     pub(crate) summary: Option<String>,      // สรุปของ note
     pub(crate) article: Option<String>,      // เนื้อหาบทความ
     pub(crate) published_at: Option<String>, // เวลาที่เผยแพร่
+    pub(crate) npub: Option<String>,
     pub(crate) author_name: Option<String>,  // ชื่อผู้เขียน
     pub(crate) author_image: Option<String>, // รูปภาพผู้เขียน
 }
@@ -104,6 +105,7 @@ pub async fn extract_tags(
     let mut published_at: Option<String> = None; // ตัวแปรเก็บค่า published_at
     let note_id = Some(event.id.to_hex()); // แปลง id ของ event เป็นรูปแบบ hex และเก็บใน note_id
     let article = Some(event.content.clone());
+    let npub = PublicKey::to_bech32(&event.pubkey).unwrap().into();
     //info!("event: {:#?}", event);
 
     // วนซ้ำเพื่อตรวจสอบ tags ภายใน event
@@ -138,6 +140,7 @@ pub async fn extract_tags(
         summary,
         article,
         published_at,
+        npub,
         author_name,
         author_image,
     }
@@ -147,7 +150,7 @@ pub async fn extract_tags(
 /// เป็น component ที่ทำหน้าที่ดึงข้อมูล NIP-23 (Long-form Content) จากเครือข่าย Nostr
 /// และแสดงผลออกมาเป็นรายการของ story โดยใช้ `StoryCard` component
 #[component]
-pub fn Story() -> Element {
+pub fn Story(npub_value: Option<String>) -> Element {
 
     // สร้าง signal เพื่อเก็บ events ที่ได้จากการดึงข้อมูล
     let events_signal: Signal<Vec<Event>> = use_signal(Vec::new);
@@ -158,24 +161,33 @@ pub fn Story() -> Element {
     use_future({
         // clone ตัวแปร signal ที่สร้างขึ้นเพื่อใช้ใน future
         let mut events_signal = events_signal.clone();
-
-        // clone ตัวแปร signal เพื่อเก็บ story data
         let mut story_data_signal = story_data_signal.clone();
 
         // ฟังก์ชัน async ที่ดึงข้อมูล events จาก Nostr
-        move || async move {
+        move || {
+        let value = npub_value.clone();
+        async move {
             let client = NostrClient::setup_and_connect()
                 .await
                 .expect("Failed to setup client");
 
+            // ตรวจสอบว่า npub_value มีค่าเป็น Some หรือไม่
+            let npub: String = value.unwrap_or_else(|| String::new());
+
+            // สร้าง filter สำหรับดึงข้อมูล event ที่เป็นประเภท LongFormTextNote
+            let mut filter = Filter::new().kind(Kind::LongFormTextNote);
 
             // ตรวจสอบว่า SessionStorage มีค่า key ที่ขึ้นต้นด้วย story-teller_
             let key_exists = SessionStorage::has_key_starting_with("story-teller_");
 
             let mut authors: Vec<PublicKey> = Vec::new();
 
-            if key_exists {
-                // ถ้ามี ให้ดึงข้อมูลจาก key story-teller_follow_1
+            // ตรวจสอบว่าค่า npub ไม่เป็นค่าว่าง
+            if !npub.is_empty() {
+                // กำหนด filter ด้วย npub
+                filter = filter.authors(vec![PublicKey::from_bech32(&npub).expect("Invalid npub format")]);
+            } else if key_exists {
+                // ถ้าค่า npub เป็นค่าว่าง ให้ดึงข้อมูลจาก SessionStorage
                 if let Some(json_str) = SessionStorage::get("story-teller_follow_1") {
                     // แปลง JSON string เป็น FollowList object
                     let follow_list: FollowList = serde_json::from_str(&json_str)
@@ -190,12 +202,9 @@ pub fn Story() -> Element {
                 }
             }
 
-            // สร้าง filter สำหรับดึงข้อมูล event ที่เป็นประเภท LongFormTextNote
-            let mut filter = Filter::new().kind(Kind::LongFormTextNote);
-
             // ถ้ามีค่า authors ให้เพิ่มลงใน filter
             if !authors.is_empty() {
-                //info!("Now query follows list...");
+                info!("Now query follows list...");
                 filter = filter.authors(authors);
             }
 
@@ -294,6 +303,7 @@ pub fn Story() -> Element {
                 info!("Failed to retrieve events");
             }
         }
+        }
     });
 
     // Signal สำหรับหน้าเซ็ตปัจจุบัน
@@ -337,6 +347,7 @@ pub fn Story() -> Element {
                             summary: story.summary.clone().unwrap_or_default(),
                             article: story.article.clone().unwrap_or_default(),
                             published_at: story.published_at.clone().unwrap_or_default(),
+                            npub: story.npub.clone().unwrap_or_default(),
                             author_name: story.author_name.clone().unwrap_or("Unknown Author".to_string()),
                             author_image: story.author_image.clone().unwrap_or_default(),
                         }
