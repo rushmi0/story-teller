@@ -322,59 +322,80 @@ pub fn Story() -> Element {
         if story_data_signal.read().is_empty() {
             EllipsisLoading {}
         } else {
-            div {
-                class: "note-container",
-                style: "background-color: red;",
 
-                // ถ้ามีข้อมูลแล้ว ให้วนซ้ำแสดงผลแต่ละ story โดยใช้ StoryCard component
-                for story in displayed_stories {
-                    StoryCard {
-                        note_id: Nip19Tool::id_encode(story.note_id.clone().unwrap_or_default()),
-                        image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
-                        title: story.title.clone().unwrap_or_default(),
-                        summary: story.summary.clone().unwrap_or_default(),
-                        article: story.article.clone().unwrap_or_default(),
-                        published_at: story.published_at.clone().unwrap_or_default(),
-                        author_name: story.author_name.clone().unwrap_or("Unknown Author".to_string()),
-                        author_image: story.author_image.clone().unwrap_or_default(),
+            div { class: "displayed-box",
+                div {
+                    class: "note-container",
+                    //style: "background-color: red;",
+
+                    // ถ้ามีข้อมูลแล้ว ให้วนซ้ำแสดงผลแต่ละ story โดยใช้ StoryCard component
+                    for story in displayed_stories {
+                        StoryCard {
+                            note_id: Nip19Tool::id_encode(story.note_id.clone().unwrap_or_default()),
+                            image: story.image.clone().unwrap_or_else(|| _IMG.to_string()),
+                            title: story.title.clone().unwrap_or_default(),
+                            summary: story.summary.clone().unwrap_or_default(),
+                            article: story.article.clone().unwrap_or_default(),
+                            published_at: story.published_at.clone().unwrap_or_default(),
+                            author_name: story.author_name.clone().unwrap_or("Unknown Author".to_string()),
+                            author_image: story.author_image.clone().unwrap_or_default(),
+                        }
                     }
                 }
-            }
 
-            div { class: "foot-pt",
+                div { class: "foot-pt",
 
-                section { class: "pagination-box",
-                    div { class: "btn-pagination",
+                    section {
+                        div { class: "btn-pagination",
 
-                        ul {
-                            li {
-                                class: "page-item",
-                                label { onclick: move |_| current_page.set(0), "1" }
+                            ul {
+                                // วนลูปเพื่อสร้างปุ่มสำหรับหน้าแรกถึงหน้าที่สาม
+                                for i in 0..total_pages.min(3) {
+                                    li {
+                                        class: "page-item",
+                                        // กำหนดการคลิกเพื่อเปลี่ยนหน้า
+                                        label { onclick: move |_| current_page.set(i), "{i + 1}" }
+                                    }
+                                }
+
+                                // ตรวจสอบว่าจำนวนหน้ามากกว่าสามหน้า
+                                if total_pages > 3 {
+                                    li {
+                                        class: "page-item ellipsis",
+                                        "..." // แสดงเครื่องหมายการข้ามหน้า
+                                    }
+                                    li {
+                                        class: "page-item",
+                                        // กำหนดการคลิกไปยังหน้าสุดท้าย
+                                        label { onclick: move |_| current_page.set(total_pages - 1), "{total_pages}" }
+                                    }
+                                }
+
+                                // เพิ่มปุ่ม "เซ็ตก่อนหน้า" ถ้าไม่อยู่ที่หน้าแรก
+                                if current_page() > 0 {
+                                    li {
+                                        class: "page-item previous",
+                                        // กำหนดการคลิกเพื่อไปหน้าก่อนหน้า
+                                        label { onclick: move |_| current_page.set(current_page - 1), "Previous" }
+                                    }
+                                }
+
+                                // ตรวจสอบว่าไม่อยู่ที่หน้าสุดท้าย
+                                if current_page() < total_pages - 1 {
+                                    li {
+                                        class: "page-item next",
+                                        // กำหนดการคลิกเพื่อไปหน้าถัดไป
+                                        label { onclick: move |_| current_page.set(current_page + 1), "Next" }
+                                    }
+                                }
                             }
-                            li {
-                                class: "page-item",
-                                label { onclick: move |_| current_page.set(1), "2" }
-                            }
-                            li {
-                                class: "page-item",
-                                label { onclick: move |_| current_page.set(2), "3" }
-                            }
-                            li {
-                                class: "page-item ellipsis",
-                                "..."
-                            }
-                            li {
-                                class: "page-item",
-                                label { onclick: move |_| current_page.set(total_pages - 1), "{total_pages}" }
-                            }
-                            li {
-                                class: "page-item next",
-                                label { onclick: move |_| current_page.set(current_page + 1), "Next" }
-                            }
+
+
                         }
                     }
                 }
             }
+
         }
     }
 

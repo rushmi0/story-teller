@@ -1,5 +1,11 @@
 pub const STYLE: &str = r#"
 
+.displayed-box {
+    display: flex; /* ใช้ flexbox สำหรับการจัดเรียง */
+    flex-direction: column; /* จัดเรียงแนวตั้ง */
+    gap: 10px; /* ระยะห่างระหว่างชั้น */
+}
+
 .note-container {
     display: flex;
     flex-wrap: wrap;
@@ -154,7 +160,8 @@ pub const STYLE: &str = r#"
 /******************************************/
 /* pagination */
 
-.pagination-box {
+/*
+.foot-pt .pagination-box {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -164,43 +171,73 @@ pub const STYLE: &str = r#"
     left: 0;
     width: 100%;
 }
+*/
 
-.btn-pagination ul {
+.foot-pt .btn-pagination ul {
     display: flex;
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.btn-pagination .page-item {
+.foot-pt .btn-pagination .page-item {
     margin-right: 8px;
     cursor: pointer;
 }
 
-.btn-pagination .page-item label {
+.foot-pt .btn-pagination .page-item label {
     padding: 6px 12px;
-    background-color: #007bff;
+    background-color: #404657; /* สีพื้นหลังเริ่มต้น */
     color: white;
     border-radius: 4px;
     text-align: center;
+    transition: background-color 0.3s, color 0.3s; /* เพิ่มการเปลี่ยนสี */
 }
 
-.btn-pagination .page-item.ellipsis {
+/* เปลี่ยนสีเมื่อ hover */
+.foot-pt .btn-pagination .page-item label:hover {
+    background-color: #00FF7F;
+    color: #404657;
+}
+
+/* เปลี่ยนสีเมื่อ active (กด) */
+.foot-pt .btn-pagination .page-item label:active {
+    background-color: #00FF7F; /* สีเดียวกับ label:hover */
+    color: #404657; /* สีข้อความ */
+}
+
+/* เปลี่ยนสีเมื่อมีการโฟกัส */
+.foot-pt .btn-pagination .page-item label:focus {
+    background-color: #00FF7F; /* สีเดียวกับ label:hover */
+    color: #404657; /* สีข้อความ */
+}
+
+/* สำหรับ ellipsis */
+.foot-pt .btn-pagination .page-item.ellipsis {
     pointer-events: none;
     color: #888;
 }
 
-.btn-pagination .page-item.next label {
-    background-color: #28a745;
+/* สำหรับ next */
+.foot-pt .btn-pagination .page-item.next label {
+    background-color: #404657;
 }
 
-.btn-pagination .page-item label:hover {
-    background-color: #0056b3;
+/* สำหรับ active page */
+.foot-pt .btn-pagination .page-item.active label {
+    background-color: #00FF7F; /* สีของปุ่มที่ active */
+    color: #404657; /* สีข้อความ */
 }
+
+
 
 
 .foot-pt {
-    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    /*border: 1px solid #ddd;*/
+    border-radius: 5px;
+    padding: 10px; /* เพิ่ม padding ภายใน */
 }
 
 
