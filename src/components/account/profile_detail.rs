@@ -226,7 +226,7 @@ pub fn ProfileDetail(npub: Option<String>) -> Element {
             }
         }
 
-        div { class: "container",
+        div { class: "content-box",
             if is_story_visible {
                 Story { npub_value: npub }
                 //NewStory {}

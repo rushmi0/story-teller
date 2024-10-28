@@ -139,5 +139,12 @@ pub const STYLE: &str = r#"
     color: #fff;
 }
 
+/**************************/
+
+.content-box {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 
 "#;

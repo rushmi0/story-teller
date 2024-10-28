@@ -59,22 +59,23 @@ pub const STYLE: &str = r#"
 /* สไตล์สำหรับโค้ด */
 .markdown-field-body code {
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-    background-color: #161b22;
+    background-color: #232933;
     color: #d1d5da;
     padding: 0.2em 0.4em;
     border-radius: 6px;
     font-size: 85%;
 }
 
+
 /* สไตล์สำหรับบล็อกโค้ด */
 .markdown-field-body pre {
-    background-color: #161b22;
-    color: #d1d5da;
-    padding: 1em;
-    border-radius: 6px;
-    overflow-x: auto;
-    font-size: 0.85em;
-    line-height: 1.45;
+      background-color: #20242b;
+      color: #d1d5da;
+      padding: 1em;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85em;
+      line-height: 1.45;
 }
 .markdown-field-body pre code {
     background: none;

@@ -28,7 +28,7 @@ pub fn NewStory() -> Element {
     let mut input_text = use_signal(|| None::<String>);
 
     // สร้างตัวแปร use_signal สำหรับเก็บสถานะการแสดง textarea
-    let mut show_textarea = use_signal(|| false);
+    let mut show_textarea = use_signal(|| true);
 
     // สร้างตัวแปรเพื่อควบคุมการทำงานของ use_future เมื่อกดปุ่ม Submit
     let mut submit_trigger = use_signal(|| false);
@@ -98,9 +98,14 @@ pub fn NewStory() -> Element {
     rsx! {
         style { {STYLE} }
         div { class: "story-write-box",
+
+            div { class: "",
+
+            }
+
             div { class: "write-box",
                 div { class: "title-box",
-                    span { "Explanation" }
+                    span { "Add a story" }
                     div { class: "action-btn",
                         button { class: "submit-btn",
                             r#type: "button",

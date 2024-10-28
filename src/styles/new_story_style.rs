@@ -3,10 +3,13 @@ pub const STYLE: &str = r#"
 .story-write-box {
     display: flex;
     flex-direction: column;
+    max-width: 1000px;
     gap: 1rem;
     padding: 1rem;
     border-radius: 8px;
+    margin: 0 auto; /* ทำให้กล่องจัดอยู่กึ่งกลางในแนวนอน */
 }
+
 
 .story-header-box {
     display: flex;

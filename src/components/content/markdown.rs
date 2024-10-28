@@ -6,31 +6,16 @@ use regex::Regex;
 use crate::styles::markdown_style::STYLE;
 use pulldown_cmark::{html, Options, Parser, Event, Tag, BlockQuoteKind, TagEnd};
 
+
 pub fn markdown_to_html(markdown_input: &str) -> String {
     let options = Options::all();
-    let parser = Parser::new_ext(markdown_input, options)
-        .map(|event| match event {
-            Event::Start(Tag::BlockQuote(Some(BlockQuoteKind::Note))) => {
-                if markdown_input.contains("[!IMPORTANT]") {
-                    Event::Html("<blockquote class=\"important\">".into())
-                } else if markdown_input.contains("[!WARNING]") {
-                    Event::Html("<blockquote class=\"warning\">".into())
-                } else {
-                    Event::Html("<blockquote>".into())
-                }
-            }
-            Event::End(TagEnd::BlockQuote(_)) => {
-                Event::Html("</blockquote>".into())
-            }
-            _ => event,
-        });
+    let parser = Parser::new_ext(markdown_input, options);
 
     let mut html_output = String::new();
     html::push_html(&mut html_output, parser);
 
     html_output
 }
-
 
 
 
