@@ -28,3 +28,5 @@ pub mod profile_style;
 
 pub mod new_story_style;
 
+pub mod markdown_style;
+

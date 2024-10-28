@@ -5,7 +5,6 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::{error, info};
 use nostr_sdk::Kind;
 use nostr_sdk::nips::nip07;
-use crate::components::content::article::markdown_to_html;
 use crate::nostr::NostrClient;
 use nostr_sdk::prelude::{
     Nip07Signer,
@@ -14,6 +13,8 @@ use nostr_sdk::prelude::{
     Timestamp,
     EventId
 };
+use crate::components::content::Markdown;
+use crate::components::content::markdown::markdown_to_html;
 use crate::styles::new_story_style::STYLE;
 
 const _PLUS: &str = manganis::mg!(file("src/assets/plus.svg"));
@@ -22,6 +23,7 @@ const _PREVIEW: &str = manganis::mg!(file("src/assets/preview.svg"));
 
 #[component]
 pub fn NewStory() -> Element {
+
     // สร้างตัวแปร use_signal สำหรับเก็บข้อมูลจาก input
     let mut input_text = use_signal(|| None::<String>);
 
@@ -31,6 +33,9 @@ pub fn NewStory() -> Element {
     // สร้างตัวแปรเพื่อควบคุมการทำงานของ use_future เมื่อกดปุ่ม Submit
     let mut submit_trigger = use_signal(|| false);
 
+
+    let content = markdown_to_html(input_text.read().as_deref().unwrap_or(""));
+    info!("HTML content: {}", content);
 
     if *submit_trigger.read() {
         // Logic สำหรับการทำงานหลังจากกด Submit โดยใช้ use_future
@@ -95,14 +100,14 @@ pub fn NewStory() -> Element {
         div { class: "story-write-box",
             div { class: "write-box",
                 div { class: "title-box",
-                    h2 { "Explanation" }
+                    span { "Explanation" }
                     div { class: "action-btn",
                         button { class: "submit-btn",
                             r#type: "button",
                             onclick: move |_| {
                                 if let Some(ref text) = *input_text.read() {
                                     info!("Input Text Submitted: {}", text);
-                                    // กำหนดค่าให้ submit_trigger เพื่อให้ use_future ทำงาน
+                                    // กำหนดค่าให้ submit_trigger เป็นตีวกระตุ้นเพื่อให้ use_future ทำงาน
                                     submit_trigger.set(true);
                                 }
                             },
@@ -149,9 +154,7 @@ pub fn NewStory() -> Element {
                     }
                 } else {
                     // แสดงผลข้อความในโหมด Preview โดยดึงข้อมูลจาก input_text
-                    div { class: "markdown-field-text",
-                        dangerous_inner_html: markdown_to_html(input_text.read().as_deref().unwrap_or(""))
-                    }
+                    Markdown { text: content }
                 }
             }
         }

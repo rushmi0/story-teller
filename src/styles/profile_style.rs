@@ -60,6 +60,8 @@ pub const STYLE: &str = r#"
     gap: 15px;
 }
 
+/***********************************************************/
+
 .menu-btn {
     font-size: 14px;
     color: #fff;
@@ -73,11 +75,18 @@ pub const STYLE: &str = r#"
     color: #d9534f;
 }
 
+
+/***********************************************************/
+
+
 /* Edit Profile Button */
-.profile-field-edit {
+.profile-field-options-btn {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
+
+/***********************************************************/
 
 .edit-btn {
     display: flex;
@@ -85,9 +94,8 @@ pub const STYLE: &str = r#"
     gap: 5px;
     padding: 5px 10px;
     font-size: 14px;
-    color: #f76c6c;
-    background-color: #fbecec;
-    border: 1px solid #f76c6c;
+    color: #fff;
+    border: 2px solid #37C25E;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
@@ -99,10 +107,37 @@ pub const STYLE: &str = r#"
 }
 
 .edit-btn:hover {
-    background-color: #f76c6c;
+    background-color: #37C25E;
     color: #fff;
 }
 
+/***********************************************************/
+
+
+.more-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    height: 35px;
+    color: #fff;
+    background-color: #37C25E;
+    border: 1px solid #37C25E;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.more-btn img {
+    width: 15px;
+    height: 15px;
+}
+
+.more-btn:hover {
+    background-color: #37C25E;
+    color: #fff;
+}
 
 
 "#;
