@@ -3,6 +3,7 @@ use web_sys::window;
 pub struct SessionStorage;
 
 impl SessionStorage {
+
     // ฟังก์ชันเพื่อดึงคีย์ทั้งหมดใน Session Storage ที่ขึ้นต้นด้วย "story-teller_"
     pub fn get_all_keys() -> Option<Vec<String>> {
         let storage = window().and_then(|win| win.session_storage().ok().flatten())?;
@@ -47,5 +48,13 @@ impl SessionStorage {
         }
     }
 
+
+    pub fn has_key_starting_with(prefix: &str) -> bool {
+        if let Some(keys) = Self::get_all_keys() {
+            keys.iter().any(|key| key.starts_with(prefix))
+        } else {
+            false
+        }
+    }
 
 }

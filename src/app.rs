@@ -1,8 +1,6 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use dioxus_logger::tracing::info;
-use dioxus_router::prelude::*;
 use crate::pages::router::Route;
 use crate::styles::screen_config::STYLE;
 

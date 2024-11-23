@@ -1,5 +1,11 @@
 pub const STYLE: &str = r#"
 
+.displayed-box {
+    display: flex; /* ใช้ flexbox สำหรับการจัดเรียง */
+    flex-direction: column; /* จัดเรียงแนวตั้ง */
+    gap: 10px; /* ระยะห่างระหว่างชั้น */
+}
+
 .note-container {
     display: flex;
     flex-wrap: wrap;
@@ -129,6 +135,7 @@ pub const STYLE: &str = r#"
 .mark-icon:active {
     fill: ##ff004c;
 }
+
 /******************************************/
 
 
@@ -150,19 +157,99 @@ pub const STYLE: &str = r#"
     color: #a7aab5;
 }
 
+/******************************************/
+/* pagination */
+
+/*
+.foot-pt .pagination-box {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+*/
+
+.foot-pt .btn-pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.foot-pt .btn-pagination .page-item {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.foot-pt .btn-pagination .page-item label {
+    padding: 6px 12px;
+    background-color: #404657; /* สีพื้นหลังเริ่มต้น */
+    color: white;
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s; /* เพิ่มการเปลี่ยนสี */
+}
+
+/* เปลี่ยนสีเมื่อ hover */
+.foot-pt .btn-pagination .page-item label:hover {
+    background-color: #00FF7F;
+    color: #404657;
+}
+
+/* เปลี่ยนสีเมื่อ active (กด) */
+.foot-pt .btn-pagination .page-item label:active {
+    background-color: #00FF7F; /* สีเดียวกับ label:hover */
+    color: #404657; /* สีข้อความ */
+}
+
+/* เปลี่ยนสีเมื่อมีการโฟกัส */
+.foot-pt .btn-pagination .page-item label:focus {
+    background-color: #00FF7F; /* สีเดียวกับ label:hover */
+    color: #404657; /* สีข้อความ */
+}
+
+/* สำหรับ ellipsis */
+.foot-pt .btn-pagination .page-item.ellipsis {
+    pointer-events: none;
+    color: #888;
+}
+
+/* สำหรับ next */
+.foot-pt .btn-pagination .page-item.next label {
+    background-color: #404657;
+}
+
+/* สำหรับ active page */
+.foot-pt .btn-pagination .page-item.active label {
+    background-color: #00FF7F; /* สีของปุ่มที่ active */
+    color: #404657; /* สีข้อความ */
+}
 
 
 
-@media only screen and (max-width: 923px) {
+
+.foot-pt {
+    display: flex;
+    justify-content: center;
+    /*border: 1px solid #ddd;*/
+    border-radius: 5px;
+    padding: 10px; /* เพิ่ม padding ภายใน */
+}
+
+
+/******************************************/
+
+@media only screen and (max-width: 991px) {
 
     .note-box {
         width: 100%; /* ปรับให้การ์ดใช้พื้นที่ให้เต็ม */
-        max-width: 185px; /* กำหนดขนาดสูงสุด */
-        margin: 20px;
-    }
-
-    .note-icon {
-
+        max-width: 240px; /* กำหนดขนาดสูงสุด */
+        margin: 15px;
+        height: 350px;
     }
 
     .note-image {
@@ -178,66 +265,17 @@ pub const STYLE: &str = r#"
         font-size: 16px;
     }
 
-
-}
-
-
-@media only screen and (max-width: 721px) {
-
-    .note-box {
-        width: 100%; /* ปรับให้การ์ดใช้พื้นที่ให้เต็ม */
-        max-width: 156px; /* กำหนดขนาดสูงสุด */
-        margin: 20px;
+    .author-info h3 {
+        font-size: 10px;
     }
 
-    .note-icon img {
-        width: 16px; /* ขนาดไอคอนสำหรับหน้าจอที่เล็กลง */
+    .author-info p {
+        font-size: 8px;
     }
-
-    .note-image {
-        width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
-        height: 134px;
-    }
-
-    .note-desc {
-        font-size: 12px;
-    }
-
-    .note-desc h2 {
-        font-size: 14px; /* ปรับขนาดตัวอักษรหัวข้อ */
-    }
-
 
 }
 
 
 
-@media only screen and (max-width: 460px) {
-
-    .note-box {
-        width: 100%; /* ปรับให้การ์ดใช้พื้นที่ให้เต็ม */
-        max-width: 140px; /* กำหนดขนาดสูงสุด */
-        margin: 10px;
-    }
-
-    .note-icon img {
-        width: 14px; /* ขนาดไอคอนสำหรับหน้าจอที่เล็กที่สุด */
-    }
-
-    .note-image {
-        width: 100%; /* ปรับให้ภาพใช้พื้นที่เต็มการ์ด */
-        height: 124px;
-    }
-
-    .note-desc {
-        font-size: 10px; /* ปรับขนาดตัวอักษรลง */
-    }
-
-    .note-desc h2 {
-        font-size: 12px; /* ปรับขนาดตัวอักษรหัวข้อ */
-    }
-
-
-}
 
 "#;

@@ -12,7 +12,10 @@ use nostr_sdk::{
     Event
 };
 use web_sys::window;
-use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility};
+use crate::components::shared::{
+    SharedAccountVisibility,
+    SharedAuthVisibility
+};
 use crate::model::LocalStorage;
 use crate::nostr::NostrClient;
 use crate::styles::auth_card_style::STYLE;
@@ -112,8 +115,6 @@ pub fn AuthCard(state_auth: SharedAuthVisibility, state_account: SharedAccountVi
                 }
             }
         });
-
-
     };
 
 

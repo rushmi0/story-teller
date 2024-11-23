@@ -1,23 +1,61 @@
 #![allow(non_snake_case)]
 
+use crate::pages::router::Route;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, error};
 use crate::components::account::{AuthCard, AccountCard};
-use crate::styles::banner_style::STYLE;
-
-use nostr_sdk::{serde_json, EventBuilder};
+use crate::styles::navigation_bar_style::STYLE;
+use std::time::Duration;
+use nostr_sdk::{
+    serde_json,
+    EventBuilder,
+    EventSource,
+    PublicKey,
+    Filter,
+    Kind,
+    Event
+};
+use serde::{Deserialize, Serialize};
 use crate::components::shared::{SharedAccountVisibility, SharedAuthVisibility, SharedMetadataVisibility};
-use crate::model::local_storage::LocalStorage;
+use crate::model::{LocalStorage, SessionStorage};
+use crate::nostr::NostrClient;
 
 const IMG_BANNER: &str = manganis::mg!(file("src/assets/nav-icon.svg"));
 //const _IMG: manganis::ImageAsset = manganis::mg!(image("./src/assets/img_2.jpg"));
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct FollowList {
+    pub(crate) public_key: Vec<String>,
+}
+
+fn process_event(event: &Event) -> FollowList {
+    let mut follow_list = FollowList { public_key: Vec::new() };
+
+    // ตรวจสอบ tags ใน Event
+    for tag in &event.tags {
+        let tag_data = tag.as_slice(); // แปลง tag เป็น slice
+
+        // ตรวจสอบว่า tag มี prefix เป็น "p" และมีอย่างน้อย 2 ค่า
+        if tag_data.len() > 1 && tag_data[0] == "p" {
+            // เพิ่ม value เข้าไปใน FollowList
+            follow_list.public_key.push(tag_data[1].to_string());
+        }
+
+    }
+
+    follow_list
+}
+
 #[component]
-pub fn Banner(
-    state_auth: SharedAuthVisibility,
-    state_account: SharedAccountVisibility,
-    state_metadata: SharedMetadataVisibility
-) -> Element {
+pub fn NavigationBar() -> Element {
+
+    let navigator: Navigator = use_navigator();
+
+    let mut state_auth = SharedAuthVisibility::new();
+    let mut state_account = SharedAccountVisibility::new();
+    let mut state_metadata = SharedMetadataVisibility::new();
+
+
 
     // สร้าง Signal เพื่อควบคุมการแสดง AccountCard
     let mut show_account_card = use_signal(|| false);
@@ -29,19 +67,78 @@ pub fn Banner(
     use_future( move || async move {
         // ดึงค่า keyทั้งหมดใน LocalStorage
         if let Some(storage) = LocalStorage::get_all_keys() {
-
-            // เก็บเฉพาะ key ที่ขึ้นต้นด้วย 'story-teller_' ลงใน `story_teller_keys`
-            let filtered_keys: Vec<String> = storage
-                .into_iter()
-                .filter(|key| key.starts_with("story-teller_"))
-                .collect();
-
-            if !filtered_keys.is_empty() {
-                story_teller_keys.set(filtered_keys);
+            // ไม่ต้องกรองอีกต่อไปเนื่องจาก get_all_keys คืนคีย์ที่ต้องการแล้ว
+            if !storage.is_empty() {
+                story_teller_keys.set(storage);
                 state_account.show_account.set(true);
             }
         }
     });
+
+
+    use_future( move || async move {
+        if !story_teller_keys.is_empty() {
+            // ดึงค่าคีย์ตำแหน่งแรกจาก LocalStorage
+            if let Some(first_key) = story_teller_keys.get(0) {
+
+                // ดึงข้อมูลที่เกี่ยวข้องจาก LocalStorage
+                if let Some(data) = LocalStorage::get(&first_key) {
+                    let client = NostrClient::setup_and_connect().await.expect("Failed to setup client");
+                    let metadata = serde_json::from_str::<Event>(&data).unwrap();
+
+                    let follow_filter = Filter::new()
+                        .authors(vec![metadata.pubkey])
+                        .kind(Kind::ContactList);
+
+                    let events = client
+                        .get_events_of(
+                            vec![follow_filter],
+                            EventSource::relays(Some(Duration::from_secs(10))),
+                        )
+                        .await;
+
+                    if let Ok(events) = events {
+                        // เลือก Event ที่มีค่า created_at มากที่สุด
+                        if let Some(latest_event) = events.iter().max_by_key(|e| e.created_at) {
+                            //info!("Latest Follow List Event received: {:?}", latest_event);
+
+                            // ส่ง Event ไปยังฟังก์ชัน process_event เพื่อประมวลผล
+                            let follow_list = process_event(latest_event);
+                            //info!("Follow List: {:?}", follow_list);
+
+                            let follow_list_string = serde_json::to_string(&follow_list).unwrap();
+
+                            // ตรวจสอบว่ามี key ที่ขึ้นต้นด้วย "story-teller_" อยู่ใน SessionStorage หรือไม่
+                            if let Some(existing_keys) = SessionStorage::get_all_keys() {
+                                // ถ้าไม่มี key ที่ขึ้นต้นด้วย "story-teller_" ให้บันทึกข้อมูลใหม่
+                                if !existing_keys.iter().any(|key| key.starts_with("story-teller_")) {
+                                    match SessionStorage::set("story-teller_follow_1", &follow_list_string) {
+                                        Ok(_) => info!("Follow List saved to Session Storage"),
+                                        Err(err) => error!("Failed to save to Session Storage: {}", err),
+                                    }
+                                } else {
+                                    info!("Key 'story-teller_' exists. Skipping save.");
+                                }
+                            } else {
+                                // ถ้าไม่สามารถดึง key จาก SessionStorage ได้ (อาจเกิดข้อผิดพลาด)
+                                match SessionStorage::set("story-teller_follow_1", &follow_list_string) {
+                                    Ok(_) => info!("Follow List saved to Session Storage"),
+                                    Err(err) => error!("Failed to save to Session Storage: {}", err),
+                                }
+                            }
+
+
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+    });
+
+
 
     // ตรวจสอบว่า show_account ถูกตั้งค่าหรือไม่
     use_future( move || async move {
@@ -58,7 +155,7 @@ pub fn Banner(
                     if let Some(event) = state_metadata.metadata.read().as_ref() {
                         // ดึง content จาก event
                         let metadata_content = &event.content;
-                        info!("{}", metadata_content);
+                        //info!("{}", metadata_content);
 
                         state_metadata.user_metadata.set(serde_json::from_str(metadata_content).unwrap());
                     } else {
@@ -81,7 +178,7 @@ pub fn Banner(
 
             // อ่านค่าจาก raw_metadata
             let metadata = state_metadata.raw_metadata.read();
-            info!("{}", &metadata);
+            //info!("{}", &metadata);
             // let public_key = state_metadata.metadata.read().as_ref().map(|event| event.pubkey).unwrap();
             // let event = EventBuilder::text_note("POW text note from rust-nostr", []).to_unsigned_event(public_key);
             // let event_str = serde_json::to_string(&event).unwrap();
@@ -113,7 +210,10 @@ pub fn Banner(
         style { {STYLE} }
         div { class: "item-nav", id: "nav",
             img {
-                src: "{IMG_BANNER}"
+                src: "{IMG_BANNER}",
+                onclick: move |_| {
+                    navigator.push(Route::HomePage {});
+                }
             }
 
             if *state_account.show_account.read() {
